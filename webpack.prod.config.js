@@ -4,19 +4,19 @@ var TARGET = process.env.TARGET || null;
 
 var config = {
     entry: {
-        index: './scripts/VelocityTransitionGroup.jsx'
+        index: './example/Calendar.jsx'
     },
     output: {
         path: path.join(__dirname, 'dist'),
         publicPath: 'dist/',
-        filename: '[id].js',
-        sourceMapFilename: '[id].sourcemap.js',
-        library: '[id]',
+        filename: 'Calendar.js',
+        sourceMapFilename: 'Calendar.sourcemap.js',
+        library: 'Calendar',
         libraryTarget: 'umd'
     },
     module: {
         loaders: [
-            { test: /\.(js|jsx)/, loader: 'babel' }
+            { test: /\.(js|jsx)/, loader: 'babel?stage=0' }
         ]
     },
     plugins: [],
@@ -24,21 +24,20 @@ var config = {
         extensions: ['', '.js', '.jsx']
     },
     externals: {
-        'react/addons': 'React',
-        'velocity-animate': 'Velocity',
-        'velocity-animate/velocity.ui': 'velocity-animate/velocity.ui'
+        'react': 'React',
+        'moment': 'moment'
     },
 };
 
 if(TARGET === 'minify') {
-    config.output.filename = 'VelocityTransitionGroup.min.js';
-    config.output.sourceMapFilename = 'VelocityTransitionGroup.min.js';
+    config.output.filename = 'Calendar.min.js';
+    config.output.sourceMapFilename = 'Calendar.min.js';
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
         compress: {
             warnings: false
         },
         mangle: {
-            except: ['React', 'Velocity', 'VelocityTransitionGroup']
+            except: ['React', 'moment', 'Calendar']
         }
     }));
 }

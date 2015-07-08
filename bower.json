@@ -1,0 +1,23 @@
+{
+  "name": "react-simple-calendar",
+  "version": "0.0.1",
+  "homepage": "https://github.com/souporserious/velocitytransitiongroup",
+  "authors": [
+    "Travis Arnold <ftntravis@gmail.com>"
+  ],
+  "description": "Simple calendar for React.",
+  "main": ["./dist/Calendar.js", "./dist/Calendar.min.js"],
+  "keywords": [
+    "react",
+    "component",
+    "calendar"
+  ],
+  "license": "ISC",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
