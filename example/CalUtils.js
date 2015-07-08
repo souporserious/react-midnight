@@ -45,6 +45,11 @@ export default {
     return new Date(d.getFullYear(), d.getMonth(), 1);
   },
 
+  getLastDayOfMonth(d) {
+    const daysInMonth = this.getDaysInMonth(d);
+    return new Date(d.getFullYear(), d.getMonth(), daysInMonth);
+  },
+
   getFirstDayOfWeek(d) {
 
     let day = d.getDay() || 7;
@@ -81,10 +86,12 @@ export default {
     let dayArray = [];
     let week = [];
     let weekArray = [];
+    let dayCount = 0;
 
     // get all days in a month
     for(let i = 1; i <= daysInMonth; i++) {
       dayArray.push(new Date(d.getFullYear(), d.getMonth(), i));
+      dayCount++;
     }
 
     // build weeks array
@@ -108,6 +115,7 @@ export default {
       let outsideDate = this.clone(firstWeek[0]);
       outsideDate.setDate(firstWeek[0].getDate() - 1);
       firstWeek.unshift(outsideDate);
+      dayCount++;
     }
 
     // push days until the end of the last week
@@ -117,18 +125,67 @@ export default {
       let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
       outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1);
       lastWeek.push(outsideDate);
+      dayCount++;
     }
 
-    const sixthRow = [];
+    // if less than 42 days we know it won't have 6 rows
+    // so lets add however many we need to equal 42
+    if(dayCount < 42) {
 
-    // force six rows
-    for(let i = 1; i < 8; i++) {
-      let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
-      outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
-      sixthRow.push(outsideDate);
+      let lastDayOfMonth = (weekArray[weekArray.length - 1][6]);
+      let lastWeek = [];
+      let i = 1;
+
+      while(dayCount < 42) {
+
+        let lastDayOfMonthClone = this.clone(lastDayOfMonth);
+        let day = new Date(lastDayOfMonthClone.setDate(lastDayOfMonthClone.getDate() + i));
+
+        if(lastWeek.length > 0 && day.getDay() === firstDayOfWeek) {
+          weekArray.push(lastWeek);
+          lastWeek = [];
+        }
+        
+        lastWeek.push(day);
+
+        dayCount++;
+        i++;
+      }
+
+      // push last week after finishing loop
+      weekArray.push(lastWeek);
     }
 
-    weekArray.push(sixthRow);
+    // let prependWeek = this.getFirstDayOfMonth(d).getDay() >= 4;
+    // let appendWeek = this.getLastDayOfMonth(d).getDay() <= 4;
+
+    // // prepend a week if the first day begins before Thursday
+    // if(prependWeek && daysInMonth < 28) {
+
+    //   let prependSixthRow = [];
+
+    //   for(let i = 7; i > 0; i--) {
+    //     let outsideDate = this.clone(firstWeek[0]);
+    //     outsideDate.setDate(firstWeek[0].getDate() - i);
+    //     prependSixthRow.push(outsideDate);
+    //   }
+
+    //   weekArray.unshift(prependSixthRow);
+    // }
+
+    // add a week if the last day is on a Saturday
+    // if(prependWeek || appendWeek) {
+
+    //   let appendSixthRow = [];
+
+    //   for(let i = 1; i < 8; i++) {
+    //     let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
+    //     outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
+    //     appendSixthRow.push(outsideDate);
+    //   }
+
+    //   weekArray.push(appendSixthRow);
+    // }
 
     return weekArray;
   },

@@ -1,6 +1,6 @@
 {
   "name": "react-simple-calendar",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Simple calendar for React.",
   "main": "dist/Calendar.js",
   "scripts": {

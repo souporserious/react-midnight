@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("React"), require("moment"));
+		module.exports = factory(require("React"));
 	else if(typeof define === 'function' && define.amd)
-		define(["React", "moment"], factory);
+		define(["React"], factory);
 	else if(typeof exports === 'object')
-		exports["Calendar"] = factory(require("React"), require("moment"));
+		exports["Calendar"] = factory(require("React"));
 	else
-		root["Calendar"] = factory(root["React"], root["moment"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_3__) {
+		root["Calendar"] = factory(root["React"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -80,13 +80,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// Dependencies
 
-	var _moment = __webpack_require__(3);
-
-	var _moment2 = _interopRequireDefault(_moment);
-
-	var _classnames = __webpack_require__(4);
+	var _classnames = __webpack_require__(3);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
+
+	// Styles
+	//import './calendar.scss';
 
 	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -485,6 +484,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new Date(d.getFullYear(), d.getMonth(), 1);
 	  },
 
+	  getLastDayOfMonth: function getLastDayOfMonth(d) {
+	    var daysInMonth = this.getDaysInMonth(d);
+	    return new Date(d.getFullYear(), d.getMonth(), daysInMonth);
+	  },
+
 	  getFirstDayOfWeek: function getFirstDayOfWeek(d) {
 
 	    var day = d.getDay() || 7;
@@ -522,10 +526,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var dayArray = [];
 	    var week = [];
 	    var weekArray = [];
+	    var dayCount = 0;
 
 	    // get all days in a month
 	    for (var i = 1; i <= daysInMonth; i++) {
 	      dayArray.push(new Date(d.getFullYear(), d.getMonth(), i));
+	      dayCount++;
 	    }
 
 	    // build weeks array
@@ -549,6 +555,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var outsideDate = this.clone(firstWeek[0]);
 	      outsideDate.setDate(firstWeek[0].getDate() - 1);
 	      firstWeek.unshift(outsideDate);
+	      dayCount++;
 	    }
 
 	    // push days until the end of the last week
@@ -558,7 +565,67 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
 	      outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1);
 	      lastWeek.push(outsideDate);
+	      dayCount++;
 	    }
+
+	    // if less than 42 days we know it won't have 6 rows
+	    // so lets add however many we need to equal 42
+	    if (dayCount < 42) {
+
+	      var lastDayOfMonth = weekArray[weekArray.length - 1][6];
+	      var _lastWeek = [];
+	      var i = 1;
+
+	      while (dayCount < 42) {
+
+	        var lastDayOfMonthClone = this.clone(lastDayOfMonth);
+	        var day = new Date(lastDayOfMonthClone.setDate(lastDayOfMonthClone.getDate() + i));
+
+	        if (_lastWeek.length > 0 && day.getDay() === firstDayOfWeek) {
+	          weekArray.push(_lastWeek);
+	          _lastWeek = [];
+	        }
+
+	        _lastWeek.push(day);
+
+	        dayCount++;
+	        i++;
+	      }
+
+	      // push last week after finishing loop
+	      weekArray.push(_lastWeek);
+	    }
+
+	    // let prependWeek = this.getFirstDayOfMonth(d).getDay() >= 4;
+	    // let appendWeek = this.getLastDayOfMonth(d).getDay() <= 4;
+
+	    // // prepend a week if the first day begins before Thursday
+	    // if(prependWeek && daysInMonth < 28) {
+
+	    //   let prependSixthRow = [];
+
+	    //   for(let i = 7; i > 0; i--) {
+	    //     let outsideDate = this.clone(firstWeek[0]);
+	    //     outsideDate.setDate(firstWeek[0].getDate() - i);
+	    //     prependSixthRow.push(outsideDate);
+	    //   }
+
+	    //   weekArray.unshift(prependSixthRow);
+	    // }
+
+	    // add a week if the last day is on a Saturday
+	    // if(prependWeek || appendWeek) {
+
+	    //   let appendSixthRow = [];
+
+	    //   for(let i = 1; i < 8; i++) {
+	    //     let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
+	    //     outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
+	    //     appendSixthRow.push(outsideDate);
+	    //   }
+
+	    //   weekArray.push(appendSixthRow);
+	    // }
 
 	    return weekArray;
 	  },
@@ -605,12 +672,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
-
-/***/ },
-/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!

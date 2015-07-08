@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import Utils from './CalUtils';
 
 // Dependencies
-import moment from 'moment';
 import classNames from 'classnames';
 
 // Styles
