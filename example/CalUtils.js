@@ -119,6 +119,17 @@ export default {
       lastWeek.push(outsideDate);
     }
 
+    const sixthRow = [];
+
+    // force six rows
+    for(let i = 1; i < 8; i++) {
+      let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
+      outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
+      sixthRow.push(outsideDate);
+    }
+
+    weekArray.push(sixthRow);
+
     return weekArray;
   },
 

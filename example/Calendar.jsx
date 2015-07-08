@@ -5,6 +5,8 @@ import Utils from './CalUtils';
 import moment from 'moment';
 import classNames from 'classnames';
 
+// Styles
+import './calendar.scss';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
