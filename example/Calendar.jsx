@@ -146,7 +146,12 @@ class Calendar extends Component {
         // https://moz.com/blog/markup-events-hcalendar-microformat
         // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
         events: [],
-        datesToDisable: myDates
+        datesToDisable: myDates,
+        forceSixRows: true,
+        date: new Date(), // can grab month from here as well
+        format: 'DD/MM/YYYY', // should probably be a prop for input calendar
+        placeholderText: 'Click to select a date',
+        weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'] // custom weekdays (for locale)
     }
     
     constructor(props) {
