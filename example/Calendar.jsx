@@ -97,6 +97,43 @@ class Week extends Component {
     }
 }
 
+function normalizeDates(month, mixed) {
+
+    let dates = [];
+
+    for(let i = mixed.length; i--;) {
+
+        let mix = mixed[i];
+
+        // if it's a Date object already then push it
+        // and contiue
+        if(mix instanceof Date) {
+            dates.push(mix);
+            continue;
+        }
+
+        // test if digit and in between current month
+        // or test to block day of week out somehow
+        // reference pickadate and how they do it
+        // just block out day for now
+        if(/^\d+$/.test(mix)) {
+            dates.push(new Date(month.getFullYear(), month.getMonth(), mix));
+            continue;
+        }
+
+        if(Array.isArray(mix)) {
+            dates.push(new Date(mix[0], mix[1], mix[2]));
+            continue;
+        }
+    }
+
+    return dates;
+}
+
+let d1 = new Date(2015,6,9);
+let d2 = [ 1, 4, 7, [2015,6,8], [2015,6,19], new Date(2015,6,26) ];
+let myDates = normalizeDates(d1, d2);
+
 class Calendar extends Component {
 
     static propTypes = {
@@ -105,9 +142,7 @@ class Calendar extends Component {
 
     static defaultProps = {
         trimWeekdays: 1,
-        // Array passed in options to disable dates
-        //datesToDisable: [ 1, 4, 7, [2015,3,8], [2015,3,19], new Date(2015,3,26) ]
-        datesToDisable: [new Date('07-05-2015'), new Date('07-06-2015'), new Date('07-07-2015')]
+        datesToDisable: myDates
     }
     
     constructor(props) {
@@ -160,18 +195,6 @@ class Calendar extends Component {
     navigate(direction) {
         let month = this.state.month;
         this.setState({ month: navigateMonth(month, direction) });
-    }
-
-    diff(arr1, arr2) {
-        
-        let ret = [];
-
-        for(i in this) {
-            if(arr2.indexOf(arr1[i]) > -1) {
-                ret.push(arr1[i]);
-            }
-        }
-        return ret;
     }
     
     getModifiers(modifiers) {
