@@ -20,68 +20,66 @@ const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 //   return d1 < d && d < d2;
 // }
 
-export default {
+export function addMonths(d, months) {
+  const newDate = clone(d);
+  newDate.setMonth(d.getMonth() + months);
+  return newDate;
+}
 
-  addMonths(d, months) {
-    const newDate = this.clone(d);
-    newDate.setMonth(d.getMonth() + months);
-    return newDate;
-  },
-
-  clone(d) {
+export function clone(d) {
     return new Date(d.getTime());
-  },
+}
 
-  startOfMonth(d) {
-    const newDate = this.clone(d);
-    newDate.setDate(1);
-    newDate.setHours(0);
-    newDate.setMinutes(0);
-    newDate.setSeconds(0);
-    newDate.setMilliseconds(0);
-  },
+export function startOfMonth(d) {
+  const newDate = clone(d);
+  newDate.setDate(1);
+  newDate.setHours(0);
+  newDate.setMinutes(0);
+  newDate.setSeconds(0);
+  newDate.setMilliseconds(0);
+}
 
-  getFirstDayOfMonth(d) {
-    return new Date(d.getFullYear(), d.getMonth(), 1);
-  },
+export function getFirstDayOfMonth(d) {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
 
-  getLastDayOfMonth(d) {
-    const daysInMonth = this.getDaysInMonth(d);
-    return new Date(d.getFullYear(), d.getMonth(), daysInMonth);
-  },
+export function getLastDayOfMonth(d) {
+  const daysInMonth = getDaysInMonth(d);
+  return new Date(d.getFullYear(), d.getMonth(), daysInMonth);
+}
 
-  getFirstDayOfWeek(d) {
+export function getFirstDayOfWeek(d) {
 
-    let day = d.getDay() || 7;
-    
-    if(day !== 1) {
-      d.setHours(-24 * (day - 1));
-    }
-    
-    return d.getDay();
-  },
+  let day = d.getDay() || 7;
+  
+  if(day !== 1) {
+    d.setHours(-24 * (day - 1));
+  }
+  
+  return d.getDay();
+}
 
-  getDaysInMonth(d) {
+export function getDaysInMonth(d) {
 
-    let resultDate = this.getFirstDayOfMonth(d);
+  let resultDate = getFirstDayOfMonth(d);
 
-    resultDate.setMonth(resultDate.getMonth() + 1);
-    resultDate.setDate(resultDate.getDate() - 1);
+  resultDate.setMonth(resultDate.getMonth() + 1);
+  resultDate.setDate(resultDate.getDate() - 1);
 
-    return resultDate.getDate();
-  },
+  return resultDate.getDate();
+}
 
-  navigateMonth(d, direction) {
+export function navigateMonth(d, direction) {
     
     let currMonth = d.getMonth();
     let newDate = new Date(d.setMonth(direction + currMonth)); 
 
     return newDate;
-  },
+}
 
-  getWeekArray(d, firstDayOfWeek = 0) {
+export function getWeekArray(d, firstDayOfWeek = 0) {
 
-    const daysInMonth = this.getDaysInMonth(d);
+    const daysInMonth = getDaysInMonth(d);
 
     let dayArray = [];
     let week = [];
@@ -112,7 +110,7 @@ export default {
     const firstWeek = weekArray[0];
 
     for(let i = 7 - firstWeek.length; i > 0; i--) {
-      let outsideDate = this.clone(firstWeek[0]);
+      let outsideDate = clone(firstWeek[0]);
       outsideDate.setDate(firstWeek[0].getDate() - 1);
       firstWeek.unshift(outsideDate);
       dayCount++;
@@ -122,7 +120,7 @@ export default {
     const lastWeek = weekArray[weekArray.length - 1];
 
     for(let i = lastWeek.length; i < 7; i++) {
-      let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
+      let outsideDate = clone(lastWeek[lastWeek.length - 1]);
       outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1);
       lastWeek.push(outsideDate);
       dayCount++;
@@ -188,9 +186,9 @@ export default {
     // }
 
     return weekArray;
-  },
+}
 
-  getModifiersForDay() {
+export function getModifiersForDay() {
 
     let modifiers = [];
 
@@ -206,27 +204,26 @@ export default {
     }
 
     return modifiers;
-  },
+}
 
-  isDayOutsideMonth(d1, d2) {
+export function isDayOutsideMonth(d1, d2) {
     return d1.getMonth() !== d2.getMonth();
-  },
+}
 
-  isSameDay(d1, d2) {
+export function isSameDay(d1, d2) {
     return d1.getDate() === d2.getDate() &&
       d1.getMonth() === d2.getMonth() &&
       d1.getFullYear() === d2.getFullYear();
-  },
+}
 
-  formatMonthTitle(d) {
+export function formatMonthTitle(d) {
     return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-  },
+}
 
-  formatMonth(d) {
+export function formatMonth(d) {
     return `${MONTHS[d.getMonth()]}`;
-  },
+}
 
-  formatYear(d) {
+export function formatYear(d) {
     return d.getFullYear();
-  }
-};
+}

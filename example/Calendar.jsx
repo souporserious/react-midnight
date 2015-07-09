@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Utils from './CalUtils';
+import { formatMonth, formatYear, isSameDay, isDayOutsideMonth, getWeekArray, navigateMonth } from './utils';
 
 // Dependencies
 import classNames from 'classnames';
@@ -18,13 +18,13 @@ class Day extends Component {
         let className = 'cal__day';
         let modifiers = [];
         
-        const isToday = Utils.isSameDay(date, new Date());
+        const isToday = isSameDay(date, new Date());
 
         if(isToday) {
             modifiers.push('today');
         }
 
-        const isOutside = Utils.isDayOutsideMonth(date, month);
+        const isOutside = isDayOutsideMonth(date, month);
 
         if(isOutside) {
             modifiers.push('outside');
@@ -167,7 +167,7 @@ class Calendar extends Component {
 
         const month = this.state.month;
 
-        let weeks = Utils.getWeekArray(month).map((week, index) =>
+        let weeks = getWeekArray(month).map((week, index) =>
             <Week
                 key={week[0].toString()}
                 days={week}
@@ -185,7 +185,7 @@ class Calendar extends Component {
     
     navigate(direction) {
         let month = this.state.month;
-        this.setState({ month: Utils.navigateMonth(month, direction) });
+        this.setState({ month: navigateMonth(month, direction) });
     }
     
     getModifiers(modifiers) {
@@ -207,8 +207,8 @@ class Calendar extends Component {
         let modifiers = this.getModifiers(this.props.modifiers && this.props.modifiers.split(','));
         let classes = classNames('cal', modifiers, this.props.className);
 
-        let monthLabel = Utils.formatMonth(this.state.month);
-        let yearLabel = Utils.formatYear(this.state.month);
+        let monthLabel = formatMonth(this.state.month);
+        let yearLabel = formatYear(this.state.month);
         
         return (
             <div className={classes}>
