@@ -125,6 +125,11 @@
     }
 }
 
-.cal__day--outside {
+.cal__day--outside, .cal__day--disabled {
     color: #ccc;
+}
+
+.cal__day--disabled {
+    background: #EFF0F1;
+    cursor: default !important;
 }

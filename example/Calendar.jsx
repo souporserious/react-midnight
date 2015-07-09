@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { formatMonth, formatYear, isSameDay, isDayOutsideMonth, getWeekArray, navigateMonth } from './utils';
+import { formatMonth, formatYear, isSameDay, isDayOutsideMonth, isDayDisabled, getWeekArray, navigateMonth } from './utils';
 
 // Dependencies
 import classNames from 'classnames';
@@ -13,7 +13,7 @@ class Day extends Component {
     
     render() {
 
-        const {month, date} = this.props;
+        const {month, date, disabledDays} = this.props;
 
         let className = 'cal__day';
         let modifiers = [];
@@ -28,6 +28,12 @@ class Day extends Component {
 
         if(isOutside) {
             modifiers.push('outside');
+        }
+
+        const isDisabled = isDayDisabled(date, disabledDays);
+
+        if(isDisabled) {
+            modifiers.push('disabled');
         }
 
         className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
@@ -74,7 +80,13 @@ class Week extends Component {
             month = this.props.month;
         
         let days = this.props.days.map(day =>
-            <Day key={day} date={day} month={month} onClick={this.props.onDaySelect.bind(null, day)} />
+            <Day
+                key={day}
+                date={day}
+                month={month}
+                onClick={this.props.onDaySelect.bind(null, day)}
+                disabledDays={this.props.disabledDays}
+            />
         );
 
         return(
@@ -92,7 +104,10 @@ class Calendar extends Component {
     }
 
     static defaultProps = {
-        trimWeekdays: 1
+        trimWeekdays: 1,
+        // Array passed in options to disable dates
+        //datesToDisable: [ 1, 4, 7, [2015,3,8], [2015,3,19], new Date(2015,3,26) ]
+        datesToDisable: [new Date('07-05-2015'), new Date('07-06-2015'), new Date('07-07-2015')]
     }
     
     constructor(props) {
@@ -121,48 +136,6 @@ class Calendar extends Component {
         );
     }
 
-    renderWeeks() {
-            
-        let weeks = [],
-            done = false,
-            // clone current month, get a week before the begining of the month on Sunday
-            // could handle custom nav here instead of in the calendar module,
-            // passing a month that counts, would handle the current viewed month
-            date = this.state.month.clone().startOf('month');
-
-        let lastDayOfMonth = date.clone().endOf('month').get('day');
-
-        // start a week early if the first day begins before Thursday
-        // could handle forceSixRows here
-        if(date.get('day') < 4) {
-            date.add(-1, 'w');
-        }
-
-        // jump to the first day to start from
-        // could change start of week here
-        date.day('Sunday');
-
-        // loop through and create weeks until we've reached 6 rows
-        for(let i = 0; i < 6; i++) {
-            
-            weeks.push(<Week
-                key={date.toString()}
-                date={date.clone()}
-                month={this.state.month}
-                onDaySelect={this.props.onSelect}
-            />);
-
-            // add 1 week to current date
-            date.add(1, 'w');
-        }
-        
-        return (
-            <tbody>
-                {weeks}
-            </tbody>
-        );
-    }
-
     renderWeeksInMonth() {
 
         const month = this.state.month;
@@ -173,6 +146,7 @@ class Calendar extends Component {
                 days={week}
                 month={this.state.month}
                 onDaySelect={this.props.onDaySelect}
+                disabledDays={this.props.datesToDisable}
             />
         );
 
@@ -186,6 +160,18 @@ class Calendar extends Component {
     navigate(direction) {
         let month = this.state.month;
         this.setState({ month: navigateMonth(month, direction) });
+    }
+
+    diff(arr1, arr2) {
+        
+        let ret = [];
+
+        for(i in this) {
+            if(arr2.indexOf(arr1[i]) > -1) {
+                ret.push(arr1[i]);
+            }
+        }
+        return ret;
     }
     
     getModifiers(modifiers) {
