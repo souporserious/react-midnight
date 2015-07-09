@@ -5,7 +5,7 @@ import { formatMonth, formatYear, isSameDay, isDayOutsideMonth, isDayDisabled, g
 import classNames from 'classnames';
 
 // Styles
-import './calendar.scss';
+//import './calendar.scss';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -142,6 +142,10 @@ class Calendar extends Component {
 
     static defaultProps = {
         trimWeekdays: 1,
+        // show how we could map events using microformat
+        // https://moz.com/blog/markup-events-hcalendar-microformat
+        // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
+        events: [],
         datesToDisable: myDates
     }
     

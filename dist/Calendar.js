@@ -74,9 +74,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _CalUtils = __webpack_require__(2);
-
-	var _CalUtils2 = _interopRequireDefault(_CalUtils);
+	var _utils = __webpack_require__(2);
 
 	// Dependencies
 
@@ -104,20 +102,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _props = this.props;
 	            var month = _props.month;
 	            var date = _props.date;
+	            var disabledDays = _props.disabledDays;
 
 	            var className = 'cal__day';
 	            var modifiers = [];
 
-	            var isToday = _CalUtils2['default'].isSameDay(date, new Date());
+	            var isToday = (0, _utils.isSameDay)(date, new Date());
 
 	            if (isToday) {
 	                modifiers.push('today');
 	            }
 
-	            var isOutside = _CalUtils2['default'].isDayOutsideMonth(date, month);
+	            var isOutside = (0, _utils.isDayOutsideMonth)(date, month);
 
 	            if (isOutside) {
 	                modifiers.push('outside');
+	            }
+
+	            var isDisabled = (0, _utils.isDayDisabled)(date, disabledDays);
+
+	            if (isDisabled) {
+	                modifiers.push('disabled');
 	            }
 
 	            className += modifiers.map(function (modifier) {
@@ -175,7 +180,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                month = this.props.month;
 
 	            var days = this.props.days.map(function (day) {
-	                return _react2['default'].createElement(Day, { key: day, date: day, month: month, onClick: _this.props.onDaySelect.bind(null, day) });
+	                return _react2['default'].createElement(Day, {
+	                    key: day,
+	                    date: day,
+	                    month: month,
+	                    onClick: _this.props.onDaySelect.bind(null, day),
+	                    disabledDays: _this.props.disabledDays
+	                });
 	            });
 
 	            return _react2['default'].createElement(
@@ -194,6 +205,43 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return Week;
 	})(_react.Component);
+
+	function normalizeDates(month, mixed) {
+
+	    var dates = [];
+
+	    for (var i = mixed.length; i--;) {
+
+	        var mix = mixed[i];
+
+	        // if it's a Date object already then push it
+	        // and contiue
+	        if (mix instanceof Date) {
+	            dates.push(mix);
+	            continue;
+	        }
+
+	        // test if digit and in between current month
+	        // or test to block day of week out somehow
+	        // reference pickadate and how they do it
+	        // just block out day for now
+	        if (/^\d+$/.test(mix)) {
+	            dates.push(new Date(month.getFullYear(), month.getMonth(), mix));
+	            continue;
+	        }
+
+	        if (Array.isArray(mix)) {
+	            dates.push(new Date(mix[0], mix[1], mix[2]));
+	            continue;
+	        }
+	    }
+
+	    return dates;
+	}
+
+	var d1 = new Date(2015, 6, 9);
+	var d2 = [1, 4, 7, [2015, 6, 8], [2015, 6, 19], new Date(2015, 6, 26)];
+	var myDates = normalizeDates(d1, d2);
 
 	var Calendar = (function (_Component3) {
 	    function Calendar(props) {
@@ -235,62 +283,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            );
 	        }
 	    }, {
-	        key: 'renderWeeks',
-	        value: function renderWeeks() {
-
-	            var weeks = [],
-	                done = false,
-
-	            // clone current month, get a week before the begining of the month on Sunday
-	            // could handle custom nav here instead of in the calendar module,
-	            // passing a month that counts, would handle the current viewed month
-	            date = this.state.month.clone().startOf('month');
-
-	            var lastDayOfMonth = date.clone().endOf('month').get('day');
-
-	            // start a week early if the first day begins before Thursday
-	            // could handle forceSixRows here
-	            if (date.get('day') < 4) {
-	                date.add(-1, 'w');
-	            }
-
-	            // jump to the first day to start from
-	            // could change start of week here
-	            date.day('Sunday');
-
-	            // loop through and create weeks until we've reached 6 rows
-	            for (var i = 0; i < 6; i++) {
-
-	                weeks.push(_react2['default'].createElement(Week, {
-	                    key: date.toString(),
-	                    date: date.clone(),
-	                    month: this.state.month,
-	                    onDaySelect: this.props.onSelect
-	                }));
-
-	                // add 1 week to current date
-	                date.add(1, 'w');
-	            }
-
-	            return _react2['default'].createElement(
-	                'tbody',
-	                null,
-	                weeks
-	            );
-	        }
-	    }, {
 	        key: 'renderWeeksInMonth',
 	        value: function renderWeeksInMonth() {
 	            var _this3 = this;
 
 	            var month = this.state.month;
 
-	            var weeks = _CalUtils2['default'].getWeekArray(month).map(function (week, index) {
+	            var weeks = (0, _utils.getWeekArray)(month).map(function (week, index) {
 	                return _react2['default'].createElement(Week, {
 	                    key: week[0].toString(),
 	                    days: week,
 	                    month: _this3.state.month,
-	                    onDaySelect: _this3.props.onDaySelect
+	                    onDaySelect: _this3.props.onDaySelect,
+	                    disabledDays: _this3.props.datesToDisable
 	                });
 	            });
 
@@ -304,7 +309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'navigate',
 	        value: function navigate(direction) {
 	            var month = this.state.month;
-	            this.setState({ month: _CalUtils2['default'].navigateMonth(month, direction) });
+	            this.setState({ month: (0, _utils.navigateMonth)(month, direction) });
 	        }
 	    }, {
 	        key: 'getModifiers',
@@ -328,8 +333,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var modifiers = this.getModifiers(this.props.modifiers && this.props.modifiers.split(','));
 	            var classes = (0, _classnames2['default'])('cal', modifiers, this.props.className);
 
-	            var monthLabel = _CalUtils2['default'].formatMonth(this.state.month);
-	            var yearLabel = _CalUtils2['default'].formatYear(this.state.month);
+	            var monthLabel = (0, _utils.formatMonth)(this.state.month);
+	            var yearLabel = (0, _utils.formatYear)(this.state.month);
 
 	            return _react2['default'].createElement(
 	                'div',
@@ -377,7 +382,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'defaultProps',
 	        value: {
-	            trimWeekdays: 1
+	            trimWeekdays: 1,
+	            // show how we could map events using microformat
+	            // https://moz.com/blog/markup-events-hcalendar-microformat
+	            // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
+	            events: [],
+	            datesToDisable: myDates
 	        },
 	        enumerable: true
 	    }]);
@@ -437,6 +447,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	exports.addMonths = addMonths;
+	exports.clone = clone;
+	exports.startOfMonth = startOfMonth;
+	exports.getFirstDayOfMonth = getFirstDayOfMonth;
+	exports.getLastDayOfMonth = getLastDayOfMonth;
+	exports.getFirstDayOfWeek = getFirstDayOfWeek;
+	exports.getDaysInMonth = getDaysInMonth;
+	exports.navigateMonth = navigateMonth;
+	exports.getWeekArray = getWeekArray;
+	exports.getModifiersForDay = getModifiersForDay;
+	exports.isDayOutsideMonth = isDayOutsideMonth;
+	exports.isDayDisabled = isDayDisabled;
+	exports.isSameDay = isSameDay;
+	exports.formatMonthTitle = formatMonthTitle;
+	exports.formatMonth = formatMonth;
+	exports.formatYear = formatYear;
 	var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -459,216 +485,219 @@ return /******/ (function(modules) { // webpackBootstrap
 	//   return d1 < d && d < d2;
 	// }
 
-	exports['default'] = {
+	function addMonths(d, months) {
+	  var newDate = clone(d);
+	  newDate.setMonth(d.getMonth() + months);
+	  return newDate;
+	}
 
-	  addMonths: function addMonths(d, months) {
-	    var newDate = this.clone(d);
-	    newDate.setMonth(d.getMonth() + months);
-	    return newDate;
-	  },
+	function clone(d) {
+	  return new Date(d.getTime());
+	}
 
-	  clone: function clone(d) {
-	    return new Date(d.getTime());
-	  },
+	function startOfMonth(d) {
+	  var newDate = clone(d);
+	  newDate.setDate(1);
+	  newDate.setHours(0);
+	  newDate.setMinutes(0);
+	  newDate.setSeconds(0);
+	  newDate.setMilliseconds(0);
+	}
 
-	  startOfMonth: function startOfMonth(d) {
-	    var newDate = this.clone(d);
-	    newDate.setDate(1);
-	    newDate.setHours(0);
-	    newDate.setMinutes(0);
-	    newDate.setSeconds(0);
-	    newDate.setMilliseconds(0);
-	  },
+	function getFirstDayOfMonth(d) {
+	  return new Date(d.getFullYear(), d.getMonth(), 1);
+	}
 
-	  getFirstDayOfMonth: function getFirstDayOfMonth(d) {
-	    return new Date(d.getFullYear(), d.getMonth(), 1);
-	  },
+	function getLastDayOfMonth(d) {
+	  var daysInMonth = getDaysInMonth(d);
+	  return new Date(d.getFullYear(), d.getMonth(), daysInMonth);
+	}
 
-	  getLastDayOfMonth: function getLastDayOfMonth(d) {
-	    var daysInMonth = this.getDaysInMonth(d);
-	    return new Date(d.getFullYear(), d.getMonth(), daysInMonth);
-	  },
+	function getFirstDayOfWeek(d) {
 
-	  getFirstDayOfWeek: function getFirstDayOfWeek(d) {
+	  var day = d.getDay() || 7;
 
-	    var day = d.getDay() || 7;
-
-	    if (day !== 1) {
-	      d.setHours(-24 * (day - 1));
-	    }
-
-	    return d.getDay();
-	  },
-
-	  getDaysInMonth: function getDaysInMonth(d) {
-
-	    var resultDate = this.getFirstDayOfMonth(d);
-
-	    resultDate.setMonth(resultDate.getMonth() + 1);
-	    resultDate.setDate(resultDate.getDate() - 1);
-
-	    return resultDate.getDate();
-	  },
-
-	  navigateMonth: function navigateMonth(d, direction) {
-
-	    var currMonth = d.getMonth();
-	    var newDate = new Date(d.setMonth(direction + currMonth));
-
-	    return newDate;
-	  },
-
-	  getWeekArray: function getWeekArray(d) {
-	    var firstDayOfWeek = arguments[1] === undefined ? 0 : arguments[1];
-
-	    var daysInMonth = this.getDaysInMonth(d);
-
-	    var dayArray = [];
-	    var week = [];
-	    var weekArray = [];
-	    var dayCount = 0;
-
-	    // get all days in a month
-	    for (var i = 1; i <= daysInMonth; i++) {
-	      dayArray.push(new Date(d.getFullYear(), d.getMonth(), i));
-	      dayCount++;
-	    }
-
-	    // build weeks array
-	    dayArray.forEach(function (day) {
-	      if (week.length > 0 && day.getDay() === firstDayOfWeek) {
-	        weekArray.push(week);
-	        week = [];
-	      }
-
-	      week.push(day);
-
-	      if (dayArray.indexOf(day) === dayArray.length - 1) {
-	        weekArray.push(week);
-	      }
-	    });
-
-	    // unshift days to start the first week
-	    var firstWeek = weekArray[0];
-
-	    for (var i = 7 - firstWeek.length; i > 0; i--) {
-	      var outsideDate = this.clone(firstWeek[0]);
-	      outsideDate.setDate(firstWeek[0].getDate() - 1);
-	      firstWeek.unshift(outsideDate);
-	      dayCount++;
-	    }
-
-	    // push days until the end of the last week
-	    var lastWeek = weekArray[weekArray.length - 1];
-
-	    for (var i = lastWeek.length; i < 7; i++) {
-	      var outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
-	      outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1);
-	      lastWeek.push(outsideDate);
-	      dayCount++;
-	    }
-
-	    // if less than 42 days we know it won't have 6 rows
-	    // so lets add however many we need to equal 42
-	    if (dayCount < 42) {
-
-	      var lastDayOfMonth = weekArray[weekArray.length - 1][6];
-	      var _lastWeek = [];
-	      var i = 1;
-
-	      while (dayCount < 42) {
-
-	        var lastDayOfMonthClone = this.clone(lastDayOfMonth);
-	        var day = new Date(lastDayOfMonthClone.setDate(lastDayOfMonthClone.getDate() + i));
-
-	        if (_lastWeek.length > 0 && day.getDay() === firstDayOfWeek) {
-	          weekArray.push(_lastWeek);
-	          _lastWeek = [];
-	        }
-
-	        _lastWeek.push(day);
-
-	        dayCount++;
-	        i++;
-	      }
-
-	      // push last week after finishing loop
-	      weekArray.push(_lastWeek);
-	    }
-
-	    // let prependWeek = this.getFirstDayOfMonth(d).getDay() >= 4;
-	    // let appendWeek = this.getLastDayOfMonth(d).getDay() <= 4;
-
-	    // // prepend a week if the first day begins before Thursday
-	    // if(prependWeek && daysInMonth < 28) {
-
-	    //   let prependSixthRow = [];
-
-	    //   for(let i = 7; i > 0; i--) {
-	    //     let outsideDate = this.clone(firstWeek[0]);
-	    //     outsideDate.setDate(firstWeek[0].getDate() - i);
-	    //     prependSixthRow.push(outsideDate);
-	    //   }
-
-	    //   weekArray.unshift(prependSixthRow);
-	    // }
-
-	    // add a week if the last day is on a Saturday
-	    // if(prependWeek || appendWeek) {
-
-	    //   let appendSixthRow = [];
-
-	    //   for(let i = 1; i < 8; i++) {
-	    //     let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
-	    //     outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
-	    //     appendSixthRow.push(outsideDate);
-	    //   }
-
-	    //   weekArray.push(appendSixthRow);
-	    // }
-
-	    return weekArray;
-	  },
-
-	  getModifiersForDay: function getModifiersForDay() {
-
-	    var modifiers = [];
-
-	    if (modifierFunctions) {
-	      for (var modifier in modifierFunctions) {
-
-	        var func = modifierFunctions[modifier];
-
-	        if (func(d)) {
-	          modifiers.push(modifier);
-	        }
-	      }
-	    }
-
-	    return modifiers;
-	  },
-
-	  isDayOutsideMonth: function isDayOutsideMonth(d1, d2) {
-	    return d1.getMonth() !== d2.getMonth();
-	  },
-
-	  isSameDay: function isSameDay(d1, d2) {
-	    return d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
-	  },
-
-	  formatMonthTitle: function formatMonthTitle(d) {
-	    return MONTHS[d.getMonth()] + ' ' + d.getFullYear();
-	  },
-
-	  formatMonth: function formatMonth(d) {
-	    return '' + MONTHS[d.getMonth()];
-	  },
-
-	  formatYear: function formatYear(d) {
-	    return d.getFullYear();
+	  if (day !== 1) {
+	    d.setHours(-24 * (day - 1));
 	  }
-	};
-	module.exports = exports['default'];
+
+	  return d.getDay();
+	}
+
+	function getDaysInMonth(d) {
+
+	  var resultDate = getFirstDayOfMonth(d);
+
+	  resultDate.setMonth(resultDate.getMonth() + 1);
+	  resultDate.setDate(resultDate.getDate() - 1);
+
+	  return resultDate.getDate();
+	}
+
+	function navigateMonth(d, direction) {
+
+	  var currMonth = d.getMonth();
+	  var newDate = new Date(d.setMonth(direction + currMonth));
+
+	  return newDate;
+	}
+
+	function getWeekArray(d) {
+	  var firstDayOfWeek = arguments[1] === undefined ? 0 : arguments[1];
+
+	  var daysInMonth = getDaysInMonth(d);
+
+	  var dayArray = [];
+	  var week = [];
+	  var weekArray = [];
+	  var dayCount = 0;
+
+	  // get all days in a month
+	  for (var i = 1; i <= daysInMonth; i++) {
+	    dayArray.push(new Date(d.getFullYear(), d.getMonth(), i));
+	    dayCount++;
+	  }
+
+	  // build weeks array
+	  dayArray.forEach(function (day) {
+	    if (week.length > 0 && day.getDay() === firstDayOfWeek) {
+	      weekArray.push(week);
+	      week = [];
+	    }
+
+	    week.push(day);
+
+	    if (dayArray.indexOf(day) === dayArray.length - 1) {
+	      weekArray.push(week);
+	    }
+	  });
+
+	  // unshift days to start the first week
+	  var firstWeek = weekArray[0];
+
+	  for (var i = 7 - firstWeek.length; i > 0; i--) {
+	    var outsideDate = clone(firstWeek[0]);
+	    outsideDate.setDate(firstWeek[0].getDate() - 1);
+	    firstWeek.unshift(outsideDate);
+	    dayCount++;
+	  }
+
+	  // push days until the end of the last week
+	  var lastWeek = weekArray[weekArray.length - 1];
+
+	  for (var i = lastWeek.length; i < 7; i++) {
+	    var outsideDate = clone(lastWeek[lastWeek.length - 1]);
+	    outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1);
+	    lastWeek.push(outsideDate);
+	    dayCount++;
+	  }
+
+	  // if less than 42 days we know it won't have 6 rows
+	  // so lets add however many we need to equal 42
+	  if (dayCount < 42) {
+
+	    var lastDayOfMonth = weekArray[weekArray.length - 1][6];
+	    var _lastWeek = [];
+	    var i = 1;
+
+	    while (dayCount < 42) {
+
+	      var lastDayOfMonthClone = clone(lastDayOfMonth);
+	      var day = new Date(lastDayOfMonthClone.setDate(lastDayOfMonthClone.getDate() + i));
+
+	      if (_lastWeek.length > 0 && day.getDay() === firstDayOfWeek) {
+	        weekArray.push(_lastWeek);
+	        _lastWeek = [];
+	      }
+
+	      _lastWeek.push(day);
+
+	      dayCount++;
+	      i++;
+	    }
+
+	    // push last week after finishing loop
+	    weekArray.push(_lastWeek);
+	  }
+
+	  // let prependWeek = this.getFirstDayOfMonth(d).getDay() >= 4;
+	  // let appendWeek = this.getLastDayOfMonth(d).getDay() <= 4;
+
+	  // // prepend a week if the first day begins before Thursday
+	  // if(prependWeek && daysInMonth < 28) {
+
+	  //   let prependSixthRow = [];
+
+	  //   for(let i = 7; i > 0; i--) {
+	  //     let outsideDate = this.clone(firstWeek[0]);
+	  //     outsideDate.setDate(firstWeek[0].getDate() - i);
+	  //     prependSixthRow.push(outsideDate);
+	  //   }
+
+	  //   weekArray.unshift(prependSixthRow);
+	  // }
+
+	  // add a week if the last day is on a Saturday
+	  // if(prependWeek || appendWeek) {
+
+	  //   let appendSixthRow = [];
+
+	  //   for(let i = 1; i < 8; i++) {
+	  //     let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
+	  //     outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
+	  //     appendSixthRow.push(outsideDate);
+	  //   }
+
+	  //   weekArray.push(appendSixthRow);
+	  // }
+
+	  return weekArray;
+	}
+
+	function getModifiersForDay() {
+
+	  var modifiers = [];
+
+	  if (modifierFunctions) {
+	    for (var modifier in modifierFunctions) {
+
+	      var func = modifierFunctions[modifier];
+
+	      if (func(d)) {
+	        modifiers.push(modifier);
+	      }
+	    }
+	  }
+
+	  return modifiers;
+	}
+
+	function isDayOutsideMonth(d1, d2) {
+	  return d1.getMonth() !== d2.getMonth();
+	}
+
+	function isDayDisabled(date, dates) {
+	  for (var i = dates.length; i--;) {
+	    if (isSameDay(date, dates[i])) return true;
+	  }
+	  return false;
+	}
+
+	function isSameDay(d1, d2) {
+	  return d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
+	}
+
+	function formatMonthTitle(d) {
+	  return MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+	}
+
+	function formatMonth(d) {
+	  return '' + MONTHS[d.getMonth()];
+	}
+
+	function formatYear(d) {
+	  return d.getFullYear();
+	}
 
 /***/ },
 /* 3 */
