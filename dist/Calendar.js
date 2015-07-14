@@ -7,7 +7,7 @@
 		exports["Calendar"] = factory(require("React"));
 	else
 		root["Calendar"] = factory(root["React"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -57,6 +57,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _Calendar = __webpack_require__(1);
+
+	var _Calendar2 = _interopRequireDefault(_Calendar);
+
+	var _Time = __webpack_require__(5);
+
+	var _Time2 = _interopRequireDefault(_Time);
+
+	exports.Calendar = _Calendar2['default'];
+	exports.Time = _Time2['default'];
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
 
@@ -70,20 +93,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _react = __webpack_require__(1);
+	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _utils = __webpack_require__(2);
+	var _utils = __webpack_require__(3);
 
 	// Dependencies
 
-	var _classnames = __webpack_require__(3);
+	var _classnames = __webpack_require__(4);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
-
-	// Styles
-	//import './calendar.scss';
 
 	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -439,51 +459,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Calendar;
 	})(_react.Component);
 
-	// function getMonthDateRange(year, month) {
-	//     var moment = require('moment');
-
-	//     // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
-	//     // array is 'year', 'month', 'day', etc
-	//     var startDate = moment([year, month - 1]);
-
-	//     // Clone the value before .endOf()
-	//     var endDate = moment(startDate).endOf('month');
-
-	//     // just for demonstration:
-	//     console.log(startDate.toDate());
-	//     console.log(endDate.toDate());
-
-	//     // make sure to call toDate() for plain JavaScript date type
-	//     return { start: startDate, end: endDate };
-	// }
-
-	/*
-	allow user to build custom wrappers
-	so maybe they can extend a class to gain access to methods?
-	look into it, it would be a cool feature
-
-	api:
-	<Calendar
-	    forceSixRows={}
-	    onMonthChange={}
-	    onDaySelect={}
-	    disabled={}
-	/>
-
-	HEAVILY INSPIRED FROM: https://github.com/gpbl/react-day-picker/blob/master/src/DayPicker.js
-	*/
-
 	exports['default'] = Calendar;
 	module.exports = exports['default'];
 
 /***/ },
-/* 1 */
+/* 2 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -752,7 +738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -803,6 +789,124 @@ return /******/ (function(modules) { // webpackBootstrap
 			window.classNames = classNames;
 		}
 	})();
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var Time = (function (_Component) {
+	    function Time() {
+	        _classCallCheck(this, Time);
+
+	        _get(Object.getPrototypeOf(Time.prototype), 'constructor', this).apply(this, arguments);
+	    }
+
+	    _inherits(Time, _Component);
+
+	    _createClass(Time, [{
+	        key: '_pad',
+	        value: function _pad(n) {
+	            return n > 9 ? n : '0' + n;
+	        }
+	    }, {
+	        key: '_format',
+	        value: function _format(d) {
+
+	            var h = d.getHours();
+	            var m = this._pad(d.getMinutes());
+	            var AMPM = h < 12 ? 'AM' : 'PM';
+
+	            // convert to 12 hour clock
+	            h = h % 12 || 12;
+
+	            // pad with a 0
+	            if (this.props.pad) {
+	                h = this._pad(h);
+	            }
+
+	            return h + ':' + m + ' ' + AMPM;
+	        }
+	    }, {
+	        key: '_getOptions',
+	        value: function _getOptions() {
+
+	            var day = this.props.day;
+	            var options = [];
+
+	            // set to beginning of day
+	            day.setHours(0, 0, 0, 0);
+
+	            // loop through half hour increments
+	            for (var i = 0; i < 48; i++) {
+	                var time = new Date(day.getTime() + i * 1800000);
+	                var display = this._format(time);
+	                options.push(_react2['default'].createElement(
+	                    'option',
+	                    { key: time, value: time },
+	                    display
+	                ));
+	            }
+
+	            return options;
+	        }
+	    }, {
+	        key: '_handleChange',
+	        value: function _handleChange(e) {
+	            var day = new Date(_react2['default'].findDOMNode(e.target).value);
+	            this.props.onChange(day);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2['default'].createElement(
+	                'select',
+	                _extends({}, this.props, { onChange: this._handleChange.bind(this) }),
+	                this._getOptions()
+	            );
+	        }
+	    }], [{
+	        key: 'propTypes',
+	        value: {
+	            day: _react.PropTypes.instanceOf(Date),
+	            pad: _react.PropTypes.bool
+	        },
+	        enumerable: true
+	    }, {
+	        key: 'defaultProps',
+	        value: {
+	            day: new Date(),
+	            pad: true
+	        },
+	        enumerable: true
+	    }]);
+
+	    return Time;
+	})(_react.Component);
+
+	exports['default'] = Time;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

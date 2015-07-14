@@ -4,7 +4,7 @@ var TARGET = process.env.TARGET || null;
 
 var config = {
     entry: {
-        index: './example/Calendar.jsx'
+        index: './src/index.js'
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -24,8 +24,7 @@ var config = {
         extensions: ['', '.js', '.jsx']
     },
     externals: {
-        'react': 'React',
-        'moment': 'moment'
+        'react': 'React'
     },
 };
 
