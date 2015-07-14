@@ -9,9 +9,9 @@ var config = {
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: 'dist/',
-    filename: 'Calendar.js',
-    sourceMapFilename: 'Calendar.sourcemap.js',
-    library: 'Calendar',
+    filename: 'Picker.js',
+    sourceMapFilename: 'Picker.sourcemap.js',
+    library: 'Picker',
     libraryTarget: 'umd'
   },
   module: {
@@ -29,14 +29,14 @@ var config = {
 };
 
 if(TARGET === 'minify') {
-  config.output.filename = 'Calendar.min.js';
-  config.output.sourceMapFilename = 'Calendar.min.js';
+  config.output.filename = 'Picker.min.js';
+  config.output.sourceMapFilename = 'Picker.min.js';
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
       warnings: false
     },
     mangle: {
-      except: ['React', 'Calendar', 'Time']
+      except: ['React', 'Picker', 'Calendar', 'Time']
     }
   }));
 }
