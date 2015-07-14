@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar } from '../src/index';
+import { Calendar, Time } from '../src/index';
 
 import '../src/calendar.scss';
 import './main.scss';
@@ -16,6 +16,10 @@ var App = React.createClass({
     let dates = [date, new Date('07-14-2015')];
     this.setState({date: dates});
   },
+
+  _handleTimeChange(day) {
+    console.log(day);
+  },
   
   render: function () {
     return(
@@ -25,6 +29,7 @@ var App = React.createClass({
           disabledDays={[ 1, 2, 3, 4, 5, 6 ]}
           selectedDays={[ 7, 8, 9, 10, 11, 12 ]}
         />
+        <Time onChange={this._handleTimeChange} />
       </div>
     );
   }
