@@ -35,6 +35,9 @@ class Time extends Component {
     return `${h}:${m} ${AMPM}`;
   }
 
+  // look into optimizing, probably don't need to get a new date for every time
+  // should be able to store current day and add whatever seconds we need
+  // formatting should be easy if we have a start date and increment that
   _getOptions() {
 
     let day = this.props.day;
