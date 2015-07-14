@@ -1,25 +1,6 @@
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-// export function isPastDay(d) {
-//   let today = new Date();
-//   today.setHours(0, 0, 0, 0);
-//   return d < today;
-// }
-
-// export function isSameDay(d1, d2) {
-//   d1.setHours(0, 0, 0, 0);
-//   d2.setHours(0, 0, 0, 0);
-//   return d1.getTime() === d2.getTime();
-// }
-
-// export function isBetween(d, d1, d2) {
-//   d.setHours(0, 0, 0, 0);
-//   d1.setHours(0, 0, 0, 0);
-//   d2.setHours(0, 0, 0, 0);
-//   return d1 < d && d < d2;
-// }
-
 export function addMonths(d, months) {
   const newDate = clone(d);
   newDate.setMonth(d.getMonth() + months);
@@ -27,7 +8,7 @@ export function addMonths(d, months) {
 }
 
 export function clone(d) {
-    return new Date(d.getTime());
+  return new Date(d.getTime());
 }
 
 export function startOfMonth(d) {
@@ -70,7 +51,7 @@ export function getDaysInMonth(d) {
 }
 
 export function navigateMonth(d, direction) {
-  
+
   let currMonth = d.getMonth();
   let newDate = new Date(d.setMonth(direction + currMonth)); 
 
@@ -154,38 +135,7 @@ export function getWeekArray(d, firstDayOfWeek = 0) {
     weekArray.push(lastWeek);
   }
 
-  // let prependWeek = this.getFirstDayOfMonth(d).getDay() >= 4;
-  // let appendWeek = this.getLastDayOfMonth(d).getDay() <= 4;
-
-  // // prepend a week if the first day begins before Thursday
-  // if(prependWeek && daysInMonth < 28) {
-
-  //   let prependSixthRow = [];
-
-  //   for(let i = 7; i > 0; i--) {
-  //     let outsideDate = this.clone(firstWeek[0]);
-  //     outsideDate.setDate(firstWeek[0].getDate() - i);
-  //     prependSixthRow.push(outsideDate);
-  //   }
-
-  //   weekArray.unshift(prependSixthRow);
-  // }
-
-  // add a week if the last day is on a Saturday
-  // if(prependWeek || appendWeek) {
-
-  //   let appendSixthRow = [];
-
-  //   for(let i = 1; i < 8; i++) {
-  //     let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
-  //     outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
-  //     appendSixthRow.push(outsideDate);
-  //   }
-
-  //   weekArray.push(appendSixthRow);
-  // }
-
-    return weekArray;
+  return weekArray;
 }
 
 export function getModifiersForDay() {
@@ -194,7 +144,7 @@ export function getModifiersForDay() {
 
   if(modifierFunctions) {
     for(let modifier in modifierFunctions) {
-      
+
       let func = modifierFunctions[modifier];
 
       if(func(d)) {
@@ -211,7 +161,7 @@ export function isDayOutsideMonth(d1, d2) {
 }
 
 export function isDaySame(date, dates) {
-  
+
   if(!date || !dates) return null;
 
   // normalize dates as an array
@@ -225,7 +175,9 @@ export function isDaySame(date, dates) {
 }
 
 export function isSameDay(d1, d2) {
+
   if(!d1 || !d2) return null;
+  
   return d1.getDate() === d2.getDate() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getFullYear() === d2.getFullYear();
@@ -240,5 +192,5 @@ export function formatMonth(d) {
 }
 
 export function formatYear(d) {
-    return d.getFullYear();
+  return d.getFullYear();
 }

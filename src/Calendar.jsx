@@ -7,276 +7,276 @@ import classNames from 'classnames';
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 class Day extends Component {
-    
-    render() {
 
-        const {month, date, disabledDays, selectedDays} = this.props;
+  render() {
 
-        let className = 'cal__day';
-        let modifiers = [];
-        
-        const isToday = isSameDay(date, new Date());
+    const {month, date, disabledDays, selectedDays} = this.props;
 
-        if(isToday) {
-            modifiers.push('today');
-        }
+    let className = 'cal__day';
+    let modifiers = [];
 
-        const isOutside = isDayOutsideMonth(date, month);
+    const isToday = isSameDay(date, new Date());
 
-        if(isOutside) {
-            modifiers.push('outside');
-        }
-
-        const isDisabled = isDaySame(date, disabledDays);
-
-        if(isDisabled) {
-            modifiers.push('disabled');
-        }
-
-        const isSelected = isDaySame(date, selectedDays);
-
-        if(isSelected || isSelected === 0) {
-            modifiers.push('selected');
-        }
-
-        if(isSelected === 0) {
-            modifiers.push('selected-first');
-        }
-
-        if(isSelected === selectedDays.length - 1) {
-            modifiers.push('selected-last');
-        }
-
-        className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
-
-        // if(isOutside && !enableOutsideDays) {
-        //     return <div key={`outside${i}`} className={className}></div>;
-        // }
-        
-        //const { onDayMouseEnter, onDayMouseLeave, onDayTouchTap, onDayClick } = this.props;
-        
-        // let tabIndex = null;
-
-        // if((onDayTouchTap || onDayClick) && !isOutside) {
-        //     tabIndex = -1;
-
-        //     // focus on the first day of the month
-        //     if(day.getDate() === 1) {
-        //         tabIndex = this.props.tabIndex;
-        //     }
-        // }
-
-        return(
-            <td
-              role="presentation"
-              aria-label={date}
-              onClick={this.props.onClick}
-              className={className}
-              >
-                {date.getDate()}
-            </td>
-        );
+    if(isToday) {
+      modifiers.push('today');
     }
+
+    const isOutside = isDayOutsideMonth(date, month);
+
+    if(isOutside) {
+      modifiers.push('outside');
+    }
+
+    const isDisabled = isDaySame(date, disabledDays);
+
+    if(isDisabled) {
+      modifiers.push('disabled');
+    }
+
+    const isSelected = isDaySame(date, selectedDays);
+
+    if(isSelected || isSelected === 0) {
+      modifiers.push('selected');
+    }
+
+    if(isSelected === 0) {
+      modifiers.push('selected-first');
+    }
+
+    if(isSelected === selectedDays.length - 1) {
+      modifiers.push('selected-last');
+    }
+
+    className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
+
+    // if(isOutside && !enableOutsideDays) {
+    //     return <div key={`outside${i}`} className={className}></div>;
+    // }
+
+    //const { onDayMouseEnter, onDayMouseLeave, onDayTouchTap, onDayClick } = this.props;
+
+    // let tabIndex = null;
+
+    // if((onDayTouchTap || onDayClick) && !isOutside) {
+    //     tabIndex = -1;
+
+    //     // focus on the first day of the month
+    //     if(day.getDate() === 1) {
+    //         tabIndex = this.props.tabIndex;
+    //     }
+    // }
+
+    return(
+      <td
+        role="presentation"
+        aria-label={date}
+        onClick={this.props.onClick}
+        className={className}
+      >
+        {date.getDate()}
+      </td>
+    );
+  }
 }
 
 class Week extends Component {
 
-    static defaultProps = {
-        onDaySelect: () => {}
-    }
+  static defaultProps = {
+    onDaySelect: () => {}
+  }
 
-    render() {
+  render() {
 
-        let date = this.props.date,
-            month = this.props.month;
-        
-        let days = this.props.days.map(day =>
-            <Day
-                key={day}
-                date={day}
-                month={month}
-                onClick={this.props.onDaySelect.bind(null, day)}
-                disabledDays={this.props.disabledDays}
-                selectedDays={this.props.selectedDays}
-            />
-        );
+    let date = this.props.date,
+    month = this.props.month;
+    
+    let days = this.props.days.map(day =>
+      <Day
+      key={day}
+      date={day}
+      month={month}
+      onClick={this.props.onDaySelect.bind(null, day)}
+      disabledDays={this.props.disabledDays}
+      selectedDays={this.props.selectedDays}
+      />
+      );
 
-        return(
-            <tr className="cal__week">
-                {days}
-            </tr>
-        );
-    }
+    return(
+      <tr className="cal__week">
+      {days}
+      </tr>
+      );
+  }
 }
 
 class Calendar extends Component {
 
-    static defaultProps = {
-        date: new Date(), // default month
-        disabledDays: null,
-        selectedDays: null,
-        weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
-        trimWeekdays: 1,
-        forceSixRows: true,
+  static defaultProps = {
+    date: new Date(), // default month
+    disabledDays: null,
+    selectedDays: null,
+    weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
+    trimWeekdays: 1,
+    forceSixRows: true,
 
-        // show how we could map events using microformat
-        // https://moz.com/blog/markup-events-hcalendar-microformat
-        // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-        events: [],
+    // show how we could map events using microformat
+    // https://moz.com/blog/markup-events-hcalendar-microformat
+    // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
+    events: [],
 
-        // these should probably be props for input calendar
-        format: 'DD/MM/YYYY',
-        placeholderText: 'Click to select a date'
+    // these should probably be props for input calendar
+    format: 'DD/MM/YYYY',
+    placeholderText: 'Click to select a date'
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      month: new Date()
+    };
+  }
+
+  componentWillMount() {
+    if(this.props.selectedDays) {
+      this._normalizeDates(this.props.selectedDays);
+    }
+    if(this.props.disabledDays) {
+      this._normalizeDates(this.props.disabledDays);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.selectedDays) {
+      this._normalizeDates(nextProps.selectedDays);
+    }
+    if(nextProps.disabledDays) {
+      this._normalizeDates(nextProps.disabledDays);
+    }
+  }
+
+  _normalizeDates(mixed) {
+
+    let month = new Date();
+
+    for(let i = mixed.length; i--;) {
+
+      let mix = mixed[i];
+
+        // if it's a Date object already then push it
+        // and contiue
+        if(mix instanceof Date) {
+          mixed[i] = mix;
+          continue;
+        }
+
+        // test if digit and in between current month
+        // or test to block day of week out somehow
+        // reference pickadate and how they do it
+        // just block out day for now
+        if(/^\d+$/.test(mix)) {
+          mixed[i] = new Date(month.getFullYear(), month.getMonth(), mix);
+          continue;
+        }
+
+        if(Array.isArray(mix)) {
+          mixed[i] = new Date(mix[0], mix[1], mix[2]);
+          continue;
+        }
+      }
+
+    // finally sort the array so it's in order
+    mixed.sort((a, b) => {
+      a = a.getTime();
+      b = b.getTime();
+      return a < b ? -1 : a > b ? 1 : 0;
+    });
+  }
+
+  _renderWeekdays() {
+
+    var getDays = () => {
+      return WEEKDAYS.map((weekday, index) => {
+        let trim = this.props.trimWeekdays;
+        let weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
+        return <th key={index} scope="col" title={weekday}>{weekdayTrimmed}</th>
+      });
+    };
+    
+    return(
+      <thead>
+        <tr>
+          {getDays()}
+        </tr>
+      </thead>
+    );
+  }
+
+  _renderWeeksInMonth() {
+
+    const month = this.state.month;
+
+    let weeks = getWeekArray(month).map((week, index) =>
+      <Week
+        key={week[0].toString()}
+        days={week}
+        month={this.state.month}
+        disabledDays={this.props.disabledDays}
+        selectedDays={this.props.selectedDays}
+        onDaySelect={this.props.onDaySelect}
+      />
+    );
+
+    return(
+      <tbody>
+        {weeks}
+      </tbody>
+    );
+  }
+
+  _navigate(direction) {
+    let month = this.state.month;
+    this.setState({ month: navigateMonth(month, direction) });
+  }
+
+  _getModifiers(modifiers) {
+
+    let arr = [];
+    let len = modifiers ? modifiers.length : -1;
+    
+    if(len < 0) return null;
+    
+    for(let i = 0; i < len; i++) {
+      arr.push('cal--' + modifiers[i].replace(/\s/g, ''));
     }
     
-    constructor(props) {
-        super(props);
-        this.state = {
-            month: new Date()
-        };
-    }
+    return arr;
+  }
 
-    componentWillMount() {
-        if(this.props.selectedDays) {
-            this._normalizeDates(this.props.selectedDays);
-        }
-        if(this.props.disabledDays) {
-            this._normalizeDates(this.props.disabledDays);
-        }
-    }
+  render() {
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.selectedDays) {
-            this._normalizeDates(nextProps.selectedDays);
-        }
-        if(nextProps.disabledDays) {
-            this._normalizeDates(nextProps.disabledDays);
-        }
-    }
+    let modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
+    let classes = classNames('cal', modifiers, this.props.className);
 
-    _normalizeDates(mixed) {
+    let monthLabel = formatMonth(this.state.month);
+    let yearLabel = formatYear(this.state.month);
 
-        let month = new Date();
-
-        for(let i = mixed.length; i--;) {
-
-            let mix = mixed[i];
-
-            // if it's a Date object already then push it
-            // and contiue
-            if(mix instanceof Date) {
-                mixed[i] = mix;
-                continue;
-            }
-
-            // test if digit and in between current month
-            // or test to block day of week out somehow
-            // reference pickadate and how they do it
-            // just block out day for now
-            if(/^\d+$/.test(mix)) {
-                mixed[i] = new Date(month.getFullYear(), month.getMonth(), mix);
-                continue;
-            }
-
-            if(Array.isArray(mix)) {
-                mixed[i] = new Date(mix[0], mix[1], mix[2]);
-                continue;
-            }
-        }
-
-        // finally sort the array so it's in order
-        mixed.sort((a, b) => {
-            a = a.getTime();
-            b = b.getTime();
-            return a < b ? -1 : a > b ? 1 : 0;
-        });
-    }
-    
-    _renderWeekdays() {
-        
-        var getDays = () => {
-            return WEEKDAYS.map((weekday, index) => {
-                let trim = this.props.trimWeekdays;
-                let weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
-                return <th key={index} scope="col" title={weekday}>{weekdayTrimmed}</th>
-            });
-        };
-        
-        return(
-            <thead>
-                <tr>
-                    {getDays()}
-                </tr>
-            </thead>
-        );
-    }
-
-    _renderWeeksInMonth() {
-
-        const month = this.state.month;
-
-        let weeks = getWeekArray(month).map((week, index) =>
-            <Week
-                key={week[0].toString()}
-                days={week}
-                month={this.state.month}
-                disabledDays={this.props.disabledDays}
-                selectedDays={this.props.selectedDays}
-                onDaySelect={this.props.onDaySelect}
-            />
-        );
-
-        return (
-            <tbody>
-                {weeks}
-            </tbody>
-        );
-    }
-    
-    _navigate(direction) {
-        let month = this.state.month;
-        this.setState({ month: navigateMonth(month, direction) });
-    }
-    
-    _getModifiers(modifiers) {
-        
-        let arr = [];
-        let len = modifiers ? modifiers.length : -1;
-        
-        if(len < 0) return null;
-        
-        for(let i = 0; i < len; i++) {
-            arr.push('cal--' + modifiers[i].replace(/\s/g, ''));
-        }
-        
-        return arr;
-    }
-    
-    render() {
-        
-        let modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
-        let classes = classNames('cal', modifiers, this.props.className);
-
-        let monthLabel = formatMonth(this.state.month);
-        let yearLabel = formatYear(this.state.month);
-        
-        return (
-            <div className={classes}>
-                <header className="cal__header">
-                    <a className="cal__nav cal__nav--prev" role="button" title="Previous month" onClick={this._navigate.bind(this, -1)}>Prev</a>
-                    <div className="cal__month-year">
-                        <div className="cal__month">{monthLabel}</div>
-                        <div className="cal__year">{yearLabel}</div>
-                    </div>
-                    <a className="cal__nav cal__nav--next" role="button" title="Next month" onClick={this._navigate.bind(this, 1)}>Next</a>
-                </header>
-                <table className="cal__table">
-                    {this._renderWeekdays()}
-                    {this._renderWeeksInMonth()}
-                </table>
-            </div>
-        );
-    }
+    return (
+      <div className={classes}>
+        <header className="cal__header">
+          <a className="cal__nav cal__nav--prev" role="button" title="Previous month" onClick={this._navigate.bind(this, -1)}>Prev</a>
+          <div className="cal__month-year">
+            <div className="cal__month">{monthLabel}</div>
+            <div className="cal__year">{yearLabel}</div>
+          </div>
+          <a className="cal__nav cal__nav--next" role="button" title="Next month" onClick={this._navigate.bind(this, 1)}>Next</a>
+        </header>
+        <table className="cal__table">
+          {this._renderWeekdays()}
+          {this._renderWeeksInMonth()}
+        </table>
+      </div>
+    );
+  }
 }
 
 export default Calendar;
