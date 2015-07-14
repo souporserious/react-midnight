@@ -1,9 +1,7 @@
 import React from 'react';
-import Velocity from 'velocity-animate';
+import { Calendar } from '../src/index';
 
-
-import Calendar from './Calendar'
-
+import '../src/calendar.scss';
 import './main.scss';
 
 var App = React.createClass({

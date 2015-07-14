@@ -4,9 +4,6 @@ import { formatMonth, formatYear, isSameDay, isDaySame, isDayOutsideMonth, getWe
 // Dependencies
 import classNames from 'classnames';
 
-// Styles
-import './calendar.scss';
-
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 class Day extends Component {
@@ -281,39 +278,5 @@ class Calendar extends Component {
         );
     }
 }
-
-// function getMonthDateRange(year, month) {
-//     var moment = require('moment');
-
-//     // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
-//     // array is 'year', 'month', 'day', etc
-//     var startDate = moment([year, month - 1]);
-
-//     // Clone the value before .endOf()
-//     var endDate = moment(startDate).endOf('month');
-
-//     // just for demonstration:
-//     console.log(startDate.toDate());
-//     console.log(endDate.toDate());
-
-//     // make sure to call toDate() for plain JavaScript date type
-//     return { start: startDate, end: endDate };
-// }
-
-/*
-allow user to build custom wrappers
-so maybe they can extend a class to gain access to methods?
-look into it, it would be a cool feature
-
-api:
-<Calendar
-    forceSixRows={}
-    onMonthChange={}
-    onDaySelect={}
-    disabled={}
-/>
-
-HEAVILY INSPIRED FROM: https://github.com/gpbl/react-day-picker/blob/master/src/DayPicker.js
-*/
 
 export default Calendar;
