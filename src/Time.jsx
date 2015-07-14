@@ -4,12 +4,14 @@ class Time extends Component {
 
     static propTypes = {
         day: PropTypes.instanceOf(Date),
-        pad: PropTypes.bool
+        pad: PropTypes.bool,
+        onChange: React.PropTypes.func
     }
     
     static defaultProps = {
         day: new Date(),
-        pad: true
+        pad: true,
+        onChange: () => null
     }
 
     _pad(n) {
