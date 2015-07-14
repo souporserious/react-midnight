@@ -6,6 +6,13 @@ import classNames from 'classnames';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+const KEYS = {
+  LEFT: 37,
+  RIGHT: 39,
+  ENTER: 13,
+  SPACE: 32
+};
+
 class Day extends Component {
 
   render() {
@@ -33,18 +40,21 @@ class Day extends Component {
       modifiers.push('disabled');
     }
 
-    const isSelected = isDaySame(date, selectedDays);
+    if(selectedDays) {
 
-    if(isSelected || isSelected === 0) {
-      modifiers.push('selected');
-    }
+      const isSelected = isDaySame(date, selectedDays);
 
-    if(isSelected === 0) {
-      modifiers.push('selected-first');
-    }
+      if(isSelected || isSelected === 0) {
+        modifiers.push('selected');
+      }
 
-    if(isSelected === selectedDays.length - 1) {
-      modifiers.push('selected-last');
+      if(isSelected === 0) {
+        modifiers.push('selected-first');
+      }
+
+      if(isSelected === selectedDays.length - 1) {
+        modifiers.push('selected-last');
+      }
     }
 
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
@@ -122,11 +132,7 @@ class Calendar extends Component {
     // show how we could map events using microformat
     // https://moz.com/blog/markup-events-hcalendar-microformat
     // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-    events: [],
-
-    // these should probably be props for input calendar
-    format: 'DD/MM/YYYY',
-    placeholderText: 'Click to select a date'
+    events: []
   }
 
   constructor(props) {

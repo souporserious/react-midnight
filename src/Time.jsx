@@ -8,7 +8,7 @@ class Time extends Component {
     onChange: React.PropTypes.func
   }
 
-    static defaultProps = {
+  static defaultProps = {
     day: new Date(),
     pad: true,
     onChange: () => null

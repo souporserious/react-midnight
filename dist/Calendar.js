@@ -70,6 +70,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Time2 = _interopRequireDefault(_Time);
 
+	// WHAT SHOULD IT DO
+	// allow a calendar or time layout to be built
+	// expose utilities as helpers
+	// provide a calendar input
+	// provide a select list of times
+
 	exports.Calendar = _Calendar2['default'];
 	exports.Time = _Time2['default'];
 
@@ -80,7 +86,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
-	    value: true
+	  value: true
 	});
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -108,355 +114,355 @@ return /******/ (function(modules) { // webpackBootstrap
 	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 	var Day = (function (_Component) {
-	    function Day() {
-	        _classCallCheck(this, Day);
+	  function Day() {
+	    _classCallCheck(this, Day);
 
-	        _get(Object.getPrototypeOf(Day.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Day.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _inherits(Day, _Component);
+
+	  _createClass(Day, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var month = _props.month;
+	      var date = _props.date;
+	      var disabledDays = _props.disabledDays;
+	      var selectedDays = _props.selectedDays;
+
+	      var className = 'cal__day';
+	      var modifiers = [];
+
+	      var isToday = (0, _utils.isSameDay)(date, new Date());
+
+	      if (isToday) {
+	        modifiers.push('today');
+	      }
+
+	      var isOutside = (0, _utils.isDayOutsideMonth)(date, month);
+
+	      if (isOutside) {
+	        modifiers.push('outside');
+	      }
+
+	      var isDisabled = (0, _utils.isDaySame)(date, disabledDays);
+
+	      if (isDisabled) {
+	        modifiers.push('disabled');
+	      }
+
+	      var isSelected = (0, _utils.isDaySame)(date, selectedDays);
+
+	      if (isSelected || isSelected === 0) {
+	        modifiers.push('selected');
+	      }
+
+	      if (isSelected === 0) {
+	        modifiers.push('selected-first');
+	      }
+
+	      if (isSelected === selectedDays.length - 1) {
+	        modifiers.push('selected-last');
+	      }
+
+	      className += modifiers.map(function (modifier) {
+	        return ' ' + className + '--' + modifier;
+	      }).join('');
+
+	      // if(isOutside && !enableOutsideDays) {
+	      //     return <div key={`outside${i}`} className={className}></div>;
+	      // }
+
+	      //const { onDayMouseEnter, onDayMouseLeave, onDayTouchTap, onDayClick } = this.props;
+
+	      // let tabIndex = null;
+
+	      // if((onDayTouchTap || onDayClick) && !isOutside) {
+	      //     tabIndex = -1;
+
+	      //     // focus on the first day of the month
+	      //     if(day.getDate() === 1) {
+	      //         tabIndex = this.props.tabIndex;
+	      //     }
+	      // }
+
+	      return _react2['default'].createElement(
+	        'td',
+	        {
+	          role: 'presentation',
+	          'aria-label': date,
+	          onClick: this.props.onClick,
+	          className: className
+	        },
+	        date.getDate()
+	      );
 	    }
+	  }]);
 
-	    _inherits(Day, _Component);
-
-	    _createClass(Day, [{
-	        key: 'render',
-	        value: function render() {
-	            var _props = this.props;
-	            var month = _props.month;
-	            var date = _props.date;
-	            var disabledDays = _props.disabledDays;
-	            var selectedDays = _props.selectedDays;
-
-	            var className = 'cal__day';
-	            var modifiers = [];
-
-	            var isToday = (0, _utils.isSameDay)(date, new Date());
-
-	            if (isToday) {
-	                modifiers.push('today');
-	            }
-
-	            var isOutside = (0, _utils.isDayOutsideMonth)(date, month);
-
-	            if (isOutside) {
-	                modifiers.push('outside');
-	            }
-
-	            var isDisabled = (0, _utils.isDaySame)(date, disabledDays);
-
-	            if (isDisabled) {
-	                modifiers.push('disabled');
-	            }
-
-	            var isSelected = (0, _utils.isDaySame)(date, selectedDays);
-
-	            if (isSelected || isSelected === 0) {
-	                modifiers.push('selected');
-	            }
-
-	            if (isSelected === 0) {
-	                modifiers.push('selected-first');
-	            }
-
-	            if (isSelected === selectedDays.length - 1) {
-	                modifiers.push('selected-last');
-	            }
-
-	            className += modifiers.map(function (modifier) {
-	                return ' ' + className + '--' + modifier;
-	            }).join('');
-
-	            // if(isOutside && !enableOutsideDays) {
-	            //     return <div key={`outside${i}`} className={className}></div>;
-	            // }
-
-	            //const { onDayMouseEnter, onDayMouseLeave, onDayTouchTap, onDayClick } = this.props;
-
-	            // let tabIndex = null;
-
-	            // if((onDayTouchTap || onDayClick) && !isOutside) {
-	            //     tabIndex = -1;
-
-	            //     // focus on the first day of the month
-	            //     if(day.getDate() === 1) {
-	            //         tabIndex = this.props.tabIndex;
-	            //     }
-	            // }
-
-	            return _react2['default'].createElement(
-	                'td',
-	                {
-	                    role: 'presentation',
-	                    'aria-label': date,
-	                    onClick: this.props.onClick,
-	                    className: className
-	                },
-	                date.getDate()
-	            );
-	        }
-	    }]);
-
-	    return Day;
+	  return Day;
 	})(_react.Component);
 
 	var Week = (function (_Component2) {
-	    function Week() {
-	        _classCallCheck(this, Week);
+	  function Week() {
+	    _classCallCheck(this, Week);
 
-	        _get(Object.getPrototypeOf(Week.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Week.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _inherits(Week, _Component2);
+
+	  _createClass(Week, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this = this;
+
+	      var date = this.props.date,
+	          month = this.props.month;
+
+	      var days = this.props.days.map(function (day) {
+	        return _react2['default'].createElement(Day, {
+	          key: day,
+	          date: day,
+	          month: month,
+	          onClick: _this.props.onDaySelect.bind(null, day),
+	          disabledDays: _this.props.disabledDays,
+	          selectedDays: _this.props.selectedDays
+	        });
+	      });
+
+	      return _react2['default'].createElement(
+	        'tr',
+	        { className: 'cal__week' },
+	        days
+	      );
 	    }
+	  }], [{
+	    key: 'defaultProps',
+	    value: {
+	      onDaySelect: function onDaySelect() {}
+	    },
+	    enumerable: true
+	  }]);
 
-	    _inherits(Week, _Component2);
-
-	    _createClass(Week, [{
-	        key: 'render',
-	        value: function render() {
-	            var _this = this;
-
-	            var date = this.props.date,
-	                month = this.props.month;
-
-	            var days = this.props.days.map(function (day) {
-	                return _react2['default'].createElement(Day, {
-	                    key: day,
-	                    date: day,
-	                    month: month,
-	                    onClick: _this.props.onDaySelect.bind(null, day),
-	                    disabledDays: _this.props.disabledDays,
-	                    selectedDays: _this.props.selectedDays
-	                });
-	            });
-
-	            return _react2['default'].createElement(
-	                'tr',
-	                { className: 'cal__week' },
-	                days
-	            );
-	        }
-	    }], [{
-	        key: 'defaultProps',
-	        value: {
-	            onDaySelect: function onDaySelect() {}
-	        },
-	        enumerable: true
-	    }]);
-
-	    return Week;
+	  return Week;
 	})(_react.Component);
 
 	var Calendar = (function (_Component3) {
-	    function Calendar(props) {
-	        _classCallCheck(this, Calendar);
+	  function Calendar(props) {
+	    _classCallCheck(this, Calendar);
 
-	        _get(Object.getPrototypeOf(Calendar.prototype), 'constructor', this).call(this, props);
-	        this.state = {
-	            month: new Date()
-	        };
+	    _get(Object.getPrototypeOf(Calendar.prototype), 'constructor', this).call(this, props);
+	    this.state = {
+	      month: new Date()
+	    };
+	  }
+
+	  _inherits(Calendar, _Component3);
+
+	  _createClass(Calendar, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      if (this.props.selectedDays) {
+	        this._normalizeDates(this.props.selectedDays);
+	      }
+	      if (this.props.disabledDays) {
+	        this._normalizeDates(this.props.disabledDays);
+	      }
 	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      if (nextProps.selectedDays) {
+	        this._normalizeDates(nextProps.selectedDays);
+	      }
+	      if (nextProps.disabledDays) {
+	        this._normalizeDates(nextProps.disabledDays);
+	      }
+	    }
+	  }, {
+	    key: '_normalizeDates',
+	    value: function _normalizeDates(mixed) {
 
-	    _inherits(Calendar, _Component3);
+	      var month = new Date();
 
-	    _createClass(Calendar, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {
-	            if (this.props.selectedDays) {
-	                this._normalizeDates(this.props.selectedDays);
-	            }
-	            if (this.props.disabledDays) {
-	                this._normalizeDates(this.props.disabledDays);
-	            }
+	      for (var i = mixed.length; i--;) {
+
+	        var mix = mixed[i];
+
+	        // if it's a Date object already then push it
+	        // and contiue
+	        if (mix instanceof Date) {
+	          mixed[i] = mix;
+	          continue;
 	        }
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {
-	            if (nextProps.selectedDays) {
-	                this._normalizeDates(nextProps.selectedDays);
-	            }
-	            if (nextProps.disabledDays) {
-	                this._normalizeDates(nextProps.disabledDays);
-	            }
+
+	        // test if digit and in between current month
+	        // or test to block day of week out somehow
+	        // reference pickadate and how they do it
+	        // just block out day for now
+	        if (/^\d+$/.test(mix)) {
+	          mixed[i] = new Date(month.getFullYear(), month.getMonth(), mix);
+	          continue;
 	        }
-	    }, {
-	        key: '_normalizeDates',
-	        value: function _normalizeDates(mixed) {
 
-	            var month = new Date();
-
-	            for (var i = mixed.length; i--;) {
-
-	                var mix = mixed[i];
-
-	                // if it's a Date object already then push it
-	                // and contiue
-	                if (mix instanceof Date) {
-	                    mixed[i] = mix;
-	                    continue;
-	                }
-
-	                // test if digit and in between current month
-	                // or test to block day of week out somehow
-	                // reference pickadate and how they do it
-	                // just block out day for now
-	                if (/^\d+$/.test(mix)) {
-	                    mixed[i] = new Date(month.getFullYear(), month.getMonth(), mix);
-	                    continue;
-	                }
-
-	                if (Array.isArray(mix)) {
-	                    mixed[i] = new Date(mix[0], mix[1], mix[2]);
-	                    continue;
-	                }
-	            }
-
-	            // finally sort the array so it's in order
-	            mixed.sort(function (a, b) {
-	                a = a.getTime();
-	                b = b.getTime();
-	                return a < b ? -1 : a > b ? 1 : 0;
-	            });
+	        if (Array.isArray(mix)) {
+	          mixed[i] = new Date(mix[0], mix[1], mix[2]);
+	          continue;
 	        }
-	    }, {
-	        key: '_renderWeekdays',
-	        value: function _renderWeekdays() {
-	            var _this2 = this;
+	      }
 
-	            var getDays = function getDays() {
-	                return WEEKDAYS.map(function (weekday, index) {
-	                    var trim = _this2.props.trimWeekdays;
-	                    var weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
-	                    return _react2['default'].createElement(
-	                        'th',
-	                        { key: index, scope: 'col', title: weekday },
-	                        weekdayTrimmed
-	                    );
-	                });
-	            };
+	      // finally sort the array so it's in order
+	      mixed.sort(function (a, b) {
+	        a = a.getTime();
+	        b = b.getTime();
+	        return a < b ? -1 : a > b ? 1 : 0;
+	      });
+	    }
+	  }, {
+	    key: '_renderWeekdays',
+	    value: function _renderWeekdays() {
+	      var _this2 = this;
 
-	            return _react2['default'].createElement(
-	                'thead',
-	                null,
-	                _react2['default'].createElement(
-	                    'tr',
-	                    null,
-	                    getDays()
-	                )
-	            );
-	        }
-	    }, {
-	        key: '_renderWeeksInMonth',
-	        value: function _renderWeeksInMonth() {
-	            var _this3 = this;
+	      var getDays = function getDays() {
+	        return WEEKDAYS.map(function (weekday, index) {
+	          var trim = _this2.props.trimWeekdays;
+	          var weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
+	          return _react2['default'].createElement(
+	            'th',
+	            { key: index, scope: 'col', title: weekday },
+	            weekdayTrimmed
+	          );
+	        });
+	      };
 
-	            var month = this.state.month;
+	      return _react2['default'].createElement(
+	        'thead',
+	        null,
+	        _react2['default'].createElement(
+	          'tr',
+	          null,
+	          getDays()
+	        )
+	      );
+	    }
+	  }, {
+	    key: '_renderWeeksInMonth',
+	    value: function _renderWeeksInMonth() {
+	      var _this3 = this;
 
-	            var weeks = (0, _utils.getWeekArray)(month).map(function (week, index) {
-	                return _react2['default'].createElement(Week, {
-	                    key: week[0].toString(),
-	                    days: week,
-	                    month: _this3.state.month,
-	                    disabledDays: _this3.props.disabledDays,
-	                    selectedDays: _this3.props.selectedDays,
-	                    onDaySelect: _this3.props.onDaySelect
-	                });
-	            });
+	      var month = this.state.month;
 
-	            return _react2['default'].createElement(
-	                'tbody',
-	                null,
-	                weeks
-	            );
-	        }
-	    }, {
-	        key: '_navigate',
-	        value: function _navigate(direction) {
-	            var month = this.state.month;
-	            this.setState({ month: (0, _utils.navigateMonth)(month, direction) });
-	        }
-	    }, {
-	        key: '_getModifiers',
-	        value: function _getModifiers(modifiers) {
+	      var weeks = (0, _utils.getWeekArray)(month).map(function (week, index) {
+	        return _react2['default'].createElement(Week, {
+	          key: week[0].toString(),
+	          days: week,
+	          month: _this3.state.month,
+	          disabledDays: _this3.props.disabledDays,
+	          selectedDays: _this3.props.selectedDays,
+	          onDaySelect: _this3.props.onDaySelect
+	        });
+	      });
 
-	            var arr = [];
-	            var len = modifiers ? modifiers.length : -1;
+	      return _react2['default'].createElement(
+	        'tbody',
+	        null,
+	        weeks
+	      );
+	    }
+	  }, {
+	    key: '_navigate',
+	    value: function _navigate(direction) {
+	      var month = this.state.month;
+	      this.setState({ month: (0, _utils.navigateMonth)(month, direction) });
+	    }
+	  }, {
+	    key: '_getModifiers',
+	    value: function _getModifiers(modifiers) {
 
-	            if (len < 0) return null;
+	      var arr = [];
+	      var len = modifiers ? modifiers.length : -1;
 
-	            for (var i = 0; i < len; i++) {
-	                arr.push('cal--' + modifiers[i].replace(/\s/g, ''));
-	            }
+	      if (len < 0) return null;
 
-	            return arr;
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
+	      for (var i = 0; i < len; i++) {
+	        arr.push('cal--' + modifiers[i].replace(/\s/g, ''));
+	      }
 
-	            var modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
-	            var classes = (0, _classnames2['default'])('cal', modifiers, this.props.className);
+	      return arr;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
 
-	            var monthLabel = (0, _utils.formatMonth)(this.state.month);
-	            var yearLabel = (0, _utils.formatYear)(this.state.month);
+	      var modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
+	      var classes = (0, _classnames2['default'])('cal', modifiers, this.props.className);
 
-	            return _react2['default'].createElement(
-	                'div',
-	                { className: classes },
-	                _react2['default'].createElement(
-	                    'header',
-	                    { className: 'cal__header' },
-	                    _react2['default'].createElement(
-	                        'a',
-	                        { className: 'cal__nav cal__nav--prev', role: 'button', title: 'Previous month', onClick: this._navigate.bind(this, -1) },
-	                        'Prev'
-	                    ),
-	                    _react2['default'].createElement(
-	                        'div',
-	                        { className: 'cal__month-year' },
-	                        _react2['default'].createElement(
-	                            'div',
-	                            { className: 'cal__month' },
-	                            monthLabel
-	                        ),
-	                        _react2['default'].createElement(
-	                            'div',
-	                            { className: 'cal__year' },
-	                            yearLabel
-	                        )
-	                    ),
-	                    _react2['default'].createElement(
-	                        'a',
-	                        { className: 'cal__nav cal__nav--next', role: 'button', title: 'Next month', onClick: this._navigate.bind(this, 1) },
-	                        'Next'
-	                    )
-	                ),
-	                _react2['default'].createElement(
-	                    'table',
-	                    { className: 'cal__table' },
-	                    this._renderWeekdays(),
-	                    this._renderWeeksInMonth()
-	                )
-	            );
-	        }
-	    }], [{
-	        key: 'defaultProps',
-	        value: {
-	            date: new Date(), // default month
-	            disabledDays: null,
-	            selectedDays: null,
-	            weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
-	            trimWeekdays: 1,
-	            forceSixRows: true,
+	      var monthLabel = (0, _utils.formatMonth)(this.state.month);
+	      var yearLabel = (0, _utils.formatYear)(this.state.month);
 
-	            // show how we could map events using microformat
-	            // https://moz.com/blog/markup-events-hcalendar-microformat
-	            // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-	            events: [],
+	      return _react2['default'].createElement(
+	        'div',
+	        { className: classes },
+	        _react2['default'].createElement(
+	          'header',
+	          { className: 'cal__header' },
+	          _react2['default'].createElement(
+	            'a',
+	            { className: 'cal__nav cal__nav--prev', role: 'button', title: 'Previous month', onClick: this._navigate.bind(this, -1) },
+	            'Prev'
+	          ),
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'cal__month-year' },
+	            _react2['default'].createElement(
+	              'div',
+	              { className: 'cal__month' },
+	              monthLabel
+	            ),
+	            _react2['default'].createElement(
+	              'div',
+	              { className: 'cal__year' },
+	              yearLabel
+	            )
+	          ),
+	          _react2['default'].createElement(
+	            'a',
+	            { className: 'cal__nav cal__nav--next', role: 'button', title: 'Next month', onClick: this._navigate.bind(this, 1) },
+	            'Next'
+	          )
+	        ),
+	        _react2['default'].createElement(
+	          'table',
+	          { className: 'cal__table' },
+	          this._renderWeekdays(),
+	          this._renderWeeksInMonth()
+	        )
+	      );
+	    }
+	  }], [{
+	    key: 'defaultProps',
+	    value: {
+	      date: new Date(), // default month
+	      disabledDays: null,
+	      selectedDays: null,
+	      weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
+	      trimWeekdays: 1,
+	      forceSixRows: true,
 
-	            // these should probably be props for input calendar
-	            format: 'DD/MM/YYYY',
-	            placeholderText: 'Click to select a date'
-	        },
-	        enumerable: true
-	    }]);
+	      // show how we could map events using microformat
+	      // https://moz.com/blog/markup-events-hcalendar-microformat
+	      // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
+	      events: [],
 
-	    return Calendar;
+	      // these should probably be props for input calendar
+	      format: 'DD/MM/YYYY',
+	      placeholderText: 'Click to select a date'
+	    },
+	    enumerable: true
+	  }]);
+
+	  return Calendar;
 	})(_react.Component);
 
 	exports['default'] = Calendar;
@@ -495,25 +501,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.formatYear = formatYear;
 	var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-	// export function isPastDay(d) {
-	//   let today = new Date();
-	//   today.setHours(0, 0, 0, 0);
-	//   return d < today;
-	// }
-
-	// export function isSameDay(d1, d2) {
-	//   d1.setHours(0, 0, 0, 0);
-	//   d2.setHours(0, 0, 0, 0);
-	//   return d1.getTime() === d2.getTime();
-	// }
-
-	// export function isBetween(d, d1, d2) {
-	//   d.setHours(0, 0, 0, 0);
-	//   d1.setHours(0, 0, 0, 0);
-	//   d2.setHours(0, 0, 0, 0);
-	//   return d1 < d && d < d2;
-	// }
 
 	function addMonths(d, months) {
 	  var newDate = clone(d);
@@ -650,37 +637,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    weekArray.push(_lastWeek);
 	  }
 
-	  // let prependWeek = this.getFirstDayOfMonth(d).getDay() >= 4;
-	  // let appendWeek = this.getLastDayOfMonth(d).getDay() <= 4;
-
-	  // // prepend a week if the first day begins before Thursday
-	  // if(prependWeek && daysInMonth < 28) {
-
-	  //   let prependSixthRow = [];
-
-	  //   for(let i = 7; i > 0; i--) {
-	  //     let outsideDate = this.clone(firstWeek[0]);
-	  //     outsideDate.setDate(firstWeek[0].getDate() - i);
-	  //     prependSixthRow.push(outsideDate);
-	  //   }
-
-	  //   weekArray.unshift(prependSixthRow);
-	  // }
-
-	  // add a week if the last day is on a Saturday
-	  // if(prependWeek || appendWeek) {
-
-	  //   let appendSixthRow = [];
-
-	  //   for(let i = 1; i < 8; i++) {
-	  //     let outsideDate = this.clone(lastWeek[lastWeek.length - 1]);
-	  //     outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + i);
-	  //     appendSixthRow.push(outsideDate);
-	  //   }
-
-	  //   weekArray.push(appendSixthRow);
-	  // }
-
 	  return weekArray;
 	}
 
@@ -721,7 +677,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function isSameDay(d1, d2) {
+
 	  if (!d1 || !d2) return null;
+
 	  return d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
 	}
 
@@ -797,7 +755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
-	    value: true
+	  value: true
 	});
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -817,92 +775,96 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _react2 = _interopRequireDefault(_react);
 
 	var Time = (function (_Component) {
-	    function Time() {
-	        _classCallCheck(this, Time);
+	  function Time() {
+	    _classCallCheck(this, Time);
 
-	        _get(Object.getPrototypeOf(Time.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Time.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _inherits(Time, _Component);
+
+	  _createClass(Time, [{
+	    key: '_pad',
+	    value: function _pad(n) {
+	      return n > 9 ? n : '0' + n;
 	    }
+	  }, {
+	    key: '_format',
+	    value: function _format(d) {
 
-	    _inherits(Time, _Component);
+	      var h = d.getHours();
+	      var m = this._pad(d.getMinutes());
+	      var AMPM = h < 12 ? 'AM' : 'PM';
 
-	    _createClass(Time, [{
-	        key: '_pad',
-	        value: function _pad(n) {
-	            return n > 9 ? n : '0' + n;
-	        }
-	    }, {
-	        key: '_format',
-	        value: function _format(d) {
+	      // convert to 12 hour clock
+	      h = h % 12 || 12;
 
-	            var h = d.getHours();
-	            var m = this._pad(d.getMinutes());
-	            var AMPM = h < 12 ? 'AM' : 'PM';
+	      // pad with a 0
+	      if (this.props.pad) {
+	        h = this._pad(h);
+	      }
 
-	            // convert to 12 hour clock
-	            h = h % 12 || 12;
+	      return h + ':' + m + ' ' + AMPM;
+	    }
+	  }, {
+	    key: '_getOptions',
+	    value: function _getOptions() {
 
-	            // pad with a 0
-	            if (this.props.pad) {
-	                h = this._pad(h);
-	            }
+	      var day = this.props.day;
+	      var options = [];
 
-	            return h + ':' + m + ' ' + AMPM;
-	        }
-	    }, {
-	        key: '_getOptions',
-	        value: function _getOptions() {
+	      // set to beginning of day
+	      day.setHours(0, 0, 0, 0);
 
-	            var day = this.props.day;
-	            var options = [];
+	      // loop through half hour increments
+	      for (var i = 0; i < 48; i++) {
+	        var time = new Date(day.getTime() + i * 1800000); // should allow different increments
+	        var display = this._format(time);
+	        options.push(_react2['default'].createElement(
+	          'option',
+	          { key: time, value: time },
+	          display
+	        ));
+	      }
 
-	            // set to beginning of day
-	            day.setHours(0, 0, 0, 0);
+	      return options;
+	    }
+	  }, {
+	    key: '_handleChange',
+	    value: function _handleChange(e) {
+	      var day = new Date(_react2['default'].findDOMNode(e.target).value);
+	      this.props.onChange(day);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2['default'].createElement(
+	        'select',
+	        _extends({}, this.props, { onChange: this._handleChange.bind(this) }),
+	        this._getOptions()
+	      );
+	    }
+	  }], [{
+	    key: 'propTypes',
+	    value: {
+	      day: _react.PropTypes.instanceOf(Date),
+	      pad: _react.PropTypes.bool,
+	      onChange: _react2['default'].PropTypes.func
+	    },
+	    enumerable: true
+	  }, {
+	    key: 'defaultProps',
+	    value: {
+	      day: new Date(),
+	      pad: true,
+	      onChange: function onChange() {
+	        return null;
+	      }
+	    },
+	    enumerable: true
+	  }]);
 
-	            // loop through half hour increments
-	            for (var i = 0; i < 48; i++) {
-	                var time = new Date(day.getTime() + i * 1800000);
-	                var display = this._format(time);
-	                options.push(_react2['default'].createElement(
-	                    'option',
-	                    { key: time, value: time },
-	                    display
-	                ));
-	            }
-
-	            return options;
-	        }
-	    }, {
-	        key: '_handleChange',
-	        value: function _handleChange(e) {
-	            var day = new Date(_react2['default'].findDOMNode(e.target).value);
-	            this.props.onChange(day);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            return _react2['default'].createElement(
-	                'select',
-	                _extends({}, this.props, { onChange: this._handleChange.bind(this) }),
-	                this._getOptions()
-	            );
-	        }
-	    }], [{
-	        key: 'propTypes',
-	        value: {
-	            day: _react.PropTypes.instanceOf(Date),
-	            pad: _react.PropTypes.bool
-	        },
-	        enumerable: true
-	    }, {
-	        key: 'defaultProps',
-	        value: {
-	            day: new Date(),
-	            pad: true
-	        },
-	        enumerable: true
-	    }]);
-
-	    return Time;
+	  return Time;
 	})(_react.Component);
 
 	exports['default'] = Time;

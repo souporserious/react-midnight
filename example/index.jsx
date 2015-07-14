@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Time } from '../src/index';
+import { Calendar, CalendarInput, Time } from '../src/index';
 
 import '../src/calendar.scss';
 import './main.scss';
@@ -30,6 +30,9 @@ var App = React.createClass({
           selectedDays={[ 7, 8, 9, 10, 11, 12 ]}
         />
         <Time onChange={this._handleTimeChange} />
+        <CalendarInput />
+        <CalendarInput />
+        <CalendarInput />
       </div>
     );
   }
