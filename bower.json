@@ -1,12 +1,12 @@
 {
   "name": "react-simple-calendar",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/souporserious/react-simple-calendar",
   "authors": [
     "Travis Arnold <ftntravis@gmail.com>"
   ],
   "description": "Simple calendar for React.",
-  "main": ["./dist/Calendar.js", "./dist/Calendar.min.js"],
+  "main": ["./dist/Picker.js", "./dist/Picker.min.js"],
   "keywords": [
     "react",
     "component",

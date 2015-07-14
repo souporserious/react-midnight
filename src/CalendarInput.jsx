@@ -9,6 +9,7 @@ class CalendarInput extends Component {
     inputClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     placeholder: PropTypes.string,
     calendarProps: PropTypes.object,
+    hiddenValue: PropTypes.bool,
     formatDate: PropTypes.func,
     onDateSelect: PropTypes.func
   }
@@ -19,6 +20,7 @@ class CalendarInput extends Component {
     inputClassName: null,
     placeholder: null,
     calendarProps: {modifiers: 'small'},
+    hiddenValue: false, // strips name from main input into a hidden one
     formatDate: day => day,
     onDateSelect: () => null
   }
@@ -66,6 +68,10 @@ class CalendarInput extends Component {
             onDaySelect={::this._handleCalendarClick}
             {...this.props.calendarProps}
           />
+        }
+        {
+          this.props.hiddenValue &&
+          <input type="hidden" value={this.props.date.getTime()} />
         }
       </div>
     );
