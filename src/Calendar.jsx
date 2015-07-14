@@ -17,7 +17,7 @@ class Day extends Component {
 
   render() {
 
-    const {month, date, disabledDays, selectedDays} = this.props;
+    const {month, date, disabledDays, selectedDays, outsideDays, onClick} = this.props;
 
     let className = 'cal__day';
     let modifiers = [];
@@ -59,28 +59,15 @@ class Day extends Component {
 
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
 
-    // if(isOutside && !enableOutsideDays) {
-    //     return <div key={`outside${i}`} className={className}></div>;
-    // }
-
-    //const { onDayMouseEnter, onDayMouseLeave, onDayTouchTap, onDayClick } = this.props;
-
-    // let tabIndex = null;
-
-    // if((onDayTouchTap || onDayClick) && !isOutside) {
-    //     tabIndex = -1;
-
-    //     // focus on the first day of the month
-    //     if(day.getDate() === 1) {
-    //         tabIndex = this.props.tabIndex;
-    //     }
-    // }
+    if(isOutside && !outsideDays) {
+      return <td aria-hidden="true" className={className} />;
+    }
 
     return(
       <td
         role="presentation"
         aria-label={date}
-        onClick={this.props.onClick}
+        onClick={!isDisabled && onClick}
         className={className}
       >
         {date.getDate()}
@@ -97,25 +84,25 @@ class Week extends Component {
 
   render() {
 
-    let date = this.props.date,
-    month = this.props.month;
-    
+    const {date, month} = this.props;
+
     let days = this.props.days.map(day =>
       <Day
-      key={day}
-      date={day}
-      month={month}
-      onClick={this.props.onDaySelect.bind(null, day)}
-      disabledDays={this.props.disabledDays}
-      selectedDays={this.props.selectedDays}
+        key={day}
+        date={day}
+        month={month}
+        onClick={this.props.onDaySelect.bind(null, day)}
+        disabledDays={this.props.disabledDays}
+        selectedDays={this.props.selectedDays}
+        outsideDays={this.props.outsideDays}
       />
-      );
+    );
 
     return(
       <tr className="cal__week">
-      {days}
+        {days}
       </tr>
-      );
+    );
   }
 }
 
@@ -128,18 +115,15 @@ class Calendar extends Component {
     weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
     trimWeekdays: 1,
     forceSixRows: true,
-
+    outsideDays: true,
     // show how we could map events using microformat
     // https://moz.com/blog/markup-events-hcalendar-microformat
     // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
     events: []
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      month: new Date()
-    };
+  state = {
+    month: new Date()
   }
 
   componentWillMount() {
@@ -229,6 +213,7 @@ class Calendar extends Component {
         disabledDays={this.props.disabledDays}
         selectedDays={this.props.selectedDays}
         onDaySelect={this.props.onDaySelect}
+        outsideDays={this.props.outsideDays}
       />
     );
 
