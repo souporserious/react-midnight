@@ -3,9 +3,24 @@ import Calendar from './Calendar';
 
 class CalendarInput extends Component {
 
+  static propTypes = {
+    date: PropTypes.instanceOf(Date),
+    wrapperClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    inputClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    placeholder: PropTypes.string,
+    calendarProps: PropTypes.object,
+    formatDate: PropTypes.func,
+    onDateSelect: PropTypes.func
+  }
+
   static defaultProps = {
-    placeholderText: null
-    // format: 'DD/MM/YYYY', coming soon
+    date: new Date(),
+    wrapperClassName: null,
+    inputClassName: null,
+    placeholder: null,
+    calendarProps: {modifiers: 'small'},
+    formatDate: day => day,
+    onDateSelect: () => null
   }
 
   state = {
@@ -25,11 +40,30 @@ class CalendarInput extends Component {
     this.setState({isOpen: componentNode.contains(e.target)});
   }
 
+  _handleCalendarClick(day) {
+    this.props.onDateSelect(day);
+  }
+
   render() {
+
+    const formattedDate = this.props.formatDate(this.props.date);
+
     return(
-      <div className="cal__input">
-        <input type="text" placeholder={this.props.placeholderText} readOnly />
-        {this.state.isOpen && <Calendar />}
+      <div className={this.props.wrapperClassName}>
+        <input
+          type="text"
+          className={this.props.inputClassName}
+          placeholder={this.props.placeholder}
+          value={formattedDate}
+          readOnly
+        />
+        {
+          this.state.isOpen &&
+          <Calendar
+            onDaySelect={::this._handleCalendarClick}
+            {...this.props.calendarProps}
+          />
+        }
       </div>
     );
   }
