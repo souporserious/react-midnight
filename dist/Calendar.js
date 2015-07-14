@@ -103,6 +103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var month = _props.month;
 	            var date = _props.date;
 	            var disabledDays = _props.disabledDays;
+	            var selectedDays = _props.selectedDays;
 
 	            var className = 'cal__day';
 	            var modifiers = [];
@@ -119,10 +120,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	                modifiers.push('outside');
 	            }
 
-	            var isDisabled = (0, _utils.isDayDisabled)(date, disabledDays);
+	            var isDisabled = (0, _utils.isDaySame)(date, disabledDays);
 
 	            if (isDisabled) {
 	                modifiers.push('disabled');
+	            }
+
+	            var isSelected = (0, _utils.isDaySame)(date, selectedDays);
+
+	            if (isSelected || isSelected === 0) {
+	                modifiers.push('selected');
+	            }
+
+	            if (isSelected === 0) {
+	                modifiers.push('selected-first');
+	            }
+
+	            if (isSelected === selectedDays.length - 1) {
+	                modifiers.push('selected-last');
 	            }
 
 	            className += modifiers.map(function (modifier) {
@@ -185,7 +200,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    date: day,
 	                    month: month,
 	                    onClick: _this.props.onDaySelect.bind(null, day),
-	                    disabledDays: _this.props.disabledDays
+	                    disabledDays: _this.props.disabledDays,
+	                    selectedDays: _this.props.selectedDays
 	                });
 	            });
 
@@ -206,43 +222,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Week;
 	})(_react.Component);
 
-	function normalizeDates(month, mixed) {
-
-	    var dates = [];
-
-	    for (var i = mixed.length; i--;) {
-
-	        var mix = mixed[i];
-
-	        // if it's a Date object already then push it
-	        // and contiue
-	        if (mix instanceof Date) {
-	            dates.push(mix);
-	            continue;
-	        }
-
-	        // test if digit and in between current month
-	        // or test to block day of week out somehow
-	        // reference pickadate and how they do it
-	        // just block out day for now
-	        if (/^\d+$/.test(mix)) {
-	            dates.push(new Date(month.getFullYear(), month.getMonth(), mix));
-	            continue;
-	        }
-
-	        if (Array.isArray(mix)) {
-	            dates.push(new Date(mix[0], mix[1], mix[2]));
-	            continue;
-	        }
-	    }
-
-	    return dates;
-	}
-
-	var d1 = new Date(2015, 6, 9);
-	var d2 = [1, 4, 7, [2015, 6, 8], [2015, 6, 19], new Date(2015, 6, 26)];
-	var myDates = normalizeDates(d1, d2);
-
 	var Calendar = (function (_Component3) {
 	    function Calendar(props) {
 	        _classCallCheck(this, Calendar);
@@ -256,8 +235,67 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _inherits(Calendar, _Component3);
 
 	    _createClass(Calendar, [{
-	        key: 'renderWeekdays',
-	        value: function renderWeekdays() {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            if (this.props.selectedDays) {
+	                this._normalizeDates(this.props.selectedDays);
+	            }
+	            if (this.props.disabledDays) {
+	                this._normalizeDates(this.props.disabledDays);
+	            }
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (nextProps.selectedDays) {
+	                this._normalizeDates(nextProps.selectedDays);
+	            }
+	            if (nextProps.disabledDays) {
+	                this._normalizeDates(nextProps.disabledDays);
+	            }
+	        }
+	    }, {
+	        key: '_normalizeDates',
+	        value: function _normalizeDates(mixed) {
+
+	            var month = new Date();
+
+	            for (var i = mixed.length; i--;) {
+
+	                var mix = mixed[i];
+
+	                // if it's a Date object already then push it
+	                // and contiue
+	                if (mix instanceof Date) {
+	                    mixed[i] = mix;
+	                    continue;
+	                }
+
+	                // test if digit and in between current month
+	                // or test to block day of week out somehow
+	                // reference pickadate and how they do it
+	                // just block out day for now
+	                if (/^\d+$/.test(mix)) {
+	                    mixed[i] = new Date(month.getFullYear(), month.getMonth(), mix);
+	                    continue;
+	                }
+
+	                if (Array.isArray(mix)) {
+	                    mixed[i] = new Date(mix[0], mix[1], mix[2]);
+	                    continue;
+	                }
+	            }
+
+	            // finally sort the array so it's in order
+	            mixed.sort(function (a, b) {
+	                a = a.getTime();
+	                b = b.getTime();
+	                return a < b ? -1 : a > b ? 1 : 0;
+	            });
+	        }
+	    }, {
+	        key: '_renderWeekdays',
+	        value: function _renderWeekdays() {
 	            var _this2 = this;
 
 	            var getDays = function getDays() {
@@ -283,8 +321,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            );
 	        }
 	    }, {
-	        key: 'renderWeeksInMonth',
-	        value: function renderWeeksInMonth() {
+	        key: '_renderWeeksInMonth',
+	        value: function _renderWeeksInMonth() {
 	            var _this3 = this;
 
 	            var month = this.state.month;
@@ -294,8 +332,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    key: week[0].toString(),
 	                    days: week,
 	                    month: _this3.state.month,
-	                    onDaySelect: _this3.props.onDaySelect,
-	                    disabledDays: _this3.props.datesToDisable
+	                    disabledDays: _this3.props.disabledDays,
+	                    selectedDays: _this3.props.selectedDays,
+	                    onDaySelect: _this3.props.onDaySelect
 	                });
 	            });
 
@@ -306,14 +345,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            );
 	        }
 	    }, {
-	        key: 'navigate',
-	        value: function navigate(direction) {
+	        key: '_navigate',
+	        value: function _navigate(direction) {
 	            var month = this.state.month;
 	            this.setState({ month: (0, _utils.navigateMonth)(month, direction) });
 	        }
 	    }, {
-	        key: 'getModifiers',
-	        value: function getModifiers(modifiers) {
+	        key: '_getModifiers',
+	        value: function _getModifiers(modifiers) {
 
 	            var arr = [];
 	            var len = modifiers ? modifiers.length : -1;
@@ -330,7 +369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'render',
 	        value: function render() {
 
-	            var modifiers = this.getModifiers(this.props.modifiers && this.props.modifiers.split(','));
+	            var modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
 	            var classes = (0, _classnames2['default'])('cal', modifiers, this.props.className);
 
 	            var monthLabel = (0, _utils.formatMonth)(this.state.month);
@@ -344,7 +383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    { className: 'cal__header' },
 	                    _react2['default'].createElement(
 	                        'a',
-	                        { className: 'cal__nav cal__nav--prev', role: 'button', title: 'Previous month', onClick: this.navigate.bind(this, -1) },
+	                        { className: 'cal__nav cal__nav--prev', role: 'button', title: 'Previous month', onClick: this._navigate.bind(this, -1) },
 	                        'Prev'
 	                    ),
 	                    _react2['default'].createElement(
@@ -363,31 +402,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    ),
 	                    _react2['default'].createElement(
 	                        'a',
-	                        { className: 'cal__nav cal__nav--next', role: 'button', title: 'Next month', onClick: this.navigate.bind(this, 1) },
+	                        { className: 'cal__nav cal__nav--next', role: 'button', title: 'Next month', onClick: this._navigate.bind(this, 1) },
 	                        'Next'
 	                    )
 	                ),
 	                _react2['default'].createElement(
 	                    'table',
 	                    { className: 'cal__table' },
-	                    this.renderWeekdays(),
-	                    this.renderWeeksInMonth()
+	                    this._renderWeekdays(),
+	                    this._renderWeeksInMonth()
 	                )
 	            );
 	        }
 	    }], [{
-	        key: 'propTypes',
-	        value: {},
-	        enumerable: true
-	    }, {
 	        key: 'defaultProps',
 	        value: {
+	            date: new Date(), // default month
+	            disabledDays: null,
+	            selectedDays: null,
+	            weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
 	            trimWeekdays: 1,
+	            forceSixRows: true,
+
 	            // show how we could map events using microformat
 	            // https://moz.com/blog/markup-events-hcalendar-microformat
 	            // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
 	            events: [],
-	            datesToDisable: myDates
+
+	            // these should probably be props for input calendar
+	            format: 'DD/MM/YYYY',
+	            placeholderText: 'Click to select a date'
 	        },
 	        enumerable: true
 	    }]);
@@ -458,7 +502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.getWeekArray = getWeekArray;
 	exports.getModifiersForDay = getModifiersForDay;
 	exports.isDayOutsideMonth = isDayOutsideMonth;
-	exports.isDayDisabled = isDayDisabled;
+	exports.isDaySame = isDaySame;
 	exports.isSameDay = isSameDay;
 	exports.formatMonthTitle = formatMonthTitle;
 	exports.formatMonth = formatMonth;
@@ -676,14 +720,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return d1.getMonth() !== d2.getMonth();
 	}
 
-	function isDayDisabled(date, dates) {
+	function isDaySame(date, dates) {
+
+	  if (!date || !dates) return null;
+
+	  // normalize dates as an array
+	  dates = Array.isArray(dates) ? dates : [dates];
+
+	  // loop through and find day
 	  for (var i = dates.length; i--;) {
-	    if (isSameDay(date, dates[i])) return true;
+	    if (isSameDay(date, dates[i])) return i;
 	  }
 	  return false;
 	}
 
 	function isSameDay(d1, d2) {
+	  if (!d1 || !d2) return null;
 	  return d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
 	}
 

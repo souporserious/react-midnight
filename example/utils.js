@@ -210,14 +210,22 @@ export function isDayOutsideMonth(d1, d2) {
   return d1.getMonth() !== d2.getMonth();
 }
 
-export function isDayDisabled(date, dates) {
+export function isDaySame(date, dates) {
+  
+  if(!date || !dates) return null;
+
+  // normalize dates as an array
+  dates = Array.isArray(dates) ? dates : [dates];
+
+  // loop through and find day
   for(let i = dates.length; i--;) {
-    if(isSameDay(date, dates[i])) return true;
+    if(isSameDay(date, dates[i])) return i;
   }
   return false;
 }
 
 export function isSameDay(d1, d2) {
+  if(!d1 || !d2) return null;
   return d1.getDate() === d2.getDate() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getFullYear() === d2.getFullYear();

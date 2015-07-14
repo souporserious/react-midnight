@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { formatMonth, formatYear, isSameDay, isDayOutsideMonth, isDayDisabled, getWeekArray, navigateMonth } from './utils';
+import { formatMonth, formatYear, isSameDay, isDaySame, isDayOutsideMonth, getWeekArray, navigateMonth } from './utils';
 
 // Dependencies
 import classNames from 'classnames';
 
 // Styles
-//import './calendar.scss';
+import './calendar.scss';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -13,7 +13,7 @@ class Day extends Component {
     
     render() {
 
-        const {month, date, disabledDays} = this.props;
+        const {month, date, disabledDays, selectedDays} = this.props;
 
         let className = 'cal__day';
         let modifiers = [];
@@ -30,10 +30,24 @@ class Day extends Component {
             modifiers.push('outside');
         }
 
-        const isDisabled = isDayDisabled(date, disabledDays);
+        const isDisabled = isDaySame(date, disabledDays);
 
         if(isDisabled) {
             modifiers.push('disabled');
+        }
+
+        const isSelected = isDaySame(date, selectedDays);
+
+        if(isSelected || isSelected === 0) {
+            modifiers.push('selected');
+        }
+
+        if(isSelected === 0) {
+            modifiers.push('selected-first');
+        }
+
+        if(isSelected === selectedDays.length - 1) {
+            modifiers.push('selected-last');
         }
 
         className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
@@ -86,6 +100,7 @@ class Week extends Component {
                 month={month}
                 onClick={this.props.onDaySelect.bind(null, day)}
                 disabledDays={this.props.disabledDays}
+                selectedDays={this.props.selectedDays}
             />
         );
 
@@ -97,61 +112,24 @@ class Week extends Component {
     }
 }
 
-function normalizeDates(month, mixed) {
-
-    let dates = [];
-
-    for(let i = mixed.length; i--;) {
-
-        let mix = mixed[i];
-
-        // if it's a Date object already then push it
-        // and contiue
-        if(mix instanceof Date) {
-            dates.push(mix);
-            continue;
-        }
-
-        // test if digit and in between current month
-        // or test to block day of week out somehow
-        // reference pickadate and how they do it
-        // just block out day for now
-        if(/^\d+$/.test(mix)) {
-            dates.push(new Date(month.getFullYear(), month.getMonth(), mix));
-            continue;
-        }
-
-        if(Array.isArray(mix)) {
-            dates.push(new Date(mix[0], mix[1], mix[2]));
-            continue;
-        }
-    }
-
-    return dates;
-}
-
-let d1 = new Date(2015,6,9);
-let d2 = [ 1, 4, 7, [2015,6,8], [2015,6,19], new Date(2015,6,26) ];
-let myDates = normalizeDates(d1, d2);
-
 class Calendar extends Component {
 
-    static propTypes = {
-        
-    }
-
     static defaultProps = {
+        date: new Date(), // default month
+        disabledDays: null,
+        selectedDays: null,
+        weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
         trimWeekdays: 1,
+        forceSixRows: true,
+
         // show how we could map events using microformat
         // https://moz.com/blog/markup-events-hcalendar-microformat
         // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
         events: [],
-        datesToDisable: myDates,
-        forceSixRows: true,
-        date: new Date(), // can grab month from here as well
-        format: 'DD/MM/YYYY', // should probably be a prop for input calendar
-        placeholderText: 'Click to select a date',
-        weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'] // custom weekdays (for locale)
+
+        // these should probably be props for input calendar
+        format: 'DD/MM/YYYY',
+        placeholderText: 'Click to select a date'
     }
     
     constructor(props) {
@@ -160,8 +138,64 @@ class Calendar extends Component {
             month: new Date()
         };
     }
+
+    componentWillMount() {
+        if(this.props.selectedDays) {
+            this._normalizeDates(this.props.selectedDays);
+        }
+        if(this.props.disabledDays) {
+            this._normalizeDates(this.props.disabledDays);
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.selectedDays) {
+            this._normalizeDates(nextProps.selectedDays);
+        }
+        if(nextProps.disabledDays) {
+            this._normalizeDates(nextProps.disabledDays);
+        }
+    }
+
+    _normalizeDates(mixed) {
+
+        let month = new Date();
+
+        for(let i = mixed.length; i--;) {
+
+            let mix = mixed[i];
+
+            // if it's a Date object already then push it
+            // and contiue
+            if(mix instanceof Date) {
+                mixed[i] = mix;
+                continue;
+            }
+
+            // test if digit and in between current month
+            // or test to block day of week out somehow
+            // reference pickadate and how they do it
+            // just block out day for now
+            if(/^\d+$/.test(mix)) {
+                mixed[i] = new Date(month.getFullYear(), month.getMonth(), mix);
+                continue;
+            }
+
+            if(Array.isArray(mix)) {
+                mixed[i] = new Date(mix[0], mix[1], mix[2]);
+                continue;
+            }
+        }
+
+        // finally sort the array so it's in order
+        mixed.sort((a, b) => {
+            a = a.getTime();
+            b = b.getTime();
+            return a < b ? -1 : a > b ? 1 : 0;
+        });
+    }
     
-    renderWeekdays() {
+    _renderWeekdays() {
         
         var getDays = () => {
             return WEEKDAYS.map((weekday, index) => {
@@ -180,7 +214,7 @@ class Calendar extends Component {
         );
     }
 
-    renderWeeksInMonth() {
+    _renderWeeksInMonth() {
 
         const month = this.state.month;
 
@@ -189,8 +223,9 @@ class Calendar extends Component {
                 key={week[0].toString()}
                 days={week}
                 month={this.state.month}
+                disabledDays={this.props.disabledDays}
+                selectedDays={this.props.selectedDays}
                 onDaySelect={this.props.onDaySelect}
-                disabledDays={this.props.datesToDisable}
             />
         );
 
@@ -201,12 +236,12 @@ class Calendar extends Component {
         );
     }
     
-    navigate(direction) {
+    _navigate(direction) {
         let month = this.state.month;
         this.setState({ month: navigateMonth(month, direction) });
     }
     
-    getModifiers(modifiers) {
+    _getModifiers(modifiers) {
         
         let arr = [];
         let len = modifiers ? modifiers.length : -1;
@@ -222,7 +257,7 @@ class Calendar extends Component {
     
     render() {
         
-        let modifiers = this.getModifiers(this.props.modifiers && this.props.modifiers.split(','));
+        let modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
         let classes = classNames('cal', modifiers, this.props.className);
 
         let monthLabel = formatMonth(this.state.month);
@@ -231,16 +266,16 @@ class Calendar extends Component {
         return (
             <div className={classes}>
                 <header className="cal__header">
-                    <a className="cal__nav cal__nav--prev" role="button" title="Previous month" onClick={this.navigate.bind(this, -1)}>Prev</a>
+                    <a className="cal__nav cal__nav--prev" role="button" title="Previous month" onClick={this._navigate.bind(this, -1)}>Prev</a>
                     <div className="cal__month-year">
                         <div className="cal__month">{monthLabel}</div>
                         <div className="cal__year">{yearLabel}</div>
                     </div>
-                    <a className="cal__nav cal__nav--next" role="button" title="Next month" onClick={this.navigate.bind(this, 1)}>Next</a>
+                    <a className="cal__nav cal__nav--next" role="button" title="Next month" onClick={this._navigate.bind(this, 1)}>Next</a>
                 </header>
                 <table className="cal__table">
-                    {this.renderWeekdays()}
-                    {this.renderWeeksInMonth()}
+                    {this._renderWeekdays()}
+                    {this._renderWeeksInMonth()}
                 </table>
             </div>
         );
