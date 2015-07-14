@@ -44,6 +44,7 @@ class CalendarInput extends Component {
 
   _handleCalendarClick(day) {
     this.props.onDateSelect(day);
+    this.setState({isOpen: false});
   }
 
   render() {
@@ -68,8 +69,7 @@ class CalendarInput extends Component {
             onDaySelect={::this._handleCalendarClick}
             {...this.props.calendarProps}
           />
-        }
-        {
+        } {
           this.props.hiddenValue &&
           <input type="hidden" value={this.props.date.getTime()} />
         }
