@@ -56,6 +56,9 @@ class CalendarInput extends Component {
           placeholder={this.props.placeholder}
           value={formattedDate}
           readOnly
+          aria-haspopup={true}
+          aria-readonly={false}
+          aria-expanded={this.state.isOpen}
         />
         {
           this.state.isOpen &&
