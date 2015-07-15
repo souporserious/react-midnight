@@ -21,7 +21,7 @@ class CalendarInput extends Component {
     placeholder: null,
     calendarProps: {modifiers: 'small'},
     hiddenValue: false, // strips name from main input into a hidden one
-    formatDate: day => day,
+    formatDate: date => date,
     onDateSelect: () => null
   }
 
@@ -51,7 +51,7 @@ class CalendarInput extends Component {
 
     let {date, wrapperClassName, inputClassName, placeholder, calendarProps, hiddenValue} = this.props;
     let formattedDate = this.props.formatDate(date);
-
+    
     return(
       <div className={wrapperClassName}>
         <input

@@ -16,11 +16,19 @@ var App = React.createClass({
     this.setState({date: date});
   },
 
-  _handleTimeChange(day) {
+  _handleTimeChange(date) {
     // don't change time when selecting new date
     // need to expose helper utility to merge dates
     // or store time in seconds or something
-    console.log(day);
+    console.log(date);
+  },
+
+  _formatDate(date) {
+    return date;
+  },
+
+  _setDate() {
+    this.setState({date: new Date('10-12-2010')});
   },
   
   render: function () {
@@ -35,6 +43,7 @@ var App = React.createClass({
         <CalendarInput
           date={this.state.date}
           onDateSelect={this._handleCalendarClick}
+          formatDate={this._formatDate}
         />
         <Time
           date={this.state.date}

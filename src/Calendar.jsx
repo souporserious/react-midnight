@@ -146,6 +146,7 @@ class Calendar extends Component {
     if(nextProps.disabledDays) {
       this._normalizeDates(nextProps.disabledDays);
     }
+    this.setState({month: nextProps.date});
   }
 
   _normalizeDates(mixed) {

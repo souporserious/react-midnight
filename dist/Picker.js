@@ -272,6 +272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (nextProps.disabledDays) {
 	        this._normalizeDates(nextProps.disabledDays);
 	      }
+	      this.setState({ month: nextProps.date });
 	    }
 	  }, {
 	    key: '_normalizeDates',
@@ -874,8 +875,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      placeholder: null,
 	      calendarProps: { modifiers: 'small' },
 	      hiddenValue: false, // strips name from main input into a hidden one
-	      formatDate: function formatDate(day) {
-	        return day;
+	      formatDate: function formatDate(date) {
+	        return date;
 	      },
 	      onDateSelect: function onDateSelect() {
 	        return null;
