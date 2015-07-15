@@ -3,26 +3,26 @@ import React, { Component, PropTypes } from 'react';
 class Time extends Component {
 
   static propTypes = {
-    day: PropTypes.instanceOf(Date),
+    date: PropTypes.instanceOf(Date),
     pad: PropTypes.bool,
-    onChange: React.PropTypes.func
+    onTimeSelect: React.PropTypes.func
   }
 
   static defaultProps = {
-    day: new Date(),
+    date: new Date(),
     pad: true,
-    onChange: () => null
+    onTimeSelect: () => null
   }
 
   _pad(n) {
-    return n > 9 ? n : '0' + n;
+    return (n > 9) ? n : '0' + n;
   }
 
   _format(d) {
 
     let h = d.getHours();
     let m = this._pad(d.getMinutes());
-    let AMPM = h < 12 ? 'AM' : 'PM';
+    let AMPM = (h < 12) ? 'AM' : 'PM';
 
     // convert to 12 hour clock
     h = (h % 12) || 12;
@@ -40,15 +40,15 @@ class Time extends Component {
   // formatting should be easy if we have a start date and increment that
   _getOptions() {
 
-    let day = this.props.day;
+    let date = this.props.date;
     let options = [];
     
     // set to beginning of day
-    day.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
     
     // loop through half hour increments
     for(let i = 0; i < 48; i++) {
-      let time = new Date(day.getTime() + (i * 1800000)); // should allow different increments
+      let time = new Date(date.getTime() + (i * 1800000)); // should allow different increments
       let display = this._format(time);
       options.push(<option key={time} value={time}>{display}</option>);
     }
@@ -57,8 +57,8 @@ class Time extends Component {
   }
 
   _handleChange(e) {
-    let day = new Date(React.findDOMNode(e.target).value);
-    this.props.onChange(day);
+    let date = new Date(React.findDOMNode(e.target).value);
+    this.props.onTimeSelect(date);
   }
 
   render() {

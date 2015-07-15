@@ -112,13 +112,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-	var KEYS = {
-	  LEFT: 37,
-	  RIGHT: 39,
-	  ENTER: 13,
-	  SPACE: 32
-	};
-
 	var Day = (function (_Component) {
 	  function Day() {
 	    _classCallCheck(this, Day);
@@ -129,6 +122,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _inherits(Day, _Component);
 
 	  _createClass(Day, [{
+	    key: '_handleDateSelect',
+	    value: function _handleDateSelect(day) {
+	      this.props.onDateSelect(day);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _props = this.props;
@@ -190,7 +188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        {
 	          role: 'presentation',
 	          'aria-label': date,
-	          onClick: !isDisabled && onClick,
+	          onClick: !isDisabled && this._handleDateSelect.bind(this, date),
 	          className: className
 	        },
 	        date.getDate()
@@ -224,10 +222,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          key: day,
 	          date: day,
 	          month: month,
-	          onClick: _this.props.onDaySelect.bind(null, day),
 	          disabledDays: _this.props.disabledDays,
 	          selectedDays: _this.props.selectedDays,
-	          outsideDays: _this.props.outsideDays
+	          outsideDays: _this.props.outsideDays,
+	          onDateSelect: _this.props.onDateSelect
 	        });
 	      });
 
@@ -237,12 +235,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        days
 	      );
 	    }
-	  }], [{
-	    key: 'defaultProps',
-	    value: {
-	      onDaySelect: function onDaySelect() {}
-	    },
-	    enumerable: true
 	  }]);
 
 	  return Week;
@@ -255,7 +247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _get(Object.getPrototypeOf(Calendar.prototype), 'constructor', this).apply(this, arguments);
 
 	    this.state = {
-	      month: new Date()
+	      month: this.props.date
 	    };
 	  }
 
@@ -361,8 +353,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          month: _this3.state.month,
 	          disabledDays: _this3.props.disabledDays,
 	          selectedDays: _this3.props.selectedDays,
-	          onDaySelect: _this3.props.onDaySelect,
-	          outsideDays: _this3.props.outsideDays
+	          outsideDays: _this3.props.outsideDays,
+	          onDateSelect: _this3.props.onDateSelect
 	        });
 	      });
 
@@ -443,6 +435,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      );
 	    }
 	  }], [{
+	    key: 'propTypes',
+	    value: {
+	      date: _react.PropTypes.instanceOf(Date),
+	      weekdays: _react.PropTypes.array,
+	      trimWeekdays: _react.PropTypes.number,
+	      forceSixRows: _react.PropTypes.bool,
+	      outsideDays: _react.PropTypes.bool,
+	      events: _react.PropTypes.array,
+	      onDateSelect: _react.PropTypes.func
+	    },
+	    enumerable: true
+	  }, {
 	    key: 'defaultProps',
 	    value: {
 	      date: new Date(), // default month
@@ -455,7 +459,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // show how we could map events using microformat
 	      // https://moz.com/blog/markup-events-hcalendar-microformat
 	      // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-	      events: []
+	      events: [],
+	      onDateSelect: function onDateSelect() {
+	        return null;
+	      }
 	    },
 	    enumerable: true
 	  }]);
@@ -807,32 +814,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: '_handleCalendarClick',
-	    value: function _handleCalendarClick(day) {
-	      this.props.onDateSelect(day);
+	    value: function _handleCalendarClick(date) {
+	      this.props.onDateSelect(date);
+	      this.setState({ isOpen: false });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _props = this.props;
+	      var date = _props.date;
+	      var wrapperClassName = _props.wrapperClassName;
+	      var inputClassName = _props.inputClassName;
+	      var placeholder = _props.placeholder;
+	      var calendarProps = _props.calendarProps;
+	      var hiddenValue = _props.hiddenValue;
 
-	      var formattedDate = this.props.formatDate(this.props.date);
+	      var formattedDate = this.props.formatDate(date);
 
 	      return _react2['default'].createElement(
 	        'div',
-	        { className: this.props.wrapperClassName },
+	        { className: wrapperClassName },
 	        _react2['default'].createElement('input', {
 	          type: 'text',
-	          className: this.props.inputClassName,
-	          placeholder: this.props.placeholder,
-	          value: formattedDate,
-	          readOnly: true,
+	          className: inputClassName,
 	          'aria-haspopup': true,
 	          'aria-readonly': false,
-	          'aria-expanded': this.state.isOpen
+	          'aria-expanded': this.state.isOpen,
+	          placeholder: placeholder,
+	          value: formattedDate,
+	          readOnly: true
 	        }),
 	        this.state.isOpen && _react2['default'].createElement(_Calendar2['default'], _extends({
-	          onDaySelect: this._handleCalendarClick.bind(this)
-	        }, this.props.calendarProps)),
-	        this.props.hiddenValue && _react2['default'].createElement('input', { type: 'hidden', value: this.props.date.getTime() })
+	          date: date,
+	          onDateSelect: this._handleCalendarClick.bind(this)
+	        }, calendarProps)),
+	        ' ',
+	        hiddenValue && _react2['default'].createElement('input', { type: 'hidden', value: date.getTime() })
 	      );
 	    }
 	  }], [{
@@ -939,15 +956,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // formatting should be easy if we have a start date and increment that
 	    value: function _getOptions() {
 
-	      var day = this.props.day;
+	      var date = this.props.date;
 	      var options = [];
 
 	      // set to beginning of day
-	      day.setHours(0, 0, 0, 0);
+	      date.setHours(0, 0, 0, 0);
 
 	      // loop through half hour increments
 	      for (var i = 0; i < 48; i++) {
-	        var time = new Date(day.getTime() + i * 1800000); // should allow different increments
+	        var time = new Date(date.getTime() + i * 1800000); // should allow different increments
 	        var display = this._format(time);
 	        options.push(_react2['default'].createElement(
 	          'option',
@@ -961,8 +978,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: '_handleChange',
 	    value: function _handleChange(e) {
-	      var day = new Date(_react2['default'].findDOMNode(e.target).value);
-	      this.props.onChange(day);
+	      var date = new Date(_react2['default'].findDOMNode(e.target).value);
+	      this.props.onTimeSelect(date);
 	    }
 	  }, {
 	    key: 'render',
@@ -976,17 +993,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }], [{
 	    key: 'propTypes',
 	    value: {
-	      day: _react.PropTypes.instanceOf(Date),
+	      date: _react.PropTypes.instanceOf(Date),
 	      pad: _react.PropTypes.bool,
-	      onChange: _react2['default'].PropTypes.func
+	      onTimeSelect: _react2['default'].PropTypes.func
 	    },
 	    enumerable: true
 	  }, {
 	    key: 'defaultProps',
 	    value: {
-	      day: new Date(),
+	      date: new Date(),
 	      pad: true,
-	      onChange: function onChange() {
+	      onTimeSelect: function onTimeSelect() {
 	        return null;
 	      }
 	    },

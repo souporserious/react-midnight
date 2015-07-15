@@ -13,11 +13,13 @@ var App = React.createClass({
   },
 
   _handleCalendarClick: function (date) {
-    let dates = [date, new Date('07-14-2015')];
-    this.setState({date: dates});
+    this.setState({date: date});
   },
 
   _handleTimeChange(day) {
+    // don't change time when selecting new date
+    // need to expose helper utility to merge dates
+    // or store time in seconds or something
     console.log(day);
   },
   
@@ -25,12 +27,19 @@ var App = React.createClass({
     return(
       <div className="app">
         <Calendar
-          onDaySelect={this._handleCalendarClick}
+          date={this.state.date}
+          onDateSelect={this._handleCalendarClick}
           disabledDays={[ 1, 2, 3, 4, 5, 6 ]}
           selectedDays={[ 7, 8, 9, 10, 11, 12 ]}
         />
-        <CalendarInput />
-        <Time onChange={this._handleTimeChange} />
+        <CalendarInput
+          date={this.state.date}
+          onDateSelect={this._handleCalendarClick}
+        />
+        <Time
+          date={this.state.date}
+          onTimeSelect={this._handleCalendarClick}
+        />
       </div>
     );
   }

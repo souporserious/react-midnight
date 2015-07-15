@@ -42,36 +42,38 @@ class CalendarInput extends Component {
     this.setState({isOpen: componentNode.contains(e.target)});
   }
 
-  _handleCalendarClick(day) {
-    this.props.onDateSelect(day);
+  _handleCalendarClick(date) {
+    this.props.onDateSelect(date);
     this.setState({isOpen: false});
   }
 
   render() {
 
-    const formattedDate = this.props.formatDate(this.props.date);
+    let {date, wrapperClassName, inputClassName, placeholder, calendarProps, hiddenValue} = this.props;
+    let formattedDate = this.props.formatDate(date);
 
     return(
-      <div className={this.props.wrapperClassName}>
+      <div className={wrapperClassName}>
         <input
           type="text"
-          className={this.props.inputClassName}
-          placeholder={this.props.placeholder}
-          value={formattedDate}
-          readOnly
+          className={inputClassName}
           aria-haspopup={true}
           aria-readonly={false}
           aria-expanded={this.state.isOpen}
+          placeholder={placeholder}
+          value={formattedDate}
+          readOnly
         />
         {
           this.state.isOpen &&
           <Calendar
-            onDaySelect={::this._handleCalendarClick}
-            {...this.props.calendarProps}
+            date={date}
+            onDateSelect={::this._handleCalendarClick}
+            {...calendarProps}
           />
         } {
-          this.props.hiddenValue &&
-          <input type="hidden" value={this.props.date.getTime()} />
+          hiddenValue &&
+          <input type="hidden" value={date.getTime()} />
         }
       </div>
     );

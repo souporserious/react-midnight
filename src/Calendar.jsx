@@ -6,14 +6,11 @@ import classNames from 'classnames';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const KEYS = {
-  LEFT: 37,
-  RIGHT: 39,
-  ENTER: 13,
-  SPACE: 32
-};
-
 class Day extends Component {
+
+  _handleDateSelect(day) {
+    this.props.onDateSelect(day);
+  }
 
   render() {
 
@@ -67,7 +64,7 @@ class Day extends Component {
       <td
         role="presentation"
         aria-label={date}
-        onClick={!isDisabled && onClick}
+        onClick={!isDisabled && this._handleDateSelect.bind(this, date)}
         className={className}
       >
         {date.getDate()}
@@ -78,10 +75,6 @@ class Day extends Component {
 
 class Week extends Component {
 
-  static defaultProps = {
-    onDaySelect: () => {}
-  }
-
   render() {
 
     const {date, month} = this.props;
@@ -91,10 +84,10 @@ class Week extends Component {
         key={day}
         date={day}
         month={month}
-        onClick={this.props.onDaySelect.bind(null, day)}
         disabledDays={this.props.disabledDays}
         selectedDays={this.props.selectedDays}
         outsideDays={this.props.outsideDays}
+        onDateSelect={this.props.onDateSelect}
       />
     );
 
@@ -108,6 +101,16 @@ class Week extends Component {
 
 class Calendar extends Component {
 
+  static propTypes = {
+    date: PropTypes.instanceOf(Date),
+    weekdays: PropTypes.array,
+    trimWeekdays: PropTypes.number,
+    forceSixRows: PropTypes.bool,
+    outsideDays: PropTypes.bool,
+    events: PropTypes.array,
+    onDateSelect: PropTypes.func
+  }
+
   static defaultProps = {
     date: new Date(), // default month
     disabledDays: null,
@@ -119,11 +122,12 @@ class Calendar extends Component {
     // show how we could map events using microformat
     // https://moz.com/blog/markup-events-hcalendar-microformat
     // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-    events: []
+    events: [],
+    onDateSelect: () => null
   }
 
   state = {
-    month: new Date()
+    month: this.props.date
   }
 
   componentWillMount() {
@@ -212,8 +216,8 @@ class Calendar extends Component {
         month={this.state.month}
         disabledDays={this.props.disabledDays}
         selectedDays={this.props.selectedDays}
-        onDaySelect={this.props.onDaySelect}
         outsideDays={this.props.outsideDays}
+        onDateSelect={this.props.onDateSelect}
       />
     );
 
