@@ -1,4 +1,4 @@
-## React Simple Calendar 0.2.3
+## React Simple Calendar 0.2.4
 
 Simple calendar for react.
 
