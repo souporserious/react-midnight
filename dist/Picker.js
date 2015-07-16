@@ -343,7 +343,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: '_renderWeeksInMonth',
 	    value: function _renderWeeksInMonth() {
-	      var _this3 = this;
+	      var _props3 = this.props;
+	      var min = _props3.min;
+	      var max = _props3.max;
+	      var disabledDays = _props3.disabledDays;
+	      var selectedDays = _props3.selectedDays;
+	      var outsideDays = _props3.outsideDays;
+	      var onDateSelect = _props3.onDateSelect;
 
 	      var month = this.state.month;
 
@@ -351,11 +357,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _react2['default'].createElement(Week, {
 	          key: week[0].toString(),
 	          days: week,
-	          month: _this3.state.month,
-	          disabledDays: _this3.props.disabledDays,
-	          selectedDays: _this3.props.selectedDays,
-	          outsideDays: _this3.props.outsideDays,
-	          onDateSelect: _this3.props.onDateSelect
+	          month: month,
+	          min: min,
+	          max: max,
+	          disabledDays: disabledDays,
+	          selectedDays: selectedDays,
+	          outsideDays: outsideDays,
+	          onDateSelect: onDateSelect
 	        });
 	      });
 
@@ -439,32 +447,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'propTypes',
 	    value: {
 	      date: _react.PropTypes.instanceOf(Date),
-	      weekdays: _react.PropTypes.array,
+	      min: _react.PropTypes.instanceOf(Date),
+	      max: _react.PropTypes.instanceOf(Date),
+	      disabledDays: _react.PropTypes.array,
+	      selectedDays: _react.PropTypes.array,
 	      trimWeekdays: _react.PropTypes.number,
 	      forceSixRows: _react.PropTypes.bool,
 	      outsideDays: _react.PropTypes.bool,
-	      events: _react.PropTypes.array,
 	      onDateSelect: _react.PropTypes.func
+	      // events: PropTypes.array,
+	      // weekdays: PropTypes.array,
 	    },
 	    enumerable: true
 	  }, {
 	    key: 'defaultProps',
 	    value: {
 	      date: new Date(), // default month
+	      min: null,
+	      max: null,
 	      disabledDays: null,
 	      selectedDays: null,
-	      weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
 	      trimWeekdays: 1,
 	      forceSixRows: true,
 	      outsideDays: true,
-	      // show how we could map events using microformat
-	      // https://moz.com/blog/markup-events-hcalendar-microformat
-	      // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-	      events: [],
 	      onDateSelect: function onDateSelect() {
-	        return null;
-	      }
-	    },
+	        return null
+	        // show how we could map events using microformat
+	        // https://moz.com/blog/markup-events-hcalendar-microformat
+	        // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
+	        // events: [],
+	        // weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
+	        ;
+	      } },
 	    enumerable: true
 	  }]);
 
@@ -793,23 +807,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.state = {
 	      isOpen: false
 	    };
+	    this._documentClickHandler = null;
 	  }
 
 	  _inherits(CalendarInput, _Component);
 
 	  _createClass(CalendarInput, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      document.addEventListener('click', this._documentClickHandler.bind(this));
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this = this;
+
+	      this._documentClickHandler = function (e) {
+	        return _this._documentClick(e);
+	      };
+	      document.addEventListener('click', this._documentClickHandler);
 	    }
 	  }, {
-	    key: 'componentDidUnmount',
-	    value: function componentDidUnmount() {
-	      document.removeEventListener('click', this._documentClickHandler.bind(this));
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      document.removeEventListener('click', this._documentClickHandler);
 	    }
 	  }, {
-	    key: '_documentClickHandler',
-	    value: function _documentClickHandler(e) {
+	    key: '_documentClick',
+	    value: function _documentClick(e) {
 	      var componentNode = _react2['default'].findDOMNode(this);
 	      this.setState({ isOpen: componentNode.contains(e.target) });
 	    }
@@ -917,6 +937,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var HOURS_IN_DAY = 24;
+	var HOURS_TO_NOON = HOURS_IN_DAY / 2;
+	var MINUTES_IN_HOUR = 60;
+	var MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
+
 	var Time = (function (_Component) {
 	  function Time() {
 	    _classCallCheck(this, Time);
@@ -933,44 +958,80 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: '_format',
+
+	    // would be cool to allow formatting like this:
+	    // https://github.com/amsul/pickadate.js/blob/master/lib/picker.time.js#L593-L648
+	    // would get rid of the need for a shit load of props
 	    value: function _format(d) {
+	      var _props = this.props;
+	      var humanize = _props.humanize;
+	      var humanizeStrings = _props.humanizeStrings;
+	      var startTime = _props.startTime;
+	      var endTime = _props.endTime;
+	      var interval = _props.interval;
+	      var twelveHourClock = _props.twelveHourClock;
+	      var pad = _props.pad;
+	      var separator = _props.separator;
 
 	      var h = d.getHours();
 	      var m = this._pad(d.getMinutes());
 	      var AMPM = h < 12 ? 'AM' : 'PM';
 
+	      if (humanize) {
+	        if (h === startTime && m === '00') {
+	          return humanizeStrings.begin;
+	        }
+
+	        if (h === 12 && m === '00') {
+	          return humanizeStrings.middle;
+	        }
+
+	        if (h === endTime - 1) {
+	          if (interval === 60 || m === interval * (MINUTES_IN_HOUR / interval - 1)) {
+	            return humanizeStrings.end;
+	          }
+	        }
+	      }
+
 	      // convert to 12 hour clock
-	      h = h % 12 || 12;
+	      if (twelveHourClock) {
+	        h = h % 12 || 12;
+	      }
 
 	      // pad with a 0
-	      if (this.props.pad) {
+	      if (pad) {
 	        h = this._pad(h);
 	      }
 
-	      return h + ':' + m + ' ' + AMPM;
+	      return twelveHourClock ? '' + h + separator + m + ' ' + AMPM : '' + h + separator + m;
 	    }
 	  }, {
 	    key: '_getOptions',
 
 	    // look into optimizing, probably don't need to get a new date for every time
 	    // should be able to store current day and add whatever seconds we need
-	    // formatting should be easy if we have a start date and increment that
+	    // formatting should be easy if we have a start date and merge seconds in that
 	    value: function _getOptions() {
+	      var _props2 = this.props;
+	      var date = _props2.date;
+	      var interval = _props2.interval;
+	      var startTime = _props2.startTime;
+	      var endTime = _props2.endTime;
 
-	      var date = this.props.date;
 	      var options = [];
+	      var incrementLength = endTime * (MINUTES_IN_HOUR / interval);
+	      var i = startTime * (MINUTES_IN_HOUR / interval);
 
 	      // set to beginning of day
 	      date.setHours(0, 0, 0, 0);
 
-	      // loop through half hour increments
-	      for (var i = 0; i < 48; i++) {
-	        var time = new Date(date.getTime() + i * 1800000); // should allow different increments
-	        var display = this._format(time);
+	      for (; i < incrementLength; i++) {
+	        var time = new Date(date.getTime() + i * interval * 60000);
+	        var formatted = this._format(time);
 	        options.push(_react2['default'].createElement(
 	          'option',
 	          { key: time, value: time },
-	          display
+	          formatted
 	        ));
 	      }
 
@@ -995,19 +1056,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'propTypes',
 	    value: {
 	      date: _react.PropTypes.instanceOf(Date),
+	      startTime: _react.PropTypes.number,
+	      endTime: _react.PropTypes.number,
+	      interval: _react.PropTypes.number,
+	      separator: _react.PropTypes.string,
 	      pad: _react.PropTypes.bool,
-	      onTimeSelect: _react2['default'].PropTypes.func
+	      twelveHourClock: _react.PropTypes.bool,
+	      humanize: _react.PropTypes.bool,
+	      humanizeStrings: _react.PropTypes.object,
+	      onTimeSelect: _react.PropTypes.func
 	    },
 	    enumerable: true
 	  }, {
 	    key: 'defaultProps',
 	    value: {
 	      date: new Date(),
+	      startTime: 0,
+	      endTime: 24,
+	      interval: 60,
+	      separator: ':',
 	      pad: true,
+	      twelveHourClock: true,
+	      humanize: false,
+	      humanizeStrings: {
+	        begin: 'Beginning of Day',
+	        middle: 'Noon',
+	        end: 'End of Day'
+	      },
 	      onTimeSelect: function onTimeSelect() {
-	        return null;
-	      }
-	    },
+	        return null
+	        // showSeconds: true
+	        ;
+	      } },
 	    enumerable: true
 	  }]);
 

@@ -1,4 +1,4 @@
-## React Simple Calendar 0.2.4
+## React Simple Calendar 0.2.5
 
 Simple calendar for react.
 
@@ -11,6 +11,7 @@ Simple calendar for react.
 
 ## TODOS
 
+[ ] less opinionated Time
 [ ] touch support
 [ ] keyboard support
 [ ] ARIA support

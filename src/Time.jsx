@@ -9,27 +9,32 @@ class Time extends Component {
 
   static propTypes = {
     date: PropTypes.instanceOf(Date),
+    startTime: PropTypes.number,
+    endTime: PropTypes.number,
+    interval: PropTypes.number,
+    separator: PropTypes.string,
     pad: PropTypes.bool,
-    military: PropTypes.bool,
-    onTimeSelect: PropTypes.func
+    twelveHourClock: PropTypes.bool,
+    humanize: PropTypes.bool,
+    humanizeStrings: PropTypes.object,
+    onTimeSelect: PropTypes.func,
   }
 
   static defaultProps = {
     date: new Date(),
     startTime: 0,
     endTime: 24,
-    minuteStep: 30,
+    interval: 60,
     separator: ':',
     pad: true,
-    military: false,
-    noon: true,
-    onTimeSelect: () => null,
-    humanize: true,
+    twelveHourClock: true,
+    humanize: false,
     humanizeStrings: {
       begin: 'Beginning of Day',
       middle: 'Noon',
       end: 'End of Day'
-    }
+    },
+    onTimeSelect: () => null
     // showSeconds: true
   }
 
@@ -39,9 +44,10 @@ class Time extends Component {
 
   // would be cool to allow formatting like this:
   // https://github.com/amsul/pickadate.js/blob/master/lib/picker.time.js#L593-L648
+  // would get rid of the need for a shit load of props
   _format(d) {
 
-    const {humanize, humanizeStrings, startTime, endTime, minuteStep, military, pad, separator} = this.props;
+    const {humanize, humanizeStrings, startTime, endTime, interval, twelveHourClock, pad, separator} = this.props;
 
     let h = d.getHours();
     let m = this._pad(d.getMinutes());
@@ -56,14 +62,15 @@ class Time extends Component {
         return humanizeStrings.middle;
       }
 
-      if(h === (endTime - 1) &&
-         m === minuteStep * ((MINUTES_IN_HOUR / minuteStep) - 1)) {
-        return humanizeStrings.end;
+      if(h === (endTime - 1)) {
+        if(interval === 60 || m === interval * ((MINUTES_IN_HOUR / interval) - 1)) {
+          return humanizeStrings.end;
+        }
       }
     }
 
     // convert to 12 hour clock
-    if(!military) {
+    if(twelveHourClock) {
       h = (h % 12) || 12;
     }
 
@@ -72,7 +79,7 @@ class Time extends Component {
       h = this._pad(h);
     }
 
-    return military ? `${h}${separator}${m}` : `${h}${separator}${m} ${AMPM}`;
+    return twelveHourClock ? `${h}${separator}${m} ${AMPM}`: `${h}${separator}${m}`;
   }
 
   // look into optimizing, probably don't need to get a new date for every time
@@ -80,17 +87,17 @@ class Time extends Component {
   // formatting should be easy if we have a start date and merge seconds in that
   _getOptions() {
 
-    const {date, minuteStep, startTime, endTime} = this.props;
+    const {date, interval, startTime, endTime} = this.props;
 
     let options = [];
-    let incrementLength = endTime * (MINUTES_IN_HOUR / minuteStep);
-    let i = startTime * (MINUTES_IN_HOUR / minuteStep);
+    let incrementLength = endTime * (MINUTES_IN_HOUR / interval);
+    let i = startTime * (MINUTES_IN_HOUR / interval);
 
     // set to beginning of day
     date.setHours(0, 0, 0, 0);
     
     for(; i < incrementLength; i++) {
-      let time = new Date(date.getTime() + (i * minuteStep * 60000));
+      let time = new Date(date.getTime() + (i * interval * 60000));
       let formatted = this._format(time);
       options.push(<option key={time} value={time}>{formatted}</option>);
     }
