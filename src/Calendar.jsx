@@ -103,27 +103,33 @@ class Calendar extends Component {
 
   static propTypes = {
     date: PropTypes.instanceOf(Date),
-    weekdays: PropTypes.array,
+    min: PropTypes.instanceOf(Date),
+    max: PropTypes.instanceOf(Date),
+    disabledDays: PropTypes.array,
+    selectedDays: PropTypes.array,
     trimWeekdays: PropTypes.number,
     forceSixRows: PropTypes.bool,
     outsideDays: PropTypes.bool,
-    events: PropTypes.array,
     onDateSelect: PropTypes.func
+    // events: PropTypes.array,
+    // weekdays: PropTypes.array,
   }
 
   static defaultProps = {
     date: new Date(), // default month
+    min: null,
+    max: null,
     disabledDays: null,
     selectedDays: null,
-    weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
     trimWeekdays: 1,
     forceSixRows: true,
     outsideDays: true,
+    onDateSelect: () => null
     // show how we could map events using microformat
     // https://moz.com/blog/markup-events-hcalendar-microformat
     // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-    events: [],
-    onDateSelect: () => null
+    // events: [],
+    // weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
   }
 
   state = {
@@ -208,17 +214,20 @@ class Calendar extends Component {
 
   _renderWeeksInMonth() {
 
+    const {min, max, disabledDays, selectedDays, outsideDays, onDateSelect} = this.props;
     const month = this.state.month;
 
     let weeks = getWeekArray(month).map((week, index) =>
       <Week
         key={week[0].toString()}
         days={week}
-        month={this.state.month}
-        disabledDays={this.props.disabledDays}
-        selectedDays={this.props.selectedDays}
-        outsideDays={this.props.outsideDays}
-        onDateSelect={this.props.onDateSelect}
+        month={month}
+        min={min}
+        max={max}
+        disabledDays={disabledDays}
+        selectedDays={selectedDays}
+        outsideDays={outsideDays}
+        onDateSelect={onDateSelect}
       />
     );
 
