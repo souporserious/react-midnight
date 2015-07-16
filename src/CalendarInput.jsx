@@ -29,15 +29,18 @@ class CalendarInput extends Component {
     isOpen: false
   }
 
-  componentDidMount() {
-    document.addEventListener('click', ::this._documentClickHandler);
+  _documentClickHandler = null
+
+  componentWillMount() {
+    this._documentClickHandler = (e) => this._documentClick(e);
+    document.addEventListener('click', this._documentClickHandler);
   }
 
-  componentDidUnmount() {
-    document.removeEventListener('click', ::this._documentClickHandler);
+  componentWillUnmount() {
+    document.removeEventListener('click', this._documentClickHandler);
   }
 
-  _documentClickHandler(e) {
+  _documentClick(e) {
     const componentNode = React.findDOMNode(this);
     this.setState({isOpen: componentNode.contains(e.target)});
   }
@@ -51,7 +54,7 @@ class CalendarInput extends Component {
 
     let {date, wrapperClassName, inputClassName, placeholder, calendarProps, hiddenValue} = this.props;
     let formattedDate = this.props.formatDate(date);
-    
+
     return(
       <div className={wrapperClassName}>
         <input
