@@ -37,8 +37,9 @@ var App = React.createClass({
         <Calendar
           date={this.state.date}
           onDateSelect={this._handleCalendarClick}
-          disabledDays={[ 1, 2, 3, 4, 5, 6 ]}
           selectedDays={[ 7, 8, 9, 10, 11, 12 ]}
+          minDay={new Date('06-15-2015')}
+          maxDay={new Date('07-31-2015')}
         />
         <CalendarInput
           date={this.state.date}

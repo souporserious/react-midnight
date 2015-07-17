@@ -138,53 +138,46 @@ export function getWeekArray(d, firstDayOfWeek = 0) {
   return weekArray;
 }
 
-export function getModifiersForDay() {
-
-  let modifiers = [];
-
-  if(modifierFunctions) {
-    for(let modifier in modifierFunctions) {
-
-      let func = modifierFunctions[modifier];
-
-      if(func(d)) {
-        modifiers.push(modifier);
-      }
-    }
-  }
-
-  return modifiers;
-}
-
-export function isDayOutsideMonth(d1, d2) {
+export function isOutsideMonth(d1, d2) {
   return d1.getMonth() !== d2.getMonth();
 }
 
-export function isDaySame(date, dates) {
+export function isInsideMonth(d1, d2) {
+  return d1.getMonth() === d2.getMonth();
+}
 
-  if(!date || !dates) return null;
-
-  // normalize dates as an array
-  dates = Array.isArray(dates) ? dates : [dates];
-
-  // loop through and find day
-  for(let i = dates.length; i--;) {
-    if(isSameDay(date, dates[i])) return i;
-  }
-  return false;
+export function isBeforeDay(d1, d2) {
+  d2 = clone(d2);
+  d2.setHours(0, 0, 0, 0);
+  return d1 < d2;
 }
 
 export function isSameDay(d1, d2) {
 
-  if(!d1 || !d2) return null;
-  
-  return d1.getDate() === d2.getDate() &&
+  const daysEqual = (d1, d2) =>
+    d1.getDate() === d2.getDate() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getFullYear() === d2.getFullYear();
+
+  if(Array.isArray(d2)) {
+
+    // loop through and find day
+    for(let i = d2.length; i--;) {
+      if(daysEqual(d1, d2[i])) return i;
+    }
+
+    return false;
+
+  } else {
+
+    return daysEqual(d1, d2);
+  }
 }
 
-export function formatMonthTitle(d) {
-  return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+export function isAfterDay(d1, d2) {
+  d2 = clone(d2);
+  d2.setHours(0, 0, 0, 0);
+  return d1 > d2;
 }
 
 export function formatMonth(d) {

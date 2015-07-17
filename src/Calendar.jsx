@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import PrevMonth from './PrevMonth';
 import NextMonth from './NextMonth';
-import { formatMonth, formatYear, isSameDay, isDaySame, isDayOutsideMonth, getWeekArray, navigateMonth } from './utils';
+import { formatMonth, formatYear, isBeforeDay, isSameDay, isAfterDay, isInsideMonth, isOutsideMonth, getWeekArray, navigateMonth } from './utils';
 
 // Dependencies
 import classNames from 'classnames';
@@ -16,10 +16,11 @@ class Day extends Component {
 
   render() {
 
-    const {month, date, disabledDays, selectedDays, outsideDays, onClick} = this.props;
+    const {month, date, disabledDays, minDay, maxDay, selectedDays, outsideDays, onClick} = this.props;
 
     let className = 'cal__day';
     let modifiers = [];
+    let onDayClick = this._handleDateSelect.bind(this, date);
 
     const isToday = isSameDay(date, new Date());
 
@@ -27,21 +28,24 @@ class Day extends Component {
       modifiers.push('today');
     }
 
-    const isOutside = isDayOutsideMonth(date, month);
+    const isOutside = isOutsideMonth(date, month);
 
     if(isOutside) {
       modifiers.push('outside');
     }
 
-    const isDisabled = isDaySame(date, disabledDays);
+    const isDisabled = disabledDays ? isSameDay(date, disabledDays) : null;
+    const isBefore = minDay ? isBeforeDay(date, minDay) : null;
+    const isAfter = maxDay ? isAfterDay(date, maxDay) : null;
 
-    if(isDisabled) {
+    if(isDisabled || isBefore || isAfter) {
       modifiers.push('disabled');
+      onDayClick = null;
     }
 
     if(selectedDays) {
 
-      const isSelected = isDaySame(date, selectedDays);
+      const isSelected = isSameDay(date, selectedDays);
 
       if(isSelected || isSelected === 0) {
         modifiers.push('selected');
@@ -66,8 +70,8 @@ class Day extends Component {
       <td
         role="presentation"
         aria-label={date}
-        onClick={!isDisabled && this._handleDateSelect.bind(this, date)}
         className={className}
+        onClick={onDayClick}
       >
         {date.getDate()}
       </td>
@@ -86,6 +90,8 @@ class Week extends Component {
         key={day.getTime()}
         date={day}
         month={month}
+        minDay={this.props.minDay}
+        maxDay={this.props.maxDay}
         disabledDays={this.props.disabledDays}
         selectedDays={this.props.selectedDays}
         outsideDays={this.props.outsideDays}
@@ -105,8 +111,8 @@ class Calendar extends Component {
 
   static propTypes = {
     date: PropTypes.instanceOf(Date),
-    min: PropTypes.instanceOf(Date),
-    max: PropTypes.instanceOf(Date),
+    minDay: PropTypes.instanceOf(Date),
+    maxDay: PropTypes.instanceOf(Date),
     disabledDays: PropTypes.array,
     selectedDays: PropTypes.array,
     trimWeekdays: PropTypes.number,
@@ -123,8 +129,8 @@ class Calendar extends Component {
 
   static defaultProps = {
     date: new Date(), // default month
-    min: null,
-    max: null,
+    minDay: null,
+    maxDay: null,
     disabledDays: null,
     selectedDays: null,
     trimWeekdays: null,
@@ -237,8 +243,8 @@ class Calendar extends Component {
         key={week[0].getTime()}
         days={week}
         month={month}
-        min={min}
-        max={max}
+        minDay={this.props.minDay}
+        maxDay={this.props.maxDay}
         disabledDays={disabledDays}
         selectedDays={selectedDays}
         outsideDays={outsideDays}
