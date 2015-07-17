@@ -83,7 +83,7 @@ class Week extends Component {
 
     let days = this.props.days.map(day =>
       <Day
-        key={day}
+        key={day.getTime()}
         date={day}
         month={month}
         disabledDays={this.props.disabledDays}
@@ -114,7 +114,9 @@ class Calendar extends Component {
     outsideDays: PropTypes.bool,
     onDateSelect: PropTypes.func,
     prevHTML: PropTypes.node,
-    nextHTML: PropTypes.node
+    nextHTML: PropTypes.node,
+    prevDisabled: PropTypes.bool,
+    nextDisabled: PropTypes.bool
     // events: PropTypes.array,
     // weekdays: PropTypes.array,
   }
@@ -125,7 +127,7 @@ class Calendar extends Component {
     max: null,
     disabledDays: null,
     selectedDays: null,
-    trimWeekdays: 1,
+    trimWeekdays: null,
     forceSixRows: true,
     outsideDays: true,
     onDateSelect: () => null
@@ -203,13 +205,22 @@ class Calendar extends Component {
       return WEEKDAYS.map((weekday, index) => {
         let trim = this.props.trimWeekdays;
         let weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
-        return <th key={index} scope="col" title={weekday}>{weekdayTrimmed}</th>
+        return (
+          <th
+            key={index}
+            scope="col"
+            title={weekday}
+            className="cal__weekday"
+          >
+            {weekdayTrimmed}
+          </th>
+        );
       });
     };
     
     return(
       <thead>
-        <tr>
+        <tr className="cal__weekdays">
           {getDays()}
         </tr>
       </thead>
@@ -223,7 +234,7 @@ class Calendar extends Component {
 
     let weeks = getWeekArray(month).map((week, index) =>
       <Week
-        key={week[0].toString()}
+        key={week[0].getTime()}
         days={week}
         month={month}
         min={min}
@@ -272,12 +283,12 @@ class Calendar extends Component {
     return (
       <div className={classes}>
         <header className="cal__header">
-          <PrevMonth onClick={this._navigate.bind(this, -1)} inner={this.props.prevHTML} />
+          <PrevMonth onClick={this._navigate.bind(this, -1)} inner={this.props.prevHTML} disable={this.props.prevDisabled} />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
             <div className="cal__year">{yearLabel}</div>
           </div>
-          <NextMonth onClick={this._navigate.bind(this, 1)} inner={this.props.nextHTML} />
+          <NextMonth onClick={this._navigate.bind(this, 1)} inner={this.props.nextHTML} disable={this.props.nextDisabled} />
         </header>
         <table className="cal__table">
           {this._renderWeekdays()}

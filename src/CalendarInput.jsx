@@ -19,7 +19,7 @@ class CalendarInput extends Component {
     wrapperClassName: null,
     inputClassName: null,
     placeholder: null,
-    calendarProps: {modifiers: 'small'},
+    calendarProps: {modifiers: 'small', trimWeekdays: 2},
     hiddenValue: false, // strips name from main input into a hidden one
     formatDate: date => date,
     onDateSelect: () => null

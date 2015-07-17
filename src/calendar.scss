@@ -1,5 +1,5 @@
 .cal {
-    max-width: 500px;
+    max-width: 600px;
 }
 
 .cal--small {
@@ -48,6 +48,8 @@
 
 .cal__nav {
     padding: 12px 16px;
+    border: 0;
+    background: transparent;
     user-select: none;
     cursor: pointer;
 }
@@ -67,28 +69,26 @@
     border-spacing: 0;
     table-layout: fixed;
     user-select: none;
-    
-    //border: 1px solid #eee;
-    
-    thead {
-        //border: 1px solid #eee;
-        border-bottom: 0;
-    }
+
     th {
         width: (100%/7);
         padding: 12px 0;
     }
-    td  {
-        width: (100%/7);
-        padding: 16px 0;
-        //border: 1px solid #eee;
-        cursor: pointer;
-    }
+}
+
+.cal__weekdays {
+    font-size: 12px;
+}
+
+.cal__weekday {
 }
 
 .cal__day {
+    width: (100%/7);
+    padding: 16px 0;
     position: relative;
     color: #000;
+    cursor: pointer;
 }
 
 .cal__day--today {
