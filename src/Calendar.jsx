@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react';
+import PrevMonth from './PrevMonth';
+import NextMonth from './NextMonth';
 import { formatMonth, formatYear, isSameDay, isDaySame, isDayOutsideMonth, getWeekArray, navigateMonth } from './utils';
 
 // Dependencies
@@ -110,7 +112,9 @@ class Calendar extends Component {
     trimWeekdays: PropTypes.number,
     forceSixRows: PropTypes.bool,
     outsideDays: PropTypes.bool,
-    onDateSelect: PropTypes.func
+    onDateSelect: PropTypes.func,
+    prevHTML: PropTypes.node,
+    nextHTML: PropTypes.node
     // events: PropTypes.array,
     // weekdays: PropTypes.array,
   }
@@ -268,12 +272,12 @@ class Calendar extends Component {
     return (
       <div className={classes}>
         <header className="cal__header">
-          <a className="cal__nav cal__nav--prev" role="button" title="Previous month" onClick={this._navigate.bind(this, -1)}>Prev</a>
+          <PrevMonth onClick={this._navigate.bind(this, -1)} inner={this.props.prevHTML} />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
             <div className="cal__year">{yearLabel}</div>
           </div>
-          <a className="cal__nav cal__nav--next" role="button" title="Next month" onClick={this._navigate.bind(this, 1)}>Next</a>
+          <NextMonth onClick={this._navigate.bind(this, 1)} inner={this.props.nextHTML} />
         </header>
         <table className="cal__table">
           {this._renderWeekdays()}
