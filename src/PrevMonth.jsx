@@ -23,7 +23,7 @@ class PrevMonth extends Component {
     let classes = 'cal__nav cal__nav--prev';
 
     if(this.props.disable) {
-      classes += 'cal__nav--disabled';
+      classes += ' cal__nav--disabled';
     }
 
     return(

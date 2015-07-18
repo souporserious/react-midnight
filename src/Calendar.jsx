@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import PrevMonth from './PrevMonth';
 import NextMonth from './NextMonth';
-import { formatMonth, formatYear, isBeforeDay, isSameDay, isAfterDay, isInsideMonth, isOutsideMonth, getWeekArray, navigateMonth } from './utils';
+import { formatMonth, formatYear, isBeforeDay, isSame, isAfterDay, isInsideMonth, isOutsideMonth, getWeekArray, navigateMonth } from './utils';
 
 // Dependencies
 import classNames from 'classnames';
@@ -22,7 +22,7 @@ class Day extends Component {
     let modifiers = [];
     let onDayClick = this._handleDateSelect.bind(this, date);
 
-    const isToday = isSameDay(date, new Date());
+    const isToday = isSame(date, new Date());
 
     if(isToday) {
       modifiers.push('today');
@@ -34,7 +34,7 @@ class Day extends Component {
       modifiers.push('outside');
     }
 
-    const isDisabled = disabledDays ? isSameDay(date, disabledDays) : null;
+    const isDisabled = disabledDays ? isSame(date, disabledDays) : null;
     const isBefore = minDay ? isBeforeDay(date, minDay) : null;
     const isAfter = maxDay ? isAfterDay(date, maxDay) : null;
 
@@ -45,7 +45,7 @@ class Day extends Component {
 
     if(selectedDays) {
 
-      const isSelected = isSameDay(date, selectedDays);
+      const isSelected = isSame(date, selectedDays);
 
       if(isSelected || isSelected === 0) {
         modifiers.push('selected');
@@ -136,7 +136,9 @@ class Calendar extends Component {
     trimWeekdays: null,
     forceSixRows: true,
     outsideDays: true,
-    onDateSelect: () => null
+    onDateSelect: () => null,
+    prevHTML: '',
+    nextHTML: ''
     // show how we could map events using microformat
     // https://moz.com/blog/markup-events-hcalendar-microformat
     // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
@@ -280,21 +282,35 @@ class Calendar extends Component {
 
   render() {
 
-    let modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
-    let classes = classNames('cal', modifiers, this.props.className);
+    const {className, minDay, maxDay} = this.props;
+    const {month} = this.state;
 
-    let monthLabel = formatMonth(this.state.month);
-    let yearLabel = formatYear(this.state.month);
+    let modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
+    let classes = classNames('cal', this.props.modifiers, className);
+
+    let monthLabel = formatMonth(month);
+    let yearLabel = formatYear(month);
+
+    // disable prev/next buttons when min/max days set
+    let prevDisabled, nextDisabled = false;
+
+    if(minDay && isSame(month, minDay, 'month')) {
+      prevDisabled = true;
+    }
+
+    if(maxDay && isSame(month, maxDay, 'month')) {
+      nextDisabled = true;
+    }
 
     return (
       <div className={classes}>
         <header className="cal__header">
-          <PrevMonth onClick={this._navigate.bind(this, -1)} inner={this.props.prevHTML} disable={this.props.prevDisabled} />
+          <PrevMonth onClick={this._navigate.bind(this, -1)} inner={this.props.prevHTML} disable={prevDisabled} />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
             <div className="cal__year">{yearLabel}</div>
           </div>
-          <NextMonth onClick={this._navigate.bind(this, 1)} inner={this.props.nextHTML} disable={this.props.nextDisabled} />
+          <NextMonth onClick={this._navigate.bind(this, 1)} inner={this.props.nextHTML} disable={nextDisabled} />
         </header>
         <table className="cal__table">
           {this._renderWeekdays()}

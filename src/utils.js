@@ -152,25 +152,26 @@ export function isBeforeDay(d1, d2) {
   return d1 < d2;
 }
 
-export function isSameDay(d1, d2) {
+export function isSame(d1, d2, type = 'day') {
 
-  const daysEqual = (d1, d2) =>
-    d1.getDate() === d2.getDate() &&
-    d1.getMonth() === d2.getMonth() &&
+  const is = {};
+
+  is.year = (d1, d2) =>
     d1.getFullYear() === d2.getFullYear();
 
+  is.month = (d1, d2) =>
+    d1.getMonth() === d2.getMonth();
+
+  is.day = (d1, d2) =>
+    d1.getDate() === d2.getDate() && is.month(d1, d2) && is.year(d1, d2);
+
   if(Array.isArray(d2)) {
-
-    // loop through and find day
     for(let i = d2.length; i--;) {
-      if(daysEqual(d1, d2[i])) return i;
+      if(is[type](d1, d2[i])) return i;
     }
-
     return false;
-
   } else {
-
-    return daysEqual(d1, d2);
+    return is[type](d1, d2);
   }
 }
 

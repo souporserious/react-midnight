@@ -1,143 +1,177 @@
 .cal {
-    max-width: 600px;
+  max-width: 600px;
 }
 
 .cal--small {
-    max-width: 230px;
+  max-width: 230px;
 
-    position: absolute;
-    z-index: 100;
-    background-color: #fff;
-    
-    .cal__table {
-        th {
-            font-size: 12px;
-        }
-        td {
-            padding: 8px 0;
-            font-size: 14px;
-        }
+  position: absolute;
+  z-index: 100;
+  background-color: #fff;
+
+  .cal__table {
+    th {
+      font-size: 12px;
     }
+    td {
+      padding: 8px 0;
+      font-size: 14px;
+    }
+  }
 }
 
 .cal__header {
-    display: flex;
-    justify-content: space-between;
-    
-    .cal--small & {
-        font-size: 12px;
-    }
+  display: flex;
+  justify-content: space-between;
+
+  .cal--small & {
+    font-size: 12px;
+  }
 }
 
 .cal__month-year {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .cal__month, .cal__year {
-    display: inline-block;
-    align-items: center;
+  display: inline-block;
+  align-items: center;
 }
 
 .cal__month {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 .cal__year {
 }
 
 .cal__nav {
-    padding: 12px 16px;
-    border: 0;
-    background: transparent;
-    user-select: none;
-    cursor: pointer;
+  padding: 14px 40px;
+  border: 0;
+  background: transparent;
+  user-select: none;
+  cursor: pointer;
+  position: relative;
+
+  &:before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.cal__nav--disabled {
+  outline: 0;
 }
 
 .cal__nav--prev {
-    left: 0;
+  &:before {
+    border-width: 6px 10px 6px 0;
+    border-color: transparent #555657 transparent transparent;
+  }
+
+  &.cal__nav--disabled {
+    &:before {
+      border-color: transparent #D4D6D8 transparent transparent;
+    }
+  }
 }
 
 .cal__nav--next {
-    right: 0;
+   &:before {
+    border-width: 4px 0 6px 10px;
+    border-color: transparent transparent transparent #555657;
+  }
+
+  &.cal__nav--disabled {
+    &:before {
+      border-color: transparent transparent transparent #D4D6D8;
+    }
+  }
 }
 
 .cal__table {
-    width: 100%;
-    text-align: center;
-    border-collapse: collapse;
-    border-spacing: 0;
-    table-layout: fixed;
-    user-select: none;
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  user-select: none;
 
-    th {
-        width: (100%/7);
-        padding: 12px 0;
-    }
+  th {
+    width: (100%/7);
+    padding: 12px 0;
+  }
 }
 
 .cal__weekdays {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 .cal__weekday {
 }
 
 .cal__day {
-    width: (100%/7);
-    padding: 16px 0;
-    position: relative;
-    color: #000;
-    cursor: pointer;
+  width: (100%/7);
+  padding: 16px 0;
+  position: relative;
+  color: #000;
+  cursor: pointer;
 }
 
 .cal__day--today {
-    color: #fff;
-    
-    &:before {
-        content: '';
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        z-index: -1;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #b4da55;
-        border-radius: 50%;
-    }
+  color: #fff;
+
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #b4da55;
+    border-radius: 50%;
+  }
 }
 
 .cal__day--selected {
-    @extend .cal__day--today;
+  @extend .cal__day--today;
 
-    &:before {
-        border-radius: 0;
-        background: #8055DA;
-    }
+  &:before {
+    border-radius: 0;
+    background: #8055DA;
+  }
 
     // & + .cal__day--selected {
     //     background: red;
     // }
-}
+  }
 
-.cal__day--selected-first {
+  .cal__day--selected-first {
     &:before {
-        border-radius: 100% 0 0 100%;
+      border-radius: 100% 0 0 100%;
     }
-}
+  }
 
-.cal__day--selected-last {
+  .cal__day--selected-last {
     &:before {
-        border-radius: 0 100% 100% 0;
+      border-radius: 0 100% 100% 0;
     }
-}
+  }
 
-.cal__day--outside, .cal__day--disabled {
+  .cal__day--outside, .cal__day--disabled {
     color: #ccc;
-}
+  }
 
-.cal__day--disabled {
+  .cal__day--disabled {
     background: #EFF0F1;
     cursor: default !important;
-}
+  }
