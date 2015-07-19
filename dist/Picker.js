@@ -66,11 +66,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Calendar2 = _interopRequireDefault(_Calendar);
 
-	var _CalendarInput = __webpack_require__(5);
+	var _CalendarInput = __webpack_require__(7);
 
 	var _CalendarInput2 = _interopRequireDefault(_CalendarInput);
 
-	var _Time = __webpack_require__(6);
+	var _Time = __webpack_require__(8);
 
 	var _Time2 = _interopRequireDefault(_Time);
 
@@ -102,11 +102,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _utils = __webpack_require__(3);
+	var _PrevMonth = __webpack_require__(3);
+
+	var _PrevMonth2 = _interopRequireDefault(_PrevMonth);
+
+	var _NextMonth = __webpack_require__(4);
+
+	var _NextMonth2 = _interopRequireDefault(_NextMonth);
+
+	var _utils = __webpack_require__(5);
 
 	// Dependencies
 
-	var _classnames = __webpack_require__(4);
+	var _classnames = __webpack_require__(6);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -133,34 +141,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var month = _props.month;
 	      var date = _props.date;
 	      var disabledDays = _props.disabledDays;
+	      var minDay = _props.minDay;
+	      var maxDay = _props.maxDay;
 	      var selectedDays = _props.selectedDays;
 	      var outsideDays = _props.outsideDays;
 	      var onClick = _props.onClick;
 
 	      var className = 'cal__day';
 	      var modifiers = [];
+	      var onDayClick = this._handleDateSelect.bind(this, date);
 
-	      var isToday = (0, _utils.isSameDay)(date, new Date());
+	      var isToday = (0, _utils.isSame)(date, new Date());
 
 	      if (isToday) {
 	        modifiers.push('today');
 	      }
 
-	      var isOutside = (0, _utils.isDayOutsideMonth)(date, month);
+	      var isOutside = (0, _utils.isOutsideMonth)(date, month);
 
 	      if (isOutside) {
 	        modifiers.push('outside');
 	      }
 
-	      var isDisabled = (0, _utils.isDaySame)(date, disabledDays);
+	      var isDisabled = disabledDays ? (0, _utils.isSame)(date, disabledDays) : null;
+	      var isBefore = minDay ? (0, _utils.isBeforeDay)(date, minDay) : null;
+	      var isAfter = maxDay ? (0, _utils.isAfterDay)(date, maxDay) : null;
 
-	      if (isDisabled) {
+	      if (isDisabled || isBefore || isAfter) {
 	        modifiers.push('disabled');
+	        onDayClick = null;
 	      }
 
 	      if (selectedDays) {
 
-	        var isSelected = (0, _utils.isDaySame)(date, selectedDays);
+	        var isSelected = (0, _utils.isSame)(date, selectedDays);
 
 	        if (isSelected || isSelected === 0) {
 	          modifiers.push('selected');
@@ -188,8 +202,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        {
 	          role: 'presentation',
 	          'aria-label': date,
-	          onClick: !isDisabled && this._handleDateSelect.bind(this, date),
-	          className: className
+	          className: className,
+	          onClick: onDayClick
 	        },
 	        date.getDate()
 	      );
@@ -219,9 +233,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var days = this.props.days.map(function (day) {
 	        return _react2['default'].createElement(Day, {
-	          key: day,
+	          key: day.getTime(),
 	          date: day,
 	          month: month,
+	          minDay: _this.props.minDay,
+	          maxDay: _this.props.maxDay,
 	          disabledDays: _this.props.disabledDays,
 	          selectedDays: _this.props.selectedDays,
 	          outsideDays: _this.props.outsideDays,
@@ -324,7 +340,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
 	          return _react2['default'].createElement(
 	            'th',
-	            { key: index, scope: 'col', title: weekday },
+	            {
+	              key: index,
+	              scope: 'col',
+	              title: weekday,
+	              className: 'cal__weekday'
+	            },
 	            weekdayTrimmed
 	          );
 	        });
@@ -335,7 +356,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        null,
 	        _react2['default'].createElement(
 	          'tr',
-	          null,
+	          { className: 'cal__weekdays' },
 	          getDays()
 	        )
 	      );
@@ -343,6 +364,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: '_renderWeeksInMonth',
 	    value: function _renderWeeksInMonth() {
+	      var _this3 = this;
+
 	      var _props3 = this.props;
 	      var min = _props3.min;
 	      var max = _props3.max;
@@ -355,11 +378,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var weeks = (0, _utils.getWeekArray)(month).map(function (week, index) {
 	        return _react2['default'].createElement(Week, {
-	          key: week[0].toString(),
+	          key: week[0].getTime(),
 	          days: week,
 	          month: month,
-	          min: min,
-	          max: max,
+	          minDay: _this3.props.minDay,
+	          maxDay: _this3.props.maxDay,
 	          disabledDays: disabledDays,
 	          selectedDays: selectedDays,
 	          outsideDays: outsideDays,
@@ -397,12 +420,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _props4 = this.props;
+	      var className = _props4.className;
+	      var minDay = _props4.minDay;
+	      var maxDay = _props4.maxDay;
+	      var month = this.state.month;
 
 	      var modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
-	      var classes = (0, _classnames2['default'])('cal', modifiers, this.props.className);
+	      var classes = (0, _classnames2['default'])('cal', modifiers, className);
 
-	      var monthLabel = (0, _utils.formatMonth)(this.state.month);
-	      var yearLabel = (0, _utils.formatYear)(this.state.month);
+	      var monthLabel = (0, _utils.formatMonth)(month);
+	      var yearLabel = (0, _utils.formatYear)(month);
+
+	      // disable prev/next buttons when min/max days set
+	      var prevDisabled = undefined,
+	          nextDisabled = false;
+
+	      if (minDay && (0, _utils.isSame)(month, minDay, 'month')) {
+	        prevDisabled = true;
+	      }
+
+	      if (maxDay && (0, _utils.isSame)(month, maxDay, 'month')) {
+	        nextDisabled = true;
+	      }
 
 	      return _react2['default'].createElement(
 	        'div',
@@ -410,11 +450,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2['default'].createElement(
 	          'header',
 	          { className: 'cal__header' },
-	          _react2['default'].createElement(
-	            'a',
-	            { className: 'cal__nav cal__nav--prev', role: 'button', title: 'Previous month', onClick: this._navigate.bind(this, -1) },
-	            'Prev'
-	          ),
+	          _react2['default'].createElement(_PrevMonth2['default'], { onClick: this._navigate.bind(this, -1), inner: this.props.prevHTML, disable: prevDisabled }),
 	          _react2['default'].createElement(
 	            'div',
 	            { className: 'cal__month-year' },
@@ -429,11 +465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              yearLabel
 	            )
 	          ),
-	          _react2['default'].createElement(
-	            'a',
-	            { className: 'cal__nav cal__nav--next', role: 'button', title: 'Next month', onClick: this._navigate.bind(this, 1) },
-	            'Next'
-	          )
+	          _react2['default'].createElement(_NextMonth2['default'], { onClick: this._navigate.bind(this, 1), inner: this.props.nextHTML, disable: nextDisabled })
 	        ),
 	        _react2['default'].createElement(
 	          'table',
@@ -447,14 +479,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'propTypes',
 	    value: {
 	      date: _react.PropTypes.instanceOf(Date),
-	      min: _react.PropTypes.instanceOf(Date),
-	      max: _react.PropTypes.instanceOf(Date),
+	      minDay: _react.PropTypes.instanceOf(Date),
+	      maxDay: _react.PropTypes.instanceOf(Date),
 	      disabledDays: _react.PropTypes.array,
 	      selectedDays: _react.PropTypes.array,
 	      trimWeekdays: _react.PropTypes.number,
 	      forceSixRows: _react.PropTypes.bool,
 	      outsideDays: _react.PropTypes.bool,
-	      onDateSelect: _react.PropTypes.func
+	      onDateSelect: _react.PropTypes.func,
+	      prevHTML: _react.PropTypes.node,
+	      nextHTML: _react.PropTypes.node,
+	      prevDisabled: _react.PropTypes.bool,
+	      nextDisabled: _react.PropTypes.bool
 	      // events: PropTypes.array,
 	      // weekdays: PropTypes.array,
 	    },
@@ -463,22 +499,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'defaultProps',
 	    value: {
 	      date: new Date(), // default month
-	      min: null,
-	      max: null,
+	      minDay: null,
+	      maxDay: null,
 	      disabledDays: null,
 	      selectedDays: null,
-	      trimWeekdays: 1,
+	      trimWeekdays: null,
 	      forceSixRows: true,
 	      outsideDays: true,
 	      onDateSelect: function onDateSelect() {
-	        return null
-	        // show how we could map events using microformat
-	        // https://moz.com/blog/markup-events-hcalendar-microformat
-	        // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-	        // events: [],
-	        // weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
-	        ;
-	      } },
+	        return null;
+	      },
+	      prevHTML: '',
+	      nextHTML: ''
+	      // show how we could map events using microformat
+	      // https://moz.com/blog/markup-events-hcalendar-microformat
+	      // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
+	      // events: [],
+	      // weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
+	    },
 	    enumerable: true
 	  }]);
 
@@ -496,6 +534,174 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var PrevMonth = (function (_Component) {
+	  function PrevMonth() {
+	    _classCallCheck(this, PrevMonth);
+
+	    _get(Object.getPrototypeOf(PrevMonth.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _inherits(PrevMonth, _Component);
+
+	  _createClass(PrevMonth, [{
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      var onClick = this.props.onClick;
+
+	      if (this.props.disable) return;
+	      onClick && onClick.call(this);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+
+	      var classes = 'cal__nav cal__nav--prev';
+
+	      if (this.props.disable) {
+	        classes += ' cal__nav--disabled';
+	      }
+
+	      return _react2['default'].createElement(
+	        'button',
+	        {
+	          className: classes,
+	          role: 'button',
+	          title: 'Previous month',
+	          onClick: this.handleClick.bind(this)
+	        },
+	        this.props.inner
+	      );
+	    }
+	  }], [{
+	    key: 'propTypes',
+	    value: {
+	      inner: _react.PropTypes.node,
+	      disable: _react.PropTypes.bool
+	    },
+	    enumerable: true
+	  }, {
+	    key: 'defaultProps',
+	    value: {
+	      inner: 'Prev',
+	      disable: false
+	    },
+	    enumerable: true
+	  }]);
+
+	  return PrevMonth;
+	})(_react.Component);
+
+	exports['default'] = PrevMonth;
+	module.exports = exports['default'];
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var NextMonth = (function (_Component) {
+	  function NextMonth() {
+	    _classCallCheck(this, NextMonth);
+
+	    _get(Object.getPrototypeOf(NextMonth.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _inherits(NextMonth, _Component);
+
+	  _createClass(NextMonth, [{
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      var onClick = this.props.onClick;
+
+	      if (this.props.disable) return;
+	      onClick && onClick.call(this);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+
+	      var classes = 'cal__nav cal__nav--next';
+
+	      if (this.props.disable) {
+	        classes += ' cal__nav--disabled';
+	      }
+
+	      return _react2['default'].createElement(
+	        'button',
+	        {
+	          className: classes,
+	          role: 'button',
+	          title: 'Next month',
+	          onClick: this.handleClick.bind(this)
+	        },
+	        this.props.inner
+	      );
+	    }
+	  }], [{
+	    key: 'propTypes',
+	    value: {
+	      inner: _react.PropTypes.node,
+	      disable: _react.PropTypes.bool
+	    },
+	    enumerable: true
+	  }, {
+	    key: 'defaultProps',
+	    value: {
+	      inner: 'Next',
+	      disable: false
+	    },
+	    enumerable: true
+	  }]);
+
+	  return NextMonth;
+	})(_react.Component);
+
+	exports['default'] = NextMonth;
+	module.exports = exports['default'];
+
+/***/ },
+/* 5 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -512,11 +718,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.getDaysInMonth = getDaysInMonth;
 	exports.navigateMonth = navigateMonth;
 	exports.getWeekArray = getWeekArray;
-	exports.getModifiersForDay = getModifiersForDay;
-	exports.isDayOutsideMonth = isDayOutsideMonth;
-	exports.isDaySame = isDaySame;
-	exports.isSameDay = isSameDay;
-	exports.formatMonthTitle = formatMonthTitle;
+	exports.isOutsideMonth = isOutsideMonth;
+	exports.isInsideMonth = isInsideMonth;
+	exports.isBeforeDay = isBeforeDay;
+	exports.isSame = isSame;
+	exports.isAfterDay = isAfterDay;
 	exports.formatMonth = formatMonth;
 	exports.formatYear = formatYear;
 	var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -660,51 +866,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return weekArray;
 	}
 
-	function getModifiersForDay() {
-
-	  var modifiers = [];
-
-	  if (modifierFunctions) {
-	    for (var modifier in modifierFunctions) {
-
-	      var func = modifierFunctions[modifier];
-
-	      if (func(d)) {
-	        modifiers.push(modifier);
-	      }
-	    }
-	  }
-
-	  return modifiers;
-	}
-
-	function isDayOutsideMonth(d1, d2) {
+	function isOutsideMonth(d1, d2) {
 	  return d1.getMonth() !== d2.getMonth();
 	}
 
-	function isDaySame(date, dates) {
+	function isInsideMonth(d1, d2) {
+	  return d1.getMonth() === d2.getMonth();
+	}
 
-	  if (!date || !dates) return null;
+	function isBeforeDay(d1, d2) {
+	  d2 = clone(d2);
+	  d2.setHours(0, 0, 0, 0);
+	  return d1 < d2;
+	}
 
-	  // normalize dates as an array
-	  dates = Array.isArray(dates) ? dates : [dates];
+	function isSame(d1, d2) {
+	  var type = arguments[2] === undefined ? 'day' : arguments[2];
 
-	  // loop through and find day
-	  for (var i = dates.length; i--;) {
-	    if (isSameDay(date, dates[i])) return i;
+	  var is = {};
+
+	  is.year = function (d1, d2) {
+	    return d1.getFullYear() === d2.getFullYear();
+	  };
+
+	  is.month = function (d1, d2) {
+	    return d1.getMonth() === d2.getMonth() && is.year(d1, d2);
+	  };
+
+	  is.day = function (d1, d2) {
+	    return d1.getDate() === d2.getDate() && is.month(d1, d2);
+	  };
+
+	  if (Array.isArray(d2)) {
+	    for (var i = d2.length; i--;) {
+	      if (is[type](d1, d2[i])) return i;
+	    }
+	    return false;
+	  } else {
+	    return is[type](d1, d2);
 	  }
-	  return false;
 	}
 
-	function isSameDay(d1, d2) {
-
-	  if (!d1 || !d2) return null;
-
-	  return d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
-	}
-
-	function formatMonthTitle(d) {
-	  return MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+	function isAfterDay(d1, d2) {
+	  d2 = clone(d2);
+	  d2.setHours(0, 0, 0, 0);
+	  return d1 > d2;
 	}
 
 	function formatMonth(d) {
@@ -716,7 +922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -769,7 +975,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -893,7 +1099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      wrapperClassName: null,
 	      inputClassName: null,
 	      placeholder: null,
-	      calendarProps: { modifiers: 'small' },
+	      calendarProps: { modifiers: 'small', trimWeekdays: 2 },
 	      hiddenValue: false, // strips name from main input into a hidden one
 	      formatDate: function formatDate(date) {
 	        return date;
@@ -912,7 +1118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -962,7 +1168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // would be cool to allow formatting like this:
 	    // https://github.com/amsul/pickadate.js/blob/master/lib/picker.time.js#L593-L648
 	    // would get rid of the need for a shit load of props
-	    value: function _format(d) {
+	    value: function _format(minuteInterval) {
 	      var _props = this.props;
 	      var humanize = _props.humanize;
 	      var humanizeStrings = _props.humanizeStrings;
@@ -973,64 +1179,67 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var pad = _props.pad;
 	      var separator = _props.separator;
 
-	      var h = d.getHours();
-	      var m = this._pad(d.getMinutes());
-	      var AMPM = h < 12 ? 'AM' : 'PM';
+	      var hour = Math.floor(minuteInterval / MINUTES_IN_HOUR);
+	      var minute = minuteInterval / MINUTES_IN_HOUR;
+
+	      // strip the decimal to find the minute value
+	      minute = ((minute - Math.floor(minute)) * MINUTES_IN_HOUR).toFixed(0);
+
+	      // make sure we are dealing with numbers
+	      hour = parseInt(hour);
+	      minute = parseInt(minute);
+
+	      var AMPM = hour < HOURS_TO_NOON ? 'AM' : 'PM';
 
 	      if (humanize) {
-	        if (h === startTime && m === '00') {
+	        if (hour === startTime && minute === 0) {
 	          return humanizeStrings.begin;
 	        }
 
-	        if (h === 12 && m === '00') {
+	        if (hour === HOURS_TO_NOON && minute === 0) {
 	          return humanizeStrings.middle;
 	        }
 
-	        if (h === endTime - 1) {
-	          if (interval === 60 || m === interval * (MINUTES_IN_HOUR / interval - 1)) {
-	            return humanizeStrings.end;
-	          }
+	        if (hour === endTime - 1 && minute === MINUTES_IN_HOUR - interval) {
+	          return humanizeStrings.end;
 	        }
 	      }
 
 	      // convert to 12 hour clock
 	      if (twelveHourClock) {
-	        h = h % 12 || 12;
+	        hour = hour % HOURS_TO_NOON || HOURS_TO_NOON;
 	      }
 
 	      // pad with a 0
 	      if (pad) {
-	        h = this._pad(h);
+	        hour = this._pad(hour);
+	        minute = this._pad(minute);
 	      }
 
-	      return twelveHourClock ? '' + h + separator + m + ' ' + AMPM : '' + h + separator + m;
+	      return twelveHourClock ? '' + hour + separator + minute + ' ' + AMPM : '' + hour + separator + minute;
 	    }
 	  }, {
 	    key: '_getOptions',
-
-	    // look into optimizing, probably don't need to get a new date for every time
-	    // should be able to store current day and add whatever seconds we need
-	    // formatting should be easy if we have a start date and merge seconds in that
 	    value: function _getOptions() {
 	      var _props2 = this.props;
-	      var date = _props2.date;
 	      var interval = _props2.interval;
 	      var startTime = _props2.startTime;
 	      var endTime = _props2.endTime;
 
 	      var options = [];
-	      var incrementLength = endTime * (MINUTES_IN_HOUR / interval);
-	      var i = startTime * (MINUTES_IN_HOUR / interval);
+	      var timeLength = endTime * MINUTES_IN_HOUR;
+	      var i = startTime * MINUTES_IN_HOUR;
 
-	      // set to beginning of day
-	      date.setHours(0, 0, 0, 0);
+	      for (; i < timeLength; i += interval) {
 
-	      for (; i < incrementLength; i++) {
-	        var time = new Date(date.getTime() + i * interval * 60000);
-	        var formatted = this._format(time);
+	        var formatted = this._format(i);
+
 	        options.push(_react2['default'].createElement(
 	          'option',
-	          { key: time, value: time },
+	          {
+	            key: i,
+	            value: i
+	          },
 	          formatted
 	        ));
 	      }
@@ -1040,15 +1249,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: '_handleChange',
 	    value: function _handleChange(e) {
-	      var date = new Date(_react2['default'].findDOMNode(e.target).value);
+
+	      // set to beginning of day
+	      this.props.date.setHours(0, 0, 0, 0);
+
+	      // get selected minutes and merge dates
+	      var minutes = _react2['default'].findDOMNode(e.target).value;
+	      var date = new Date(this.props.date.getTime() + minutes * 60000);
+
+	      // return selected date
 	      this.props.onTimeSelect(date);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+
+	      var defaultTime = this.props.defaultTime * MINUTES_IN_HOUR;
+
 	      return _react2['default'].createElement(
 	        'select',
-	        _extends({}, this.props, { onChange: this._handleChange.bind(this) }),
+	        _extends({}, this.props, { defaultValue: defaultTime, onChange: this._handleChange.bind(this) }),
 	        this._getOptions()
 	      );
 	    }
@@ -1071,6 +1291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'defaultProps',
 	    value: {
 	      date: new Date(),
+	      defaultTime: 0,
 	      startTime: 0,
 	      endTime: 24,
 	      interval: 60,
@@ -1085,7 +1306,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      onTimeSelect: function onTimeSelect() {
 	        return null
-	        // showSeconds: true
+	        // showSeconds: false
 	        ;
 	      } },
 	    enumerable: true
