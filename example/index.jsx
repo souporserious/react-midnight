@@ -49,6 +49,17 @@ var App = React.createClass({
         <Time
           date={this.state.date}
           onTimeSelect={this._handleCalendarClick}
+          startTime={6}
+          interval={30}
+          humanize={true}
+        />
+        <Time
+          date={this.state.date}
+          onTimeSelect={this._handleCalendarClick}
+          startTime={6}
+          interval={30}
+          defaultTime={23.5}
+          humanize={true}
         />
       </div>
     );

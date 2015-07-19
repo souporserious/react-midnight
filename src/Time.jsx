@@ -22,6 +22,7 @@ class Time extends Component {
 
   static defaultProps = {
     date: new Date(),
+    defaultTime: 0,
     startTime: 0,
     endTime: 24,
     interval: 60,
@@ -35,7 +36,7 @@ class Time extends Component {
       end: 'End of Day'
     },
     onTimeSelect: () => null
-    // showSeconds: true
+    // showSeconds: false
   }
 
   _pad(n) {
@@ -45,74 +46,97 @@ class Time extends Component {
   // would be cool to allow formatting like this:
   // https://github.com/amsul/pickadate.js/blob/master/lib/picker.time.js#L593-L648
   // would get rid of the need for a shit load of props
-  _format(d) {
+  _format(minuteInterval) {
 
     const {humanize, humanizeStrings, startTime, endTime, interval, twelveHourClock, pad, separator} = this.props;
 
-    let h = d.getHours();
-    let m = this._pad(d.getMinutes());
-    let AMPM = (h < 12) ? 'AM' : 'PM';
+    let hour = Math.floor(minuteInterval / MINUTES_IN_HOUR);
+    let minute = (minuteInterval / MINUTES_IN_HOUR);
+    
+    // strip the decimal to find the minute value 
+    minute = ((minute - Math.floor(minute)) * MINUTES_IN_HOUR).toFixed(0);
+
+    // make sure we are dealing with numbers
+    hour = parseInt(hour);
+    minute = parseInt(minute);
+
+    let AMPM = (hour < HOURS_TO_NOON) ? 'AM' : 'PM';
 
     if(humanize) {
-      if(h === startTime && m === '00') {
+      if(hour === startTime && minute === 0) {
         return humanizeStrings.begin;
       }
 
-      if(h === 12 && m === '00') {
+      if(hour === HOURS_TO_NOON && minute === 0) {
         return humanizeStrings.middle;
       }
 
-      if(h === (endTime - 1)) {
-        if(interval === 60 || m === interval * ((MINUTES_IN_HOUR / interval) - 1)) {
-          return humanizeStrings.end;
-        }
+      if(hour === (endTime - 1) &&
+         minute === MINUTES_IN_HOUR - interval) {
+        return humanizeStrings.end;
       }
     }
 
     // convert to 12 hour clock
     if(twelveHourClock) {
-      h = (h % 12) || 12;
+      hour = (hour % HOURS_TO_NOON) || HOURS_TO_NOON;
     }
 
     // pad with a 0
     if(pad) {
-      h = this._pad(h);
+      hour = this._pad(hour);
+      minute = this._pad(minute);
     }
 
-    return twelveHourClock ? `${h}${separator}${m} ${AMPM}`: `${h}${separator}${m}`;
+    return twelveHourClock ?
+      `${hour}${separator}${minute} ${AMPM}` :
+      `${hour}${separator}${minute}`;
   }
 
-  // look into optimizing, probably don't need to get a new date for every time
-  // should be able to store current day and add whatever seconds we need
-  // formatting should be easy if we have a start date and merge seconds in that
   _getOptions() {
 
-    const {date, interval, startTime, endTime} = this.props;
+    const {interval, startTime, endTime} = this.props;
 
     let options = [];
-    let incrementLength = endTime * (MINUTES_IN_HOUR / interval);
-    let i = startTime * (MINUTES_IN_HOUR / interval);
+    let timeLength = (endTime * MINUTES_IN_HOUR);
+    let i = startTime * MINUTES_IN_HOUR;
 
-    // set to beginning of day
-    date.setHours(0, 0, 0, 0);
-    
-    for(; i < incrementLength; i++) {
-      let time = new Date(date.getTime() + (i * interval * 60000));
-      let formatted = this._format(time);
-      options.push(<option key={time} value={time}>{formatted}</option>);
+    for(; i < timeLength; i += interval) {
+
+      let formatted = this._format(i);
+
+      options.push(
+        <option
+          key={i}
+          value={i}
+        >
+          {formatted}
+        </option>
+      );
     }
 
     return options;
   }
 
   _handleChange(e) {
-    let date = new Date(React.findDOMNode(e.target).value);
+
+    // set to beginning of day
+    this.props.date.setHours(0, 0, 0, 0);
+
+    // get selected minutes and merge dates
+    let minutes = React.findDOMNode(e.target).value;
+    let date = new Date(this.props.date.getTime() + (minutes * 60000));
+
+    // return selected date
     this.props.onTimeSelect(date);
   }
 
   render() {
+
+    let defaultTime = this.props.defaultTime * MINUTES_IN_HOUR;
+
     return(
-      <select {...this.props} onChange={this._handleChange.bind(this)}>
+      <select {...this.props} defaultValue={defaultTime} onChange={this._handleChange.bind(this)}>
         {this._getOptions()}
       </select>
     );
