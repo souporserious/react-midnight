@@ -160,10 +160,10 @@ export function isSame(d1, d2, type = 'day') {
     d1.getFullYear() === d2.getFullYear();
 
   is.month = (d1, d2) =>
-    d1.getMonth() === d2.getMonth();
+    d1.getMonth() === d2.getMonth() && is.year(d1, d2);
 
   is.day = (d1, d2) =>
-    d1.getDate() === d2.getDate() && is.month(d1, d2) && is.year(d1, d2);
+    d1.getDate() === d2.getDate() && is.month(d1, d2);
 
   if(Array.isArray(d2)) {
     for(let i = d2.length; i--;) {

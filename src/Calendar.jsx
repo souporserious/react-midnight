@@ -286,7 +286,7 @@ class Calendar extends Component {
     const {month} = this.state;
 
     let modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
-    let classes = classNames('cal', this.props.modifiers, className);
+    let classes = classNames('cal', modifiers, className);
 
     let monthLabel = formatMonth(month);
     let yearLabel = formatYear(month);
