@@ -5,7 +5,7 @@ const HOURS_TO_NOON = HOURS_IN_DAY / 2;
 const MINUTES_IN_HOUR = 60;
 const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
 
-class Time extends Component {
+class Times extends Component {
 
   static propTypes = {
     date: PropTypes.instanceOf(Date),
@@ -35,7 +35,17 @@ class Time extends Component {
       middle: 'Noon',
       end: 'End of Day'
     },
-    onTimeSelect: () => null
+    onTimeSelect: () => null,
+    renderTime: (formatted, minutes) => {
+      return(
+        <option
+          key={minutes}
+          value={minutes}
+        >
+          {formatted}
+        </option>
+      )
+    },
     // showSeconds: false
   }
 
@@ -93,42 +103,39 @@ class Time extends Component {
       `${hour}${separator}${minute}`;
   }
 
-  _getOptions() {
-
-    const {interval, startTime, endTime} = this.props;
-
-    let options = [];
-    let timeLength = (endTime * MINUTES_IN_HOUR);
-    let i = startTime * MINUTES_IN_HOUR;
-
-    for(; i < timeLength; i += interval) {
-
-      let formatted = this._format(i);
-
-      options.push(
-        <option
-          key={i}
-          value={i}
-        >
-          {formatted}
-        </option>
-      );
-    }
-
-    return options;
+  _renderTime(formatted, minutes) {
+    return this.props.renderTime(formatted, minutes);
   }
 
-  _handleChange(e) {
+  _getTimes() {
+
+    const {interval, startTime, endTime} = this.props;
+    const timeLength = (endTime * MINUTES_IN_HOUR);
+    let minutes = startTime * MINUTES_IN_HOUR;
+    let times = [];
+
+    for(; minutes < timeLength; minutes += interval) {
+      let formatted = this._format(minutes);
+      times.push(this._renderTime(formatted, minutes));
+    }
+
+    return times;
+  }
+
+  _handleTimeSelect(e) {
+
+    const { date, onTimeSelect } = this.props;
+    let minutes, newDate;
 
     // set to beginning of day
-    this.props.date.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
 
     // get selected minutes and merge dates
-    let minutes = React.findDOMNode(e.target).value;
-    let date = new Date(this.props.date.getTime() + (minutes * 60000));
+    minutes = React.findDOMNode(e.target).value;
+    newDate = new Date(date.getTime() + (minutes * 60000));
 
     // return selected date
-    this.props.onTimeSelect(date);
+    onTimeSelect(newDate);
   }
 
   render() {
@@ -136,11 +143,11 @@ class Time extends Component {
     let defaultTime = this.props.defaultTime * MINUTES_IN_HOUR;
 
     return(
-      <select {...this.props} defaultValue={defaultTime} onChange={this._handleChange.bind(this)}>
-        {this._getOptions()}
+      <select {...this.props} defaultValue={defaultTime} onChange={::this._handleTimeSelect}>
+        {this._getTimes()}
       </select>
     );
   }
 }
 
-export default Time;
+export default Times;
