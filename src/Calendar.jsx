@@ -128,12 +128,12 @@ class Calendar extends Component {
   }
 
   static defaultProps = {
-    date: new Date(), // default month
+    date: new Date(),
     minDay: null,
     maxDay: null,
     // instead of passing things like disabledDays and selectedDays
-    // we could pass an object with the proper class appended to it
-    // so the user could pass custom days, maybe Sunday is a special
+    // we could pass an object and the proper class will get appended
+    // to it so the user could pass custom days, maybe Sunday is a special
     // day and needs to be treated a certain way, could go alongside
     // the events prop below we want to implement
     disabledDays: null,
