@@ -37,7 +37,11 @@ class App extends Component {
   }
 
   _setDate() {
-    this.setState({date: new Date('10-12-2010')});
+    this.setState({startDate: new Date('10-12-2010')});
+  }
+
+  _formatDate(date) {
+    return date.toLocaleString();
   }
 
   _handleTimeChange(key, e) {
@@ -54,15 +58,16 @@ class App extends Component {
         <Calendar
           date={this.state.date}
           onDateSelect={this._handleCalendarClick}
-          selectedDays={[ 7, 8, 9, 10, 11, 12 ]}
+          selectedDays={[7, 8, 9, 10, 11, 12]}
+          trimWeekdays={3}
           minDay={new Date('06-15-2015')}
           maxDay={new Date('07-31-2015')}
-          trimWeekdays={3}
         />
 
         <CalendarInput
           date={this.state.date}
           onDateSelect={this._handleCalendarClick}
+          formatDate={this._formatDate}
         />
 
         <TimeSelect

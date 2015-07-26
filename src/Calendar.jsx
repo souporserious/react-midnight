@@ -116,6 +116,7 @@ class Calendar extends Component {
     disabledDays: PropTypes.array,
     selectedDays: PropTypes.array,
     trimWeekdays: PropTypes.number,
+    weekStartsOn: PropTypes.number,
     forceSixRows: PropTypes.bool,
     outsideDays: PropTypes.bool,
     onDateSelect: PropTypes.func,
@@ -124,16 +125,21 @@ class Calendar extends Component {
     prevDisabled: PropTypes.bool,
     nextDisabled: PropTypes.bool
     // events: PropTypes.array,
-    // weekdays: PropTypes.array,
   }
 
   static defaultProps = {
     date: new Date(), // default month
     minDay: null,
     maxDay: null,
+    // instead of passing things like disabledDays and selectedDays
+    // we could pass an object with the proper class appended to it
+    // so the user could pass custom days, maybe Sunday is a special
+    // day and needs to be treated a certain way, could go alongside
+    // the events prop below we want to implement
     disabledDays: null,
     selectedDays: null,
     trimWeekdays: null,
+    weekStartsOn: 0,
     forceSixRows: true,
     outsideDays: true,
     onDateSelect: () => null,
@@ -143,7 +149,6 @@ class Calendar extends Component {
     // https://moz.com/blog/markup-events-hcalendar-microformat
     // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
     // events: [],
-    // weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
   }
 
   state = {
@@ -199,7 +204,7 @@ class Calendar extends Component {
         }
       }
 
-    // finally sort the array so it's in order
+    // finally sort the dates so they're in order
     mixed.sort((a, b) => {
       a = a.getTime();
       b = b.getTime();
@@ -209,8 +214,11 @@ class Calendar extends Component {
 
   _renderWeekdays() {
 
+    let weekdays = WEEKDAYS.slice(0);
+    let sortedWeekdays = weekdays.concat(weekdays.splice(0, this.props.weekStartsOn));
+
     var getDays = () => {
-      return WEEKDAYS.map((weekday, index) => {
+      return sortedWeekdays.map((weekday, index) => {
         let trim = this.props.trimWeekdays;
         let weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
         return (
@@ -240,7 +248,7 @@ class Calendar extends Component {
     const {min, max, disabledDays, selectedDays, outsideDays, onDateSelect} = this.props;
     const month = this.state.month;
 
-    let weeks = getWeekArray(month).map((week, index) =>
+    let weeks = getWeekArray(month, this.props.weekStartsOn).map((week, index) =>
       <Week
         key={week[0].getTime()}
         days={week}
