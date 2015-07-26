@@ -8,7 +8,6 @@ const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
 class Times extends Component {
 
   static propTypes = {
-    date: PropTypes.instanceOf(Date),
     startTime: PropTypes.number,
     endTime: PropTypes.number,
     interval: PropTypes.number,
@@ -18,10 +17,10 @@ class Times extends Component {
     humanize: PropTypes.bool,
     humanizeStrings: PropTypes.object,
     onTimeSelect: PropTypes.func,
+    renderTime: PropTypes.func,
   }
 
   static defaultProps = {
-    date: new Date(),
     startTime: 0,
     endTime: 24,
     interval: 60,

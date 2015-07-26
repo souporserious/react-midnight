@@ -1,5 +1,5 @@
 .cal {
-  max-width: 600px;
+  max-width: 500px;
 }
 
 .cal--small {
@@ -49,6 +49,7 @@
 .cal__nav {
   padding: 14px 40px;
   border: 0;
+  outline: 0;
   background: transparent;
   user-select: none;
   cursor: pointer;
@@ -67,7 +68,7 @@
 }
 
 .cal__nav--disabled {
-  outline: 0;
+  cursor: not-allowed;
 }
 
 .cal__nav--prev {

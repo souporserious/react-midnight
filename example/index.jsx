@@ -8,7 +8,6 @@ class TimeSelect extends Component {
   render() {
     return(
       <Time
-        date={this.props.date}
         startTime={6}
         interval={30}
         humanize={true}
@@ -66,12 +65,10 @@ class App extends Component {
         />
 
         <TimeSelect
-          date={this.state.startDate}
           onTimeChange={this._handleTimeChange.bind(this, 'startDate')}
         />
 
         <TimeSelect
-          date={this.state.endDate}
           defaultTime={23.5 * 60}
           onTimeChange={this._handleTimeChange.bind(this, 'endDate')}
         />
