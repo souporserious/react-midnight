@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, Children } from 'react';
 
 const HOURS_IN_DAY = 24;
 const HOURS_TO_NOON = HOURS_IN_DAY / 2;
@@ -22,7 +22,6 @@ class Times extends Component {
 
   static defaultProps = {
     date: new Date(),
-    defaultTime: 0,
     startTime: 0,
     endTime: 24,
     interval: 60,
@@ -47,6 +46,23 @@ class Times extends Component {
       )
     },
     // showSeconds: false
+  }
+
+  static toDate(minutes, date) {
+
+    let newDate;
+
+    // default to today's date
+    date = date || new Date();
+
+    // set to beginning of day
+    date.setHours(0, 0, 0, 0);
+
+    // merge dates
+    newDate = new Date(date.getTime() + (minutes * 60000));
+
+    // return selected date
+    return newDate;
   }
 
   _pad(n) {
@@ -122,30 +138,12 @@ class Times extends Component {
     return times;
   }
 
-  _handleTimeSelect(e) {
-
-    const { date, onTimeSelect } = this.props;
-    let minutes, newDate;
-
-    // set to beginning of day
-    date.setHours(0, 0, 0, 0);
-
-    // get selected minutes and merge dates
-    minutes = React.findDOMNode(e.target).value;
-    newDate = new Date(date.getTime() + (minutes * 60000));
-
-    // return selected date
-    onTimeSelect(newDate);
-  }
-
   render() {
 
-    let defaultTime = this.props.defaultTime * MINUTES_IN_HOUR;
+    let times = this._getTimes();
 
-    return(
-      <select {...this.props} defaultValue={defaultTime} onChange={::this._handleTimeSelect}>
-        {this._getTimes()}
-      </select>
+    return Children.only(
+      this.props.children(times)
     );
   }
 }

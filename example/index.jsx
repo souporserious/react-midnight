@@ -1,37 +1,55 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Calendar, CalendarInput, Time } from '../src/index';
 
 import '../src/calendar.scss';
 import './main.scss';
 
-var App = React.createClass({
+class TimeSelect extends Component {
+  render() {
+    return(
+      <Time
+        date={this.props.date}
+        startTime={6}
+        interval={30}
+        humanize={true}
+      >
+        {times =>
+          <select
+            defaultValue={this.props.defaultTime}
+            onChange={this.props.onTimeChange}
+          >
+            {times}
+          </select>
+        }
+      </Time>
+    );
+  }
+}
+
+class App extends Component {
   
-  getInitialState: function () {
-    return {
-      date: new Date()
-    }  
-  },
+  state = {
+    startDate: new Date(),
+    endDate: new Date()
+  }
 
-  _handleCalendarClick: function (date) {
-    this.setState({date: date});
-  },
-
-  _handleTimeChange(date) {
-    // don't change time when selecting new date
-    // need to expose helper utility to merge dates
-    // or store time in seconds or something
-    console.log(date);
-  },
-
-  _formatDate(date) {
-    return date;
-  },
+  _handleCalendarClick(date) {
+    this.setState({startDate: date});
+  }
 
   _setDate() {
     this.setState({date: new Date('10-12-2010')});
-  },
+  }
+
+  _handleTimeChange(key, e) {
+
+    let currDate = this.state[key];
+    let newDate = Time.toDate(e.target.value, currDate);
+
+    console.log(newDate);
+  }
   
-  render: function () {
+  render() {
     return(
       <div className="app">
         <Calendar
@@ -41,29 +59,25 @@ var App = React.createClass({
           minDay={new Date('06-15-2015')}
           maxDay={new Date('07-31-2015')}
         />
+
         <CalendarInput
           date={this.state.date}
           onDateSelect={this._handleCalendarClick}
-          formatDate={this._formatDate}
         />
-        <Time
-          date={this.state.date}
-          onTimeSelect={this._handleCalendarClick}
-          startTime={6}
-          interval={30}
-          humanize={true}
+
+        <TimeSelect
+          date={this.state.startDate}
+          onTimeChange={this._handleTimeChange.bind(this, 'startDate')}
         />
-        <Time
-          date={this.state.date}
-          onTimeSelect={this._handleCalendarClick}
-          startTime={6}
-          interval={30}
-          defaultTime={23.5}
-          humanize={true}
+
+        <TimeSelect
+          date={this.state.endDate}
+          defaultTime={23.5 * 60}
+          onTimeChange={this._handleTimeChange.bind(this, 'endDate')}
         />
       </div>
     );
   }
-});
+}
 
 React.render(<App />, document.body);
