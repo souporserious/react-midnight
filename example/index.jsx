@@ -57,6 +57,7 @@ class App extends Component {
           selectedDays={[ 7, 8, 9, 10, 11, 12 ]}
           minDay={new Date('06-15-2015')}
           maxDay={new Date('07-31-2015')}
+          trimWeekdays={3}
         />
 
         <CalendarInput

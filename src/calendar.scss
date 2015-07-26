@@ -1,5 +1,7 @@
+$cell_size: 45px;
+
 .cal {
-  max-width: 500px;
+  width: $cell_size * 7;
 }
 
 .cal--small {
@@ -47,7 +49,9 @@
 }
 
 .cal__nav {
-  padding: 14px 40px;
+  width: $cell_size;
+  height: $cell_size;
+  padding: 0;
   border: 0;
   outline: 0;
   background: transparent;
@@ -98,29 +102,25 @@
 }
 
 .cal__table {
+  table-layout: fixed;
   width: 100%;
   text-align: center;
-  border-collapse: collapse;
   border-spacing: 0;
-  table-layout: fixed;
   user-select: none;
-
-  th {
-    width: (100%/7);
-    padding: 12px 0;
-  }
 }
 
 .cal__weekdays {
+  height: $cell_size;
   font-size: 12px;
 }
 
-.cal__weekday {
+.cal__weekdays, .cal__week {
+  
 }
 
 .cal__day {
-  width: (100%/7);
-  padding: 16px 0;
+  width: $cell_size;
+  height: $cell_size;
   position: relative;
   color: #000;
   cursor: pointer;
@@ -150,29 +150,25 @@
     border-radius: 0;
     background: #8055DA;
   }
+}
 
-    // & + .cal__day--selected {
-    //     background: red;
-    // }
+.cal__day--selected-first {
+  &:before {
+    border-radius: 100% 0 0 100%;
   }
+}
 
-  .cal__day--selected-first {
-    &:before {
-      border-radius: 100% 0 0 100%;
-    }
+.cal__day--selected-last {
+  &:before {
+    border-radius: 0 100% 100% 0;
   }
+}
 
-  .cal__day--selected-last {
-    &:before {
-      border-radius: 0 100% 100% 0;
-    }
-  }
+.cal__day--outside, .cal__day--disabled {
+  color: #ccc;
+}
 
-  .cal__day--outside, .cal__day--disabled {
-    color: #ccc;
-  }
-
-  .cal__day--disabled {
-    background: #EFF0F1;
-    cursor: default !important;
-  }
+.cal__day--disabled {
+  background: #EFF0F1;
+  cursor: default !important;
+}
