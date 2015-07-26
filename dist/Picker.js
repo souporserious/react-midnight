@@ -322,7 +322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
-	      // finally sort the array so it's in order
+	      // finally sort the dates so they're in order
 	      mixed.sort(function (a, b) {
 	        a = a.getTime();
 	        b = b.getTime();
@@ -334,8 +334,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function _renderWeekdays() {
 	      var _this2 = this;
 
+	      var weekdays = WEEKDAYS.slice(0);
+	      var sortedWeekdays = weekdays.concat(weekdays.splice(0, this.props.weekStartsOn));
+
 	      var getDays = function getDays() {
-	        return WEEKDAYS.map(function (weekday, index) {
+	        return sortedWeekdays.map(function (weekday, index) {
 	          var trim = _this2.props.trimWeekdays;
 	          var weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
 	          return _react2['default'].createElement(
@@ -376,7 +379,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var month = this.state.month;
 
-	      var weeks = (0, _utils.getWeekArray)(month).map(function (week, index) {
+	      var weeks = (0, _utils.getWeekArray)(month, this.props.weekStartsOn).map(function (week, index) {
 	        return _react2['default'].createElement(Week, {
 	          key: week[0].getTime(),
 	          days: week,
@@ -484,6 +487,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      disabledDays: _react.PropTypes.array,
 	      selectedDays: _react.PropTypes.array,
 	      trimWeekdays: _react.PropTypes.number,
+	      weekStartsOn: _react.PropTypes.number,
 	      forceSixRows: _react.PropTypes.bool,
 	      outsideDays: _react.PropTypes.bool,
 	      onDateSelect: _react.PropTypes.func,
@@ -492,18 +496,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      prevDisabled: _react.PropTypes.bool,
 	      nextDisabled: _react.PropTypes.bool
 	      // events: PropTypes.array,
-	      // weekdays: PropTypes.array,
 	    },
 	    enumerable: true
 	  }, {
 	    key: 'defaultProps',
 	    value: {
-	      date: new Date(), // default month
+	      date: new Date(),
 	      minDay: null,
 	      maxDay: null,
+	      // instead of passing things like disabledDays and selectedDays
+	      // we could pass an object and the proper class will get appended
+	      // to it so the user could pass custom days, maybe Sunday is a special
+	      // day and needs to be treated a certain way, could go alongside
+	      // the events prop below we want to implement
 	      disabledDays: null,
 	      selectedDays: null,
 	      trimWeekdays: null,
+	      weekStartsOn: 0,
 	      forceSixRows: true,
 	      outsideDays: true,
 	      onDateSelect: function onDateSelect() {
@@ -515,7 +524,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // https://moz.com/blog/markup-events-hcalendar-microformat
 	      // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
 	      // events: [],
-	      // weekdays: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], // custom weekdays (for locale)
 	    },
 	    enumerable: true
 	  }]);
@@ -1099,7 +1107,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      wrapperClassName: null,
 	      inputClassName: null,
 	      placeholder: null,
-	      calendarProps: { modifiers: 'small', trimWeekdays: 2 },
+	      calendarProps: {
+	        modifiers: 'small',
+	        trimWeekdays: 2
+	      },
 	      hiddenValue: false, // strips name from main input into a hidden one
 	      formatDate: function formatDate(date) {
 	        return date;
@@ -1127,8 +1138,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -1148,16 +1157,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MINUTES_IN_HOUR = 60;
 	var MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
 
-	var Time = (function (_Component) {
-	  function Time() {
-	    _classCallCheck(this, Time);
+	var Times = (function (_Component) {
+	  function Times() {
+	    _classCallCheck(this, Times);
 
-	    _get(Object.getPrototypeOf(Time.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Times.prototype), 'constructor', this).apply(this, arguments);
 	  }
 
-	  _inherits(Time, _Component);
+	  _inherits(Times, _Component);
 
-	  _createClass(Time, [{
+	  _createClass(Times, [{
 	    key: '_pad',
 	    value: function _pad(n) {
 	      return n > 9 ? n : '0' + n;
@@ -1219,63 +1228,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return twelveHourClock ? '' + hour + separator + minute + ' ' + AMPM : '' + hour + separator + minute;
 	    }
 	  }, {
-	    key: '_getOptions',
-	    value: function _getOptions() {
+	    key: '_renderTime',
+	    value: function _renderTime(formatted, minutes) {
+	      return this.props.renderTime(formatted, minutes);
+	    }
+	  }, {
+	    key: '_getTimes',
+	    value: function _getTimes() {
 	      var _props2 = this.props;
 	      var interval = _props2.interval;
 	      var startTime = _props2.startTime;
 	      var endTime = _props2.endTime;
 
-	      var options = [];
 	      var timeLength = endTime * MINUTES_IN_HOUR;
-	      var i = startTime * MINUTES_IN_HOUR;
+	      var minutes = startTime * MINUTES_IN_HOUR;
+	      var times = [];
 
-	      for (; i < timeLength; i += interval) {
-
-	        var formatted = this._format(i);
-
-	        options.push(_react2['default'].createElement(
-	          'option',
-	          {
-	            key: i,
-	            value: i
-	          },
-	          formatted
-	        ));
+	      for (; minutes < timeLength; minutes += interval) {
+	        var formatted = this._format(minutes);
+	        times.push(this._renderTime(formatted, minutes));
 	      }
 
-	      return options;
-	    }
-	  }, {
-	    key: '_handleChange',
-	    value: function _handleChange(e) {
-
-	      // set to beginning of day
-	      this.props.date.setHours(0, 0, 0, 0);
-
-	      // get selected minutes and merge dates
-	      var minutes = _react2['default'].findDOMNode(e.target).value;
-	      var date = new Date(this.props.date.getTime() + minutes * 60000);
-
-	      // return selected date
-	      this.props.onTimeSelect(date);
+	      return times;
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 
-	      var defaultTime = this.props.defaultTime * MINUTES_IN_HOUR;
+	      var times = this._getTimes();
 
-	      return _react2['default'].createElement(
-	        'select',
-	        _extends({}, this.props, { defaultValue: defaultTime, onChange: this._handleChange.bind(this) }),
-	        this._getOptions()
-	      );
+	      return _react.Children.only(this.props.children(times));
 	    }
 	  }], [{
+	    key: 'toDate',
+	    value: function toDate(minutes, date) {
+
+	      var newDate = undefined;
+
+	      // default to today's date
+	      date = date || new Date();
+
+	      // set to beginning of day
+	      date.setHours(0, 0, 0, 0);
+
+	      // merge dates
+	      newDate = new Date(date.getTime() + minutes * 60000);
+
+	      // return selected date
+	      return newDate;
+	    }
+	  }, {
 	    key: 'propTypes',
 	    value: {
-	      date: _react.PropTypes.instanceOf(Date),
 	      startTime: _react.PropTypes.number,
 	      endTime: _react.PropTypes.number,
 	      interval: _react.PropTypes.number,
@@ -1284,14 +1288,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      twelveHourClock: _react.PropTypes.bool,
 	      humanize: _react.PropTypes.bool,
 	      humanizeStrings: _react.PropTypes.object,
-	      onTimeSelect: _react.PropTypes.func
+	      onTimeSelect: _react.PropTypes.func,
+	      renderTime: _react.PropTypes.func
 	    },
 	    enumerable: true
 	  }, {
 	    key: 'defaultProps',
 	    value: {
-	      date: new Date(),
-	      defaultTime: 0,
 	      startTime: 0,
 	      endTime: 24,
 	      interval: 60,
@@ -1305,18 +1308,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	        end: 'End of Day'
 	      },
 	      onTimeSelect: function onTimeSelect() {
-	        return null
-	        // showSeconds: false
-	        ;
-	      } },
+	        return null;
+	      },
+	      renderTime: function renderTime(formatted, minutes) {
+	        return _react2['default'].createElement(
+	          'option',
+	          {
+	            key: minutes,
+	            value: minutes
+	          },
+	          formatted
+	        );
+	      }
+	    },
 	    enumerable: true
 	  }]);
 
-	  return Time;
+	  return Times;
 	})(_react.Component);
 
-	exports['default'] = Time;
+	exports['default'] = Times;
 	module.exports = exports['default'];
+	// showSeconds: false
 
 /***/ }
 /******/ ])
