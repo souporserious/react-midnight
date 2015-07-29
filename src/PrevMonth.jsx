@@ -31,6 +31,7 @@ class PrevMonth extends Component {
         className={classes}
         role="button"
         title="Previous month"
+        type="button"
         onClick={::this.handleClick}
       >
         {this.props.inner}
