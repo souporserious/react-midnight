@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Calendar, Time } from '../src/react-dately';
+import CalendarInput from './CalendarInput';
 
 import '../src/calendar.scss';
 import './main.scss';
@@ -64,6 +65,8 @@ class App extends Component {
           maxDay={new Date('07-31-2015')}
           className={"cool"}
         />
+
+        <CalendarInput />
 
         <TimeSelect
           onTimeChange={this._handleTimeChange.bind(this, 'startDate')}
