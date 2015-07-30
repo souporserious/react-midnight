@@ -62,6 +62,7 @@ class App extends Component {
           trimWeekdays={3}
           minDay={new Date('06-15-2015')}
           maxDay={new Date('07-31-2015')}
+          className={"cool"}
         />
 
         <TimeSelect

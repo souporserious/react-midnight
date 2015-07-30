@@ -100,22 +100,6 @@ export function navigateMonth(d, direction) {
   return new Date(newMonth); 
 }
 
-export function isOutsideMonth(d1, d2) {
-  return d1.getMonth() !== d2.getMonth();
-}
-
-export function isBeforeDay(d1, d2) {
-  d2 = clone(d2);
-  d2.setHours(0, 0, 0, 0);
-  return d1 < d2;
-}
-
-export function isAfterDay(d1, d2) {
-  d2 = clone(d2);
-  d2.setHours(0, 0, 0, 0);
-  return d1 > d2;
-}
-
 export function isSame(d1, d2, type = 'day') {
 
   const is = {};
@@ -137,6 +121,39 @@ export function isSame(d1, d2, type = 'day') {
   } else {
     return is[type](d1, d2);
   }
+}
+
+export function isBeforeDay(d1, d2) {
+  d2 = clone(d2);
+  d2.setHours(0, 0, 0, 0);
+  return d1 < d2;
+}
+
+export function isAfterDay(d1, d2) {
+  d2 = clone(d2);
+  d2.setHours(0, 0, 0, 0);
+  return d1 > d2;
+}
+
+export function isOutsideMonth(d1, d2) {
+  return d1.getMonth() !== d2.getMonth();
+}
+
+export function getDaysBetween(startDate, endDate) {
+
+    let days = [startDate];
+    let current = startDate;
+
+    if(isSame(startDate, endDate)) {
+      return days;
+    }
+
+    while(current < endDate) {
+      current = new Date(current.getTime() + (24 * 60 * 60 * 1000));
+      days.push(current);
+    }
+
+    return days;
 }
 
 export function formatMonth(d) {

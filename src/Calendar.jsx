@@ -1,10 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import PrevMonth from './PrevMonth';
 import NextMonth from './NextMonth';
-import { formatMonth, formatYear, isBeforeDay, isSame, isAfterDay, isInsideMonth, isOutsideMonth, getWeekArray, navigateMonth } from './utils';
-
-// Dependencies
-import classNames from 'classnames';
+import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from './utils';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -245,16 +242,16 @@ class Calendar extends Component {
 
   _renderWeeksInMonth() {
 
-    const {min, max, disabledDays, selectedDays, outsideDays, onDateSelect} = this.props;
+    const {minDay, maxDay, disabledDays, selectedDays, outsideDays, onDateSelect, weekStartsOn, forceSixRows} = this.props;
     const month = this.state.month;
 
-    let weeks = getWeekArray(month, this.props.weekStartsOn).map((week, index) =>
+    let weeks = getWeeks(month, weekStartsOn, forceSixRows).map((week, index) =>
       <Week
         key={week[0].getTime()}
         days={week}
         month={month}
-        minDay={this.props.minDay}
-        maxDay={this.props.maxDay}
+        minDay={minDay}
+        maxDay={maxDay}
         disabledDays={disabledDays}
         selectedDays={selectedDays}
         outsideDays={outsideDays}
@@ -274,27 +271,23 @@ class Calendar extends Component {
     this.setState({ month: navigateMonth(month, direction) });
   }
 
-  _getModifiers(modifiers) {
-
-    let arr = [];
-    let len = modifiers ? modifiers.length : -1;
-    
-    if(len < 0) return null;
-    
-    for(let i = 0; i < len; i++) {
-      arr.push('cal--' + modifiers[i].replace(/\s/g, ''));
-    }
-    
-    return arr;
-  }
-
   render() {
 
-    const {className, minDay, maxDay} = this.props;
-    const {month} = this.state;
+    const { className, minDay, maxDay } = this.props;
+    const { month } = this.state;
 
-    let modifiers = this._getModifiers(this.props.modifiers && this.props.modifiers.split(','));
-    let classes = classNames('cal', modifiers, className);
+    let classes = [];
+    let modifiers = this.props.modifiers ? this.props.modifiers.split(',') : null;
+    let classNames = 'cal';
+
+    if(className) {
+      classes.push(className);
+    }
+    if(modifiers) {
+      classes.push(modifiers);
+    }
+
+    classNames += classes.map(className => ` ${className}`).join('');
 
     let monthLabel = formatMonth(month);
     let yearLabel = formatYear(month);
@@ -311,7 +304,7 @@ class Calendar extends Component {
     }
 
     return (
-      <div className={classes}>
+      <div className={classNames}>
         <header className="cal__header">
           <PrevMonth onClick={this._navigate.bind(this, -1)} inner={this.props.prevHTML} disable={prevDisabled} />
           <div className="cal__month-year">
