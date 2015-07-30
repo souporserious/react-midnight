@@ -1,15 +1,17 @@
 {
-  "name": "react-simple-calendar",
-  "version": "0.3.0",
-  "homepage": "https://github.com/souporserious/react-simple-calendar",
+  "name": "react-dately",
+  "version": "0.3.1",
+  "homepage": "https://github.com/souporserious/react-dately",
   "authors": [
     "Travis Arnold <ftntravis@gmail.com>"
   ],
-  "description": "Simple calendar for React.",
-  "main": ["./dist/Picker.js", "./dist/Picker.min.js"],
+  "description": "Handle dates, times, and calendars with React.",
+  "main": ["./dist/react-dately.js", "./dist/react-dately.min.js"],
   "keywords": [
     "react",
     "component",
+    "date",
+    "time",
     "calendar"
   ],
   "license": "ISC",

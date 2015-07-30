@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Calendar, CalendarInput, Time } from '../src/index';
+import { Calendar, Time } from '../src/react-dately';
 
 import '../src/calendar.scss';
 import './main.scss';
@@ -62,12 +62,6 @@ class App extends Component {
           trimWeekdays={3}
           minDay={new Date('06-15-2015')}
           maxDay={new Date('07-31-2015')}
-        />
-
-        <CalendarInput
-          date={this.state.date}
-          onDateSelect={this._handleCalendarClick}
-          formatDate={this._formatDate}
         />
 
         <TimeSelect

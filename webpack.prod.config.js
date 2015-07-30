@@ -9,9 +9,9 @@ var config = {
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: 'dist/',
-    filename: 'Picker.js',
-    sourceMapFilename: 'Picker.sourcemap.js',
-    library: 'Picker',
+    filename: 'react-dately.js',
+    sourceMapFilename: 'react-dately.sourcemap.js',
+    library: 'Dately',
     libraryTarget: 'umd'
   },
   module: {
@@ -29,14 +29,14 @@ var config = {
 };
 
 if(TARGET === 'minify') {
-  config.output.filename = 'Picker.min.js';
-  config.output.sourceMapFilename = 'Picker.min.js';
+  config.output.filename = 'react-dately.min.js';
+  config.output.sourceMapFilename = 'react-dately.min.js';
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
       warnings: false
     },
     mangle: {
-      except: ['React', 'Picker', 'Calendar', 'Time']
+      except: ['React', 'Dately']
     }
   }));
 }

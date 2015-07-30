@@ -1,18 +1,10 @@
-## React Simple Calendar 0.3.0
+## React Dately 0.3.1
 
-Simple calendar for react.
-
-## Goals
-
-- allow a calendar or time layout to be built
-- expose utilities as helpers
-- provide a calendar input
-- provide a select list of times
+Handle dates, times, and calendars with React.
 
 ## TODOS
 
-[x] less opinionated Time
-[ ] touch support
-[ ] keyboard support
-[ ] ARIA support
-[ ] translation support
+- [ ] touch support
+- [ ] keyboard support
+- [ ] ARIA support
+- [ ] translation support
