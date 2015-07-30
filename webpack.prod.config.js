@@ -4,7 +4,7 @@ var TARGET = process.env.TARGET || null;
 
 var config = {
   entry: {
-    index: './src/index.js',
+    index: './src/react-dately.js',
   },
   output: {
     path: path.join(__dirname, 'dist'),
