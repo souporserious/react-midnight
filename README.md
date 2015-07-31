@@ -7,6 +7,6 @@ Handle dates, times, and calendars with React.
 - [ ] allow custom calendar to be built
 - [ ] add better nav customization
 - [x] keyboard support
-- [ ] ARIA support
+- [x] ARIA support
 - [ ] i18n support
 - [x] touch support

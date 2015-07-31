@@ -273,10 +273,28 @@ class Calendar extends Component {
     );
   }
 
+  generateID() {
+
+    let timestamp = Date.now(),
+        uniqueNumber = 0;
+
+    (function () {
+      // If created at same millisecond as previous
+      if(timestamp <= uniqueNumber) {
+        timestamp = ++uniqueNumber;
+      } else {
+        uniqueNumber = timestamp;
+      }
+    })();
+    
+    return 'D' + timestamp;
+  }
+
   render() {
 
     const { className, minDay, maxDay, canTouchTap } = this.props;
     const { month } = this.state;
+    const ID = this.generateID();
 
     let classes = [];
     let modifiers = this.props.modifiers ? this.props.modifiers.split(',') : null;
@@ -313,6 +331,7 @@ class Calendar extends Component {
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, -1) : null}
             inner={this.props.prevHTML}
             disable={prevDisabled}
+            controls={ID + '_table'}
           />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
@@ -323,9 +342,10 @@ class Calendar extends Component {
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, 1) : null}
             inner={this.props.nextHTML}
             disable={nextDisabled}
+            controls={ID + '_table'}
           />
         </header>
-        <table className="cal__table">
+        <table id={ID + '_table'} className="cal__table">
           {this._renderWeekdays()}
           {this._renderWeeksInMonth()}
         </table>
