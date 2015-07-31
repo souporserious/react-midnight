@@ -88,6 +88,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -113,6 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _utils = __webpack_require__(5);
 
 	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	var ENTER_KEY = 13;
 
 	var Day = (function (_Component) {
 	  function Day() {
@@ -126,7 +129,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(Day, [{
 	    key: '_handleDateSelect',
 	    value: function _handleDateSelect(day) {
+	      console.log('test');
 	      this.props.onDateSelect(day);
+	    }
+	  }, {
+	    key: '_handleKeyDown',
+	    value: function _handleKeyDown(day, e) {
+	      if (e.keyCode === ENTER_KEY) {
+	        this.props.onDateSelect(day);
+	      }
+	    }
+	  }, {
+	    key: '_renderDay',
+	    value: function _renderDay(day) {
+	      return this.props.renderDay(day);
 	    }
 	  }, {
 	    key: 'render',
@@ -140,6 +156,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var selectedDays = _props.selectedDays;
 	      var outsideDays = _props.outsideDays;
 	      var onClick = _props.onClick;
+	      var canTouchTap = _props.canTouchTap;
 
 	      var className = 'cal__day';
 	      var modifiers = [];
@@ -197,9 +214,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          role: 'presentation',
 	          'aria-label': date,
 	          className: className,
-	          onClick: onDayClick
+	          onClick: canTouchTap ? null : onDayClick,
+	          onTouchTap: canTouchTap ? onDayClick : null,
+	          tabIndex: isDisabled || isBefore || isAfter ? null : 0,
+	          onKeyDown: this._handleKeyDown.bind(this, date)
 	        },
-	        date.getDate()
+	        this._renderDay(date)
 	      );
 	    }
 	  }]);
@@ -221,22 +241,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      var _this = this;
 
-	      var _props2 = this.props;
-	      var date = _props2.date;
-	      var month = _props2.month;
-
 	      var days = this.props.days.map(function (day) {
-	        return _react2['default'].createElement(Day, {
+	        return _react2['default'].createElement(Day, _extends({}, _this.props, {
 	          key: day.getTime(),
-	          date: day,
-	          month: month,
-	          minDay: _this.props.minDay,
-	          maxDay: _this.props.maxDay,
-	          disabledDays: _this.props.disabledDays,
-	          selectedDays: _this.props.selectedDays,
-	          outsideDays: _this.props.outsideDays,
-	          onDateSelect: _this.props.onDateSelect
-	        });
+	          date: day
+	        }));
 	      });
 
 	      return _react2['default'].createElement(
@@ -282,7 +291,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (nextProps.disabledDays) {
 	        this._normalizeDates(nextProps.disabledDays);
 	      }
-	      this.setState({ month: nextProps.date });
+	      if (this.props.month !== nextProps.month) {
+	        this.setState({ month: nextProps.date });
+	      }
+	    }
+	  }, {
+	    key: 'setMonth',
+	    value: function setMonth(date) {
+	      this.setState({ month: date });
+	    }
+	  }, {
+	    key: 'navigateMonth',
+	    value: function navigateMonth(direction) {
+	      var month = this.state.month;
+	      this.setState({ month: (0, _utils.navigateMonth)(month, direction) });
 	    }
 	  }, {
 	    key: '_normalizeDates',
@@ -361,30 +383,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: '_renderWeeksInMonth',
 	    value: function _renderWeeksInMonth() {
-	      var _props3 = this.props;
-	      var minDay = _props3.minDay;
-	      var maxDay = _props3.maxDay;
-	      var disabledDays = _props3.disabledDays;
-	      var selectedDays = _props3.selectedDays;
-	      var outsideDays = _props3.outsideDays;
-	      var onDateSelect = _props3.onDateSelect;
-	      var weekStartsOn = _props3.weekStartsOn;
-	      var forceSixRows = _props3.forceSixRows;
+	      var _this3 = this;
 
 	      var month = this.state.month;
+	      var _props2 = this.props;
+	      var weekStartsOn = _props2.weekStartsOn;
+	      var forceSixRows = _props2.forceSixRows;
 
 	      var weeks = (0, _utils.getWeeks)(month, weekStartsOn, forceSixRows).map(function (week, index) {
-	        return _react2['default'].createElement(Week, {
+	        return _react2['default'].createElement(Week, _extends({}, _this3.props, {
 	          key: week[0].getTime(),
 	          days: week,
-	          month: month,
-	          minDay: minDay,
-	          maxDay: maxDay,
-	          disabledDays: disabledDays,
-	          selectedDays: selectedDays,
-	          outsideDays: outsideDays,
-	          onDateSelect: onDateSelect
-	        });
+	          month: month
+	        }));
 	      });
 
 	      return _react2['default'].createElement(
@@ -394,19 +405,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	      );
 	    }
 	  }, {
-	    key: '_navigate',
-	    value: function _navigate(direction) {
-	      var month = this.state.month;
-	      this.setState({ month: (0, _utils.navigateMonth)(month, direction) });
+	    key: 'generateID',
+	    value: function generateID() {
+
+	      var timestamp = Date.now(),
+	          uniqueNumber = 0;
+
+	      (function () {
+	        // If created at same millisecond as previous
+	        if (timestamp <= uniqueNumber) {
+	          timestamp = ++uniqueNumber;
+	        } else {
+	          uniqueNumber = timestamp;
+	        }
+	      })();
+
+	      return 'D' + timestamp;
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props4 = this.props;
-	      var className = _props4.className;
-	      var minDay = _props4.minDay;
-	      var maxDay = _props4.maxDay;
+	      var _props3 = this.props;
+	      var className = _props3.className;
+	      var minDay = _props3.minDay;
+	      var maxDay = _props3.maxDay;
+	      var canTouchTap = _props3.canTouchTap;
 	      var month = this.state.month;
+
+	      var ID = this.generateID();
 
 	      var classes = [];
 	      var modifiers = this.props.modifiers ? this.props.modifiers.split(',') : null;
@@ -444,7 +470,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2['default'].createElement(
 	          'header',
 	          { className: 'cal__header' },
-	          _react2['default'].createElement(_PrevMonth2['default'], { onClick: this._navigate.bind(this, -1), inner: this.props.prevHTML, disable: prevDisabled }),
+	          _react2['default'].createElement(_PrevMonth2['default'], {
+	            onClick: canTouchTap ? null : this.navigateMonth.bind(this, -1),
+	            onTouchTap: canTouchTap ? this.navigateMonth.bind(this, -1) : null,
+	            inner: this.props.prevHTML,
+	            disable: prevDisabled,
+	            controls: ID + '_table'
+	          }),
 	          _react2['default'].createElement(
 	            'div',
 	            { className: 'cal__month-year' },
@@ -459,11 +491,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	              yearLabel
 	            )
 	          ),
-	          _react2['default'].createElement(_NextMonth2['default'], { onClick: this._navigate.bind(this, 1), inner: this.props.nextHTML, disable: nextDisabled })
+	          _react2['default'].createElement(_NextMonth2['default'], {
+	            onClick: canTouchTap ? null : this.navigateMonth.bind(this, 1),
+	            onTouchTap: canTouchTap ? this.navigateMonth.bind(this, 1) : null,
+	            inner: this.props.nextHTML,
+	            disable: nextDisabled,
+	            controls: ID + '_table'
+	          })
 	        ),
 	        _react2['default'].createElement(
 	          'table',
-	          { className: 'cal__table' },
+	          { id: ID + '_table', className: 'cal__table' },
 	          this._renderWeekdays(),
 	          this._renderWeeksInMonth()
 	        )
@@ -481,12 +519,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      weekStartsOn: _react.PropTypes.number,
 	      forceSixRows: _react.PropTypes.bool,
 	      outsideDays: _react.PropTypes.bool,
-	      onDateSelect: _react.PropTypes.func,
 	      prevHTML: _react.PropTypes.node,
 	      nextHTML: _react.PropTypes.node,
 	      prevDisabled: _react.PropTypes.bool,
-	      nextDisabled: _react.PropTypes.bool
-	      // events: PropTypes.array,
+	      nextDisabled: _react.PropTypes.bool,
+	      onDateSelect: _react.PropTypes.func,
+	      renderDay: _react.PropTypes.func
 	    },
 	    enumerable: true
 	  }, {
@@ -495,26 +533,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	      date: new Date(),
 	      minDay: null,
 	      maxDay: null,
-	      // instead of passing things like disabledDays and selectedDays
-	      // we could pass an object and the proper class will get appended
-	      // to it so the user could pass custom days, maybe Sunday is a special
-	      // day and needs to be treated a certain way, could go alongside
-	      // the events prop below we want to implement
 	      disabledDays: null,
 	      selectedDays: null,
 	      trimWeekdays: null,
 	      weekStartsOn: 0,
 	      forceSixRows: true,
 	      outsideDays: true,
+	      prevHTML: '',
+	      nextHTML: '',
+	      canTouchTap: false,
+	      //locale: 'en',
 	      onDateSelect: function onDateSelect() {
 	        return null;
 	      },
-	      prevHTML: '',
-	      nextHTML: ''
-	      // show how we could map events using microformat
-	      // https://moz.com/blog/markup-events-hcalendar-microformat
-	      // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-	      // events: [],
+	      renderDay: function renderDay(day) {
+	        return day.getDate();
+	      }
 	    },
 	    enumerable: true
 	  }]);
@@ -575,10 +609,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _props = this.props;
+	      var disable = _props.disable;
+	      var controls = _props.controls;
 
 	      var classes = 'cal__nav cal__nav--prev';
 
-	      if (this.props.disable) {
+	      if (disable) {
 	        classes += ' cal__nav--disabled';
 	      }
 
@@ -586,9 +623,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'button',
 	        {
 	          className: classes,
-	          role: 'button',
 	          title: 'Previous month',
 	          type: 'button',
+	          'aria-disabled': disable,
+	          'aria-controls': controls,
 	          onClick: this.handleClick.bind(this)
 	        },
 	        this.props.inner
@@ -660,10 +698,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _props = this.props;
+	      var disable = _props.disable;
+	      var controls = _props.controls;
 
 	      var classes = 'cal__nav cal__nav--next';
 
-	      if (this.props.disable) {
+	      if (disable) {
 	        classes += ' cal__nav--disabled';
 	      }
 
@@ -671,9 +712,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'button',
 	        {
 	          className: classes,
-	          role: 'button',
 	          title: 'Next month',
 	          type: 'button',
+	          'aria-disabled': disable,
+	          'aria-controls': controls,
 	          onClick: this.handleClick.bind(this)
 	        },
 	        this.props.inner
@@ -710,189 +752,182 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	exports.clone = clone;
-	exports.getFirstDayOfMonth = getFirstDayOfMonth;
-	exports.getDaysInMonth = getDaysInMonth;
-	exports.getWeeks = getWeeks;
-	exports.navigateMonth = navigateMonth;
-	exports.isSame = isSame;
-	exports.isBeforeDay = isBeforeDay;
-	exports.isAfterDay = isAfterDay;
-	exports.isOutsideMonth = isOutsideMonth;
-	exports.getDaysBetween = getDaysBetween;
-	exports.formatMonth = formatMonth;
-	exports.formatYear = formatYear;
 	var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-	function clone(d) {
-	  return new Date(d.getTime());
-	}
+	var utils = {
+	  clone: function clone(d) {
+	    return new Date(d.getTime());
+	  },
 
-	function getFirstDayOfMonth(d) {
-	  return new Date(d.getFullYear(), d.getMonth(), 1);
-	}
+	  getFirstDayOfMonth: function getFirstDayOfMonth(d) {
+	    return new Date(d.getFullYear(), d.getMonth(), 1);
+	  },
 
-	function getDaysInMonth(d) {
+	  getDaysInMonth: function getDaysInMonth(d) {
 
-	  var resultDate = getFirstDayOfMonth(d);
+	    var resultDate = utils.getFirstDayOfMonth(d);
 
-	  resultDate.setMonth(resultDate.getMonth() + 1);
-	  resultDate.setDate(resultDate.getDate() - 1);
+	    resultDate.setMonth(resultDate.getMonth() + 1);
+	    resultDate.setDate(resultDate.getDate() - 1);
 
-	  return resultDate.getDate();
-	}
+	    return resultDate.getDate();
+	  },
 
-	function getWeeks(d) {
-	  var firstDayOfWeek = arguments[1] === undefined ? 0 : arguments[1];
-	  var forceSixRows = arguments[2] === undefined ? false : arguments[2];
+	  getWeeks: function getWeeks(d) {
+	    var firstDayOfWeek = arguments[1] === undefined ? 0 : arguments[1];
+	    var forceSixRows = arguments[2] === undefined ? false : arguments[2];
 
-	  var daysInMonth = getDaysInMonth(d);
-	  var days = [];
-	  var week = [];
-	  var weeks = [];
+	    var daysInMonth = utils.getDaysInMonth(d);
+	    var days = [];
+	    var week = [];
+	    var weeks = [];
 
-	  // get all days in a month
-	  for (var i = 1; i <= daysInMonth; i++) {
-	    days.push(new Date(d.getFullYear(), d.getMonth(), i));
-	  }
-
-	  // build weeks array
-	  days.forEach(function (day) {
-	    if (week.length > 0 && day.getDay() === firstDayOfWeek) {
-	      weeks.push(week);
-	      week = [];
+	    // get all days in a month
+	    for (var i = 1; i <= daysInMonth; i++) {
+	      days.push(new Date(d.getFullYear(), d.getMonth(), i));
 	    }
 
-	    week.push(day);
-
-	    if (days.indexOf(day) === days.length - 1) {
-	      weeks.push(week);
-	    }
-	  });
-
-	  // unshift days to start the first week
-	  var firstWeek = weeks[0];
-
-	  for (var i = 7 - firstWeek.length; i > 0; i--) {
-	    var outsideDate = clone(firstWeek[0]);
-	    outsideDate.setDate(firstWeek[0].getDate() - 1);
-	    firstWeek.unshift(outsideDate);
-	    daysInMonth++;
-	  }
-
-	  // push days until the end of the last week
-	  var lastWeek = weeks[weeks.length - 1];
-
-	  for (var i = lastWeek.length; i < 7; i++) {
-	    var outsideDate = clone(lastWeek[lastWeek.length - 1]);
-	    outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1);
-	    lastWeek.push(outsideDate);
-	    daysInMonth++;
-	  }
-
-	  // handle six rows if we need to
-	  if (forceSixRows && daysInMonth < 42) {
-
-	    var lastDayOfMonth = weeks[weeks.length - 1][6];
-	    var _lastWeek = [];
-	    var i = 1;
-
-	    while (daysInMonth < 42) {
-
-	      var lastDayOfMonthClone = clone(lastDayOfMonth);
-	      var day = new Date(lastDayOfMonthClone.setDate(lastDayOfMonthClone.getDate() + i));
-
-	      if (_lastWeek.length > 0 && day.getDay() === firstDayOfWeek) {
-	        weeks.push(_lastWeek);
-	        _lastWeek = [];
+	    // build weeks array
+	    days.forEach(function (day) {
+	      if (week.length > 0 && day.getDay() === firstDayOfWeek) {
+	        weeks.push(week);
+	        week = [];
 	      }
 
-	      _lastWeek.push(day);
+	      week.push(day);
 
+	      if (days.indexOf(day) === days.length - 1) {
+	        weeks.push(week);
+	      }
+	    });
+
+	    // unshift days to start the first week
+	    var firstWeek = weeks[0];
+
+	    for (var i = 7 - firstWeek.length; i > 0; i--) {
+	      var outsideDate = utils.clone(firstWeek[0]);
+	      outsideDate.setDate(firstWeek[0].getDate() - 1);
+	      firstWeek.unshift(outsideDate);
 	      daysInMonth++;
-	      i++;
 	    }
 
-	    // push last week after finishing loop
-	    weeks.push(_lastWeek);
-	  }
+	    // push days until the end of the last week
+	    var lastWeek = weeks[weeks.length - 1];
 
-	  return weeks;
-	}
-
-	function navigateMonth(d, direction) {
-	  var currMonth = clone(d);
-	  var newMonth = currMonth.setMonth(d.getMonth() + direction);
-	  return new Date(newMonth);
-	}
-
-	function isSame(d1, d2) {
-	  var type = arguments[2] === undefined ? 'day' : arguments[2];
-
-	  var is = {};
-
-	  is.year = function (d1, d2) {
-	    return d1.getFullYear() === d2.getFullYear();
-	  };
-
-	  is.month = function (d1, d2) {
-	    return d1.getMonth() === d2.getMonth() && is.year(d1, d2);
-	  };
-
-	  is.day = function (d1, d2) {
-	    return d1.getDate() === d2.getDate() && is.month(d1, d2);
-	  };
-
-	  if (Array.isArray(d2)) {
-	    for (var i = d2.length; i--;) {
-	      if (is[type](d1, d2[i])) return i;
+	    for (var i = lastWeek.length; i < 7; i++) {
+	      var outsideDate = utils.clone(lastWeek[lastWeek.length - 1]);
+	      outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1);
+	      lastWeek.push(outsideDate);
+	      daysInMonth++;
 	    }
-	    return false;
-	  } else {
-	    return is[type](d1, d2);
-	  }
-	}
 
-	function isBeforeDay(d1, d2) {
-	  d2 = clone(d2);
-	  d2.setHours(0, 0, 0, 0);
-	  return d1 < d2;
-	}
+	    // handle six rows if we need to
+	    if (forceSixRows && daysInMonth < 42) {
 
-	function isAfterDay(d1, d2) {
-	  d2 = clone(d2);
-	  d2.setHours(0, 0, 0, 0);
-	  return d1 > d2;
-	}
+	      var lastDayOfMonth = weeks[weeks.length - 1][6];
+	      var _lastWeek = [];
+	      var i = 1;
 
-	function isOutsideMonth(d1, d2) {
-	  return d1.getMonth() !== d2.getMonth();
-	}
+	      while (daysInMonth < 42) {
 
-	function getDaysBetween(startDate, endDate) {
+	        var lastDayOfMonthClone = utils.clone(lastDayOfMonth);
+	        var day = new Date(lastDayOfMonthClone.setDate(lastDayOfMonthClone.getDate() + i));
 
-	  var days = [startDate];
-	  var current = startDate;
+	        if (_lastWeek.length > 0 && day.getDay() === firstDayOfWeek) {
+	          weeks.push(_lastWeek);
+	          _lastWeek = [];
+	        }
 
-	  if (isSame(startDate, endDate)) {
+	        _lastWeek.push(day);
+
+	        daysInMonth++;
+	        i++;
+	      }
+
+	      // push last week after finishing loop
+	      weeks.push(_lastWeek);
+	    }
+
+	    return weeks;
+	  },
+
+	  navigateMonth: function navigateMonth(d, direction) {
+	    var currMonth = utils.clone(d);
+	    var newMonth = currMonth.setMonth(d.getMonth() + direction);
+	    return new Date(newMonth);
+	  },
+
+	  isSame: function isSame(d1, d2) {
+	    var type = arguments[2] === undefined ? 'day' : arguments[2];
+
+	    var is = {};
+
+	    is.year = function (d1, d2) {
+	      return d1.getFullYear() === d2.getFullYear();
+	    };
+
+	    is.month = function (d1, d2) {
+	      return d1.getMonth() === d2.getMonth() && is.year(d1, d2);
+	    };
+
+	    is.day = function (d1, d2) {
+	      return d1.getDate() === d2.getDate() && is.month(d1, d2);
+	    };
+
+	    if (Array.isArray(d2)) {
+	      for (var i = d2.length; i--;) {
+	        if (is[type](d1, d2[i])) return i;
+	      }
+	      return false;
+	    } else {
+	      return is[type](d1, d2);
+	    }
+	  },
+
+	  isBeforeDay: function isBeforeDay(d1, d2) {
+	    d2 = utils.clone(d2);
+	    d2.setHours(0, 0, 0, 0);
+	    return d1 < d2;
+	  },
+
+	  isAfterDay: function isAfterDay(d1, d2) {
+	    d2 = utils.clone(d2);
+	    d2.setHours(0, 0, 0, 0);
+	    return d1 > d2;
+	  },
+
+	  isOutsideMonth: function isOutsideMonth(d1, d2) {
+	    return d1.getMonth() !== d2.getMonth();
+	  },
+
+	  getDaysBetween: function getDaysBetween(startDate, endDate) {
+
+	    var days = [startDate];
+	    var current = startDate;
+
+	    if (isSame(startDate, endDate)) {
+	      return days;
+	    }
+
+	    while (current < endDate) {
+	      current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+	      days.push(current);
+	    }
+
 	    return days;
+	  },
+
+	  formatMonth: function formatMonth(d) {
+	    return '' + MONTHS[d.getMonth()];
+	  },
+
+	  formatYear: function formatYear(d) {
+	    return d.getFullYear();
 	  }
+	};
 
-	  while (current < endDate) {
-	    current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
-	    days.push(current);
-	  }
-
-	  return days;
-	}
-
-	function formatMonth(d) {
-	  return '' + MONTHS[d.getMonth()];
-	}
-
-	function formatYear(d) {
-	  return d.getFullYear();
-	}
+	exports['default'] = utils;
+	module.exports = exports['default'];
 
 /***/ },
 /* 6 */
@@ -947,8 +982,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var _props = this.props;
 	      var humanize = _props.humanize;
 	      var humanizeStrings = _props.humanizeStrings;
-	      var startTime = _props.startTime;
-	      var endTime = _props.endTime;
+	      var minTime = _props.minTime;
+	      var maxTime = _props.maxTime;
 	      var interval = _props.interval;
 	      var twelveHourClock = _props.twelveHourClock;
 	      var pad = _props.pad;
@@ -967,15 +1002,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var AMPM = hour < HOURS_TO_NOON ? 'AM' : 'PM';
 
 	      if (humanize) {
-	        if (hour === startTime && minute === 0) {
+	        if (humanizeStrings.begin && hour === minTime && minute === 0) {
 	          return humanizeStrings.begin;
 	        }
 
-	        if (hour === HOURS_TO_NOON && minute === 0) {
+	        if (humanizeStrings.middle && hour === HOURS_TO_NOON && minute === 0) {
 	          return humanizeStrings.middle;
 	        }
 
-	        if (hour === endTime - 1 && minute === MINUTES_IN_HOUR - interval) {
+	        if (humanizeStrings.end && hour === maxTime - 1 && minute === MINUTES_IN_HOUR - interval) {
 	          return humanizeStrings.end;
 	        }
 	      }
@@ -1003,11 +1038,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function _getTimes() {
 	      var _props2 = this.props;
 	      var interval = _props2.interval;
-	      var startTime = _props2.startTime;
-	      var endTime = _props2.endTime;
+	      var minTime = _props2.minTime;
+	      var maxTime = _props2.maxTime;
 
-	      var timeLength = endTime * MINUTES_IN_HOUR;
-	      var minutes = startTime * MINUTES_IN_HOUR;
+	      var timeLength = maxTime * MINUTES_IN_HOUR;
+	      var minutes = minTime * MINUTES_IN_HOUR;
 	      var times = [];
 
 	      for (; minutes < timeLength; minutes += interval) {
@@ -1046,8 +1081,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'propTypes',
 	    value: {
-	      startTime: _react.PropTypes.number,
-	      endTime: _react.PropTypes.number,
+	      minTime: _react.PropTypes.number,
+	      maxTime: _react.PropTypes.number,
 	      interval: _react.PropTypes.number,
 	      separator: _react.PropTypes.string,
 	      pad: _react.PropTypes.bool,
@@ -1061,15 +1096,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'defaultProps',
 	    value: {
-	      startTime: 0,
-	      endTime: 24,
+	      minTime: 0,
+	      maxTime: 24,
 	      interval: 60,
 	      separator: ':',
 	      pad: true,
 	      twelveHourClock: true,
 	      humanize: false,
 	      humanizeStrings: {
-	        begin: 'Beginning of Day',
+	        begin: 'Start of Day',
 	        middle: 'Noon',
 	        end: 'End of Day'
 	      },
