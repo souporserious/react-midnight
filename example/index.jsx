@@ -85,20 +85,13 @@ class FromTo extends Component {
 class App extends Component {
   
   state = {
-    startDate: new Date(),
-    endDate: new Date()
+    date: new Date()
   }
 
   _handleCalendarClick(date) {
-    this.setState({startDate: date});
-  }
-
-  _setDate() {
-    this.setState({startDate: new Date('10-12-2010')});
-  }
-
-  _formatDate(date) {
-    return date.toLocaleString();
+    this.setState({date: date}, () => {
+      this.refs.calendar.setMonth(date);
+    });
   }
 
   _renderDay(day) {
@@ -115,9 +108,11 @@ class App extends Component {
   render() {
     return(
       <div className="app">
+        {this.state.date.toString()}
         <Calendar
+          ref="calendar"
           date={this.state.date}
-          onDateSelect={this._handleCalendarClick}
+          onDateSelect={::this._handleCalendarClick}
           selectedDays={[7, 8, 9, 10, 11, 12]}
           trimWeekdays={3}
           minDay={new Date()}

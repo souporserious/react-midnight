@@ -171,6 +171,15 @@ class Calendar extends Component {
     }
   }
 
+  setMonth(date) {
+    this.setState({month: date});
+  }
+
+  navigateMonth(direction) {
+    let month = this.state.month;
+    this.setState({ month: navigateMonth(month, direction) });
+  }
+
   _normalizeDates(mixed) {
 
     let month = new Date();
@@ -261,11 +270,6 @@ class Calendar extends Component {
     );
   }
 
-  _navigate(direction) {
-    let month = this.state.month;
-    this.setState({ month: navigateMonth(month, direction) });
-  }
-
   render() {
 
     const { className, minDay, maxDay } = this.props;
@@ -302,7 +306,7 @@ class Calendar extends Component {
       <div className={classNames}>
         <header className="cal__header">
           <PrevMonth
-            onClick={this._navigate.bind(this, -1)}
+            onClick={this.navigateMonth.bind(this, -1)}
             inner={this.props.prevHTML}
             disable={prevDisabled}
           />
@@ -311,7 +315,7 @@ class Calendar extends Component {
             <div className="cal__year">{yearLabel}</div>
           </div>
           <NextMonth
-            onClick={this._navigate.bind(this, 1)}
+            onClick={this.navigateMonth.bind(this, 1)}
             inner={this.props.nextHTML}
             disable={nextDisabled}
           />
