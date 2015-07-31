@@ -8,8 +8,8 @@ const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
 class Times extends Component {
 
   static propTypes = {
-    startTime: PropTypes.number,
-    endTime: PropTypes.number,
+    minTime: PropTypes.number,
+    maxTime: PropTypes.number,
     interval: PropTypes.number,
     separator: PropTypes.string,
     pad: PropTypes.bool,
@@ -21,15 +21,15 @@ class Times extends Component {
   }
 
   static defaultProps = {
-    startTime: 0,
-    endTime: 24,
+    minTime: 0,
+    maxTime: 24,
     interval: 60,
     separator: ':',
     pad: true,
     twelveHourClock: true,
     humanize: false,
     humanizeStrings: {
-      begin: 'Beginning of Day',
+      begin: 'Start of Day',
       middle: 'Noon',
       end: 'End of Day'
     },
@@ -73,7 +73,7 @@ class Times extends Component {
   // would get rid of the need for a shit load of props
   _format(minuteInterval) {
 
-    const {humanize, humanizeStrings, startTime, endTime, interval, twelveHourClock, pad, separator} = this.props;
+    const {humanize, humanizeStrings, minTime, maxTime, interval, twelveHourClock, pad, separator} = this.props;
 
     let hour = Math.floor(minuteInterval / MINUTES_IN_HOUR);
     let minute = (minuteInterval / MINUTES_IN_HOUR);
@@ -88,15 +88,18 @@ class Times extends Component {
     let AMPM = (hour < HOURS_TO_NOON) ? 'AM' : 'PM';
 
     if(humanize) {
-      if(hour === startTime && minute === 0) {
+      if(humanizeStrings.begin &&
+         hour === minTime && minute === 0) {
         return humanizeStrings.begin;
       }
 
-      if(hour === HOURS_TO_NOON && minute === 0) {
+      if(humanizeStrings.middle &&
+         hour === HOURS_TO_NOON && minute === 0) {
         return humanizeStrings.middle;
       }
 
-      if(hour === (endTime - 1) &&
+      if(humanizeStrings.end &&
+         hour === (maxTime - 1) &&
          minute === MINUTES_IN_HOUR - interval) {
         return humanizeStrings.end;
       }
@@ -124,9 +127,9 @@ class Times extends Component {
 
   _getTimes() {
 
-    const {interval, startTime, endTime} = this.props;
-    const timeLength = (endTime * MINUTES_IN_HOUR);
-    let minutes = startTime * MINUTES_IN_HOUR;
+    const {interval, minTime, maxTime} = this.props;
+    const timeLength = (maxTime * MINUTES_IN_HOUR);
+    let minutes = minTime * MINUTES_IN_HOUR;
     let times = [];
 
     for(; minutes < timeLength; minutes += interval) {
