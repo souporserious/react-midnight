@@ -4,11 +4,18 @@ import NextMonth from './NextMonth';
 import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from './utils';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const ENTER_KEY = 13;
 
 class Day extends Component {
 
   _handleDateSelect(day) {
     this.props.onDateSelect(day);
+  }
+
+  _handleKeyDown(day, e) {
+    if(e.keyCode === ENTER_KEY) {
+      this.props.onDateSelect(day);
+    }
   }
 
   _renderDay(day) {
@@ -73,6 +80,8 @@ class Day extends Component {
         aria-label={date}
         className={className}
         onClick={onDayClick}
+        tabIndex={isDisabled || isBefore || isAfter ? null : 0}
+        onKeyDown={this._handleKeyDown.bind(this, date)}
       >
         {this._renderDay(date)}
       </td>
@@ -132,6 +141,7 @@ class Calendar extends Component {
     outsideDays: true,
     prevHTML: '',
     nextHTML: '',
+    //locale: 'en',
     onDateSelect: () => null,
     renderDay: day => day.getDate()
   }

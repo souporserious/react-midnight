@@ -20,9 +20,10 @@ class PrevMonth extends Component {
 
   render() {
 
+    const { disable } = this.props;
     let classes = 'cal__nav cal__nav--prev';
 
-    if(this.props.disable) {
+    if(disable) {
       classes += ' cal__nav--disabled';
     }
 
@@ -32,6 +33,7 @@ class PrevMonth extends Component {
         role="button"
         title="Previous month"
         type="button"
+        aria-disabled={disable}
         onClick={::this.handleClick}
       >
         {this.props.inner}
