@@ -11,6 +11,10 @@ class Day extends Component {
     this.props.onDateSelect(day);
   }
 
+  _renderDay(day) {
+    return this.props.renderDay(day);
+  }
+
   render() {
 
     const {month, date, disabledDays, minDay, maxDay, selectedDays, outsideDays, onClick} = this.props;
@@ -70,7 +74,7 @@ class Day extends Component {
         className={className}
         onClick={onDayClick}
       >
-        {date.getDate()}
+        {this._renderDay(date)}
       </td>
     );
   }
@@ -80,19 +84,11 @@ class Week extends Component {
 
   render() {
 
-    const {date, month} = this.props;
-
     let days = this.props.days.map(day =>
       <Day
+        {...this.props}
         key={day.getTime()}
         date={day}
-        month={month}
-        minDay={this.props.minDay}
-        maxDay={this.props.maxDay}
-        disabledDays={this.props.disabledDays}
-        selectedDays={this.props.selectedDays}
-        outsideDays={this.props.outsideDays}
-        onDateSelect={this.props.onDateSelect}
       />
     );
 
@@ -116,36 +112,28 @@ class Calendar extends Component {
     weekStartsOn: PropTypes.number,
     forceSixRows: PropTypes.bool,
     outsideDays: PropTypes.bool,
-    onDateSelect: PropTypes.func,
     prevHTML: PropTypes.node,
     nextHTML: PropTypes.node,
     prevDisabled: PropTypes.bool,
-    nextDisabled: PropTypes.bool
-    // events: PropTypes.array,
+    nextDisabled: PropTypes.bool,
+    onDateSelect: PropTypes.func,
+    renderDay: PropTypes.func
   }
 
   static defaultProps = {
     date: new Date(),
     minDay: null,
     maxDay: null,
-    // instead of passing things like disabledDays and selectedDays
-    // we could pass an object and the proper class will get appended
-    // to it so the user could pass custom days, maybe Sunday is a special
-    // day and needs to be treated a certain way, could go alongside
-    // the events prop below we want to implement
     disabledDays: null,
     selectedDays: null,
     trimWeekdays: null,
     weekStartsOn: 0,
     forceSixRows: true,
     outsideDays: true,
-    onDateSelect: () => null,
     prevHTML: '',
-    nextHTML: ''
-    // show how we could map events using microformat
-    // https://moz.com/blog/markup-events-hcalendar-microformat
-    // https://developer.mozilla.org/en-US/docs/The_hCalendar_microformat
-    // events: [],
+    nextHTML: '',
+    onDateSelect: () => null,
+    renderDay: day => day.getDate()
   }
 
   state = {
@@ -244,20 +232,15 @@ class Calendar extends Component {
 
   _renderWeeksInMonth() {
 
-    const {minDay, maxDay, disabledDays, selectedDays, outsideDays, onDateSelect, weekStartsOn, forceSixRows} = this.props;
-    const month = this.state.month;
+    const { month } = this.state;
+    const { weekStartsOn, forceSixRows } = this.props;
 
     let weeks = getWeeks(month, weekStartsOn, forceSixRows).map((week, index) =>
       <Week
+        {...this.props}
         key={week[0].getTime()}
         days={week}
         month={month}
-        minDay={minDay}
-        maxDay={maxDay}
-        disabledDays={disabledDays}
-        selectedDays={selectedDays}
-        outsideDays={outsideDays}
-        onDateSelect={onDateSelect}
       />
     );
 
@@ -305,15 +288,23 @@ class Calendar extends Component {
       nextDisabled = true;
     }
 
-    return (
+    return(
       <div className={classNames}>
         <header className="cal__header">
-          <PrevMonth onClick={this._navigate.bind(this, -1)} inner={this.props.prevHTML} disable={prevDisabled} />
+          <PrevMonth
+            onClick={this._navigate.bind(this, -1)}
+            inner={this.props.prevHTML}
+            disable={prevDisabled}
+          />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
             <div className="cal__year">{yearLabel}</div>
           </div>
-          <NextMonth onClick={this._navigate.bind(this, 1)} inner={this.props.nextHTML} disable={nextDisabled} />
+          <NextMonth
+            onClick={this._navigate.bind(this, 1)}
+            inner={this.props.nextHTML}
+            disable={nextDisabled}
+          />
         </header>
         <table className="cal__table">
           {this._renderWeekdays()}

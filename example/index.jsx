@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Calendar, Time } from '../src/react-dately';
+import { Calendar, Time, utils } from '../src/react-dately';
 import CalendarInput from './CalendarInput';
 
 import '../src/calendar.scss';
@@ -9,7 +9,8 @@ class TimeSelect extends Component {
   render() {
     return(
       <Time
-        startTime={6}
+        minTime={this.props.minTime}
+        maxTime={this.props.maxTime}
         interval={30}
         humanize={true}
       >
@@ -22,6 +23,61 @@ class TimeSelect extends Component {
           </select>
         }
       </Time>
+    );
+  }
+}
+
+class FromTo extends Component {
+
+  state = {
+    startDate: new Date(),
+    startTime: 6 * 60,
+    endDate: new Date(),
+    endTime: 23.5 * 60
+  }
+
+  _handleDateSelect(key, value) {
+    let date = {};
+    date[key] = value;
+    this.setState(date);
+  }
+
+  _handleTimeChange(key, e) {
+    let date = {};
+    date[key] = e.target.value;
+    this.setState(date);
+  }
+
+  render() {
+
+    const { startDate, startTime, endDate, endTime } = this.state;
+
+    return(
+      <div>
+        <h2>From:</h2>
+        <CalendarInput
+          date={startDate}
+          maxDay={endDate}
+          onDateSelect={this._handleDateSelect.bind(this, 'startDate')}
+        />
+        <TimeSelect
+          minTime={startTime/60}
+          maxTime={endTime/60}
+          onTimeChange={this._handleTimeChange.bind(this, 'startTime')}
+        />
+
+        <h2>To:</h2>
+        <CalendarInput
+          date={endDate}
+          minDay={startDate}
+          onDateSelect={this._handleDateSelect.bind(this, 'endDate')}
+        />
+        <TimeSelect
+          defaultTime={23.5 * 60}
+          minTime={startTime/60}
+          onTimeChange={this._handleTimeChange.bind(this, 'endTime')}
+        />
+      </div>
     );
   }
 }
@@ -45,12 +101,15 @@ class App extends Component {
     return date.toLocaleString();
   }
 
-  _handleTimeChange(key, e) {
+  _renderDay(day) {
 
-    let currDate = this.state[key];
-    let newDate = Time.toDate(e.target.value, currDate);
+    day = utils.isSame(day, new Date()) ? 'today' : day.getDate();
 
-    console.log(newDate);
+    return(
+      <div>
+        {day}
+      </div>
+    );
   }
   
   render() {
@@ -61,21 +120,13 @@ class App extends Component {
           onDateSelect={this._handleCalendarClick}
           selectedDays={[7, 8, 9, 10, 11, 12]}
           trimWeekdays={3}
-          minDay={new Date('06-15-2015')}
-          maxDay={new Date('07-31-2015')}
-          className={"cool"}
+          minDay={new Date()}
+          renderDay={this._renderDay}
         />
 
         <CalendarInput />
 
-        <TimeSelect
-          onTimeChange={this._handleTimeChange.bind(this, 'startDate')}
-        />
-
-        <TimeSelect
-          defaultTime={23.5 * 60}
-          onTimeChange={this._handleTimeChange.bind(this, 'endDate')}
-        />
+        <FromTo />
       </div>
     );
   }

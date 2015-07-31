@@ -9,12 +9,7 @@ class CalendarInput extends React.Component {
     this._documentClickHandler = (e) => this._documentClick(e);
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   return this.props.date !== nextProps.date;
-  // }
-
   componentDidMount() {
-    this._documentClickHandler = (e) => this._documentClick(e);
     document.addEventListener('click', this._documentClickHandler);
   }
 
@@ -53,6 +48,8 @@ class CalendarInput extends React.Component {
           <Calendar
             date={date}
             onDateSelect={this._handleCalendarClick.bind(this)}
+            minDay={this.props.minDay}
+            maxDay={this.props.maxDay}
             {...calendarProps}
           />
         }
@@ -81,6 +78,7 @@ CalendarInput.defaultProps = {
   wrapperClassName: null,
   inputClassName: null,
   placeholder: null,
+  minDay: new Date(),
   calendarProps: {
     modifiers: 'cal--small',
     trimWeekdays: 2
