@@ -9,4 +9,4 @@ Handle dates, times, and calendars with React.
 - [x] keyboard support
 - [ ] ARIA support
 - [ ] i18n support
-- [ ] touch support
+- [x] touch support

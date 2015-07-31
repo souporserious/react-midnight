@@ -9,6 +9,7 @@ const ENTER_KEY = 13;
 class Day extends Component {
 
   _handleDateSelect(day) {
+    console.log('test');
     this.props.onDateSelect(day);
   }
 
@@ -24,7 +25,7 @@ class Day extends Component {
 
   render() {
 
-    const {month, date, disabledDays, minDay, maxDay, selectedDays, outsideDays, onClick} = this.props;
+    const {month, date, disabledDays, minDay, maxDay, selectedDays, outsideDays, onClick, canTouchTap} = this.props;
 
     let className = 'cal__day';
     let modifiers = [];
@@ -79,7 +80,8 @@ class Day extends Component {
         role="presentation"
         aria-label={date}
         className={className}
-        onClick={onDayClick}
+        onClick={canTouchTap ? null : onDayClick}
+        onTouchTap={canTouchTap ? onDayClick : null}
         tabIndex={isDisabled || isBefore || isAfter ? null : 0}
         onKeyDown={this._handleKeyDown.bind(this, date)}
       >
@@ -141,6 +143,7 @@ class Calendar extends Component {
     outsideDays: true,
     prevHTML: '',
     nextHTML: '',
+    canTouchTap: false,
     //locale: 'en',
     onDateSelect: () => null,
     renderDay: day => day.getDate()
@@ -272,7 +275,7 @@ class Calendar extends Component {
 
   render() {
 
-    const { className, minDay, maxDay } = this.props;
+    const { className, minDay, maxDay, canTouchTap } = this.props;
     const { month } = this.state;
 
     let classes = [];
@@ -306,7 +309,8 @@ class Calendar extends Component {
       <div className={classNames}>
         <header className="cal__header">
           <PrevMonth
-            onClick={this.navigateMonth.bind(this, -1)}
+            onClick={canTouchTap ? null : this.navigateMonth.bind(this, -1)}
+            onTouchTap={canTouchTap ? this.navigateMonth.bind(this, -1) : null}
             inner={this.props.prevHTML}
             disable={prevDisabled}
           />
@@ -315,7 +319,8 @@ class Calendar extends Component {
             <div className="cal__year">{yearLabel}</div>
           </div>
           <NextMonth
-            onClick={this.navigateMonth.bind(this, 1)}
+            onClick={canTouchTap ? null : this.navigateMonth.bind(this, 1)}
+            onTouchTap={canTouchTap ? this.navigateMonth.bind(this, 1) : null}
             inner={this.props.nextHTML}
             disable={nextDisabled}
           />
