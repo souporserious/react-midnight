@@ -9,7 +9,6 @@ const ENTER_KEY = 13;
 class Day extends Component {
 
   _handleDateSelect(day) {
-    console.log('test');
     this.props.onDateSelect(day);
   }
 
