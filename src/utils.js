@@ -145,7 +145,7 @@ const utils = {
       let days = [startDate];
       let current = startDate;
 
-      if(isSame(startDate, endDate)) {
+      if(utils.isSame(startDate, endDate)) {
         return days;
       }
 

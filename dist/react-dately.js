@@ -129,7 +129,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(Day, [{
 	    key: '_handleDateSelect',
 	    value: function _handleDateSelect(day) {
-	      console.log('test');
 	      this.props.onDateSelect(day);
 	    }
 	  }, {
@@ -905,7 +904,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var days = [startDate];
 	    var current = startDate;
 
-	    if (isSame(startDate, endDate)) {
+	    if (utils.isSame(startDate, endDate)) {
 	      return days;
 	    }
 

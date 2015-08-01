@@ -9,6 +9,11 @@ import './main.scss';
 injectTapEventPlugin();
 
 class TimeSelect extends Component {
+
+  _handleOnChange(e) {
+    this.props.onTimeChange(e);
+  }
+
   render() {
     return(
       <Time
@@ -19,8 +24,9 @@ class TimeSelect extends Component {
       >
         {times =>
           <select
-            defaultValue={this.props.defaultTime}
-            onChange={this.props.onTimeChange}
+            value={this.props.value}
+            onChange={this._handleOnChange.bind(this)}
+            className="select"
           >
             {times}
           </select>
