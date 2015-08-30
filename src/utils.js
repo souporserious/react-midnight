@@ -114,9 +114,11 @@ const utils = {
     is.day = (d1, d2) =>
       d1.getDate() === d2.getDate() && is.month(d1, d2);
 
-    if(Array.isArray(d2)) {
+    if(!d1 || !d2) return false;
+
+    if(d2.constructor === Array) {
       for(let i = d2.length; i--;) {
-        if(is[type](d1, d2[i])) return i;
+        if(is[type](d1, d2[i])) return true;
       }
       return false;
     } else {
@@ -141,20 +143,25 @@ const utils = {
   },
 
   getDaysBetween(startDate, endDate) {
+    // swap values if start date is after end date
+    if(utils.isAfterDay(startDate, endDate)) {
+      [startDate, endDate] = [endDate, startDate];
+    }
 
-      let days = [startDate];
-      let current = startDate;
+    let days = [startDate];
+    let current = startDate;
 
-      if(utils.isSame(startDate, endDate)) {
-        return days;
-      }
-
-      while(current < endDate) {
-        current = new Date(current.getTime() + (24 * 60 * 60 * 1000));
-        days.push(current);
-      }
-
+    // if days are the same bail
+    if(utils.isSame(startDate, endDate)) {
       return days;
+    }
+
+    while(current < endDate) {
+      current = new Date(current.getTime() + (24 * 60 * 60 * 1000));
+      days.push(current);
+    }
+
+    return days;
   },
 
   formatMonth(d) {

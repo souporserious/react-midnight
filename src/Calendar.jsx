@@ -45,10 +45,11 @@ class Day extends Component {
     let onDayMouseDown = onMouseDown.bind(this, date);
     let onDayMouseMove = onMouseMove.bind(this, date);
     let onDayMouseUp = onMouseUp.bind(this, date);
-    let isDisabled = false;
+    let isDisabled;
 
     Object.keys(rules).forEach(key => {
       let result = rules[key](date, month);
+      isDisabled = false
 
       // if result is an array, deconstruct it
       if(result && result.constructor === Array) {

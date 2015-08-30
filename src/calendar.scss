@@ -177,7 +177,9 @@ $secondary: #555657;
   cursor: default !important;
 }
 
-.cal__day--in-range {
+.cal__day--start-date,
+.cal__day--in-range,
+.cal__day--end-date {
   &, &:hover {
     background-color: #f57272;
     color: white;
