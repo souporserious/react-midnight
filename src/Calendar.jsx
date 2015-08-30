@@ -1,12 +1,25 @@
 import React, { Component, PropTypes } from 'react';
 import PrevMonth from './PrevMonth';
 import NextMonth from './NextMonth';
+import extend from './extend';
 import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from './utils';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const ENTER_KEY = 13;
 
 class Day extends Component {
+
+  // Rules are how the particular day should behave,
+  // it will add a modifier class to allow styling
+  // one day we could provide a hook for inline styles
+  rules = {
+    today: (date) => isSame(date, new Date()),
+    outside: (date, month) => isOutsideMonth(date, month),
+    inRange: (date) => this.props.selectedDays && isSame(date, this.props.selectedDays),
+    disabled: (date) => this.props.disabledDays && [isSame(date, this.props.disabledDays), true],
+    before: (date) => this.props.minDay && [isBeforeDay(date, this.props.minDay), true],
+    after: (date) => this.props.maxDay && [isAfterDay(date, this.props.maxDay), true]
+  }
 
   _handleDateSelect(day) {
     this.props.onDateSelect(day);
@@ -18,55 +31,46 @@ class Day extends Component {
     }
   }
 
-  _renderDay(day) {
-    return this.props.renderDay(day);
+  _renderDay(day, rules) {
+    return this.props.renderDay(day, rules);
   }
 
   render() {
-
-    const {month, date, disabledDays, minDay, maxDay, selectedDays, outsideDays, onClick, canTouchTap} = this.props;
-
+    const { month, date, disabledDays, minDay, maxDay, selectedDays, outsideDays, onClick, canTouchTap, onMouseDown, onMouseMove, onMouseUp } = this.props;
+    const rules = extend(this.rules, this.props.rules);
+    const isOutside = isOutsideMonth(date, month);
     let className = 'cal__day';
     let modifiers = [];
     let onDayClick = this._handleDateSelect.bind(this, date);
+    let onDayMouseDown = onMouseDown.bind(this, date);
+    let onDayMouseMove = onMouseMove.bind(this, date);
+    let onDayMouseUp = onMouseUp.bind(this, date);
+    let isDisabled = false;
 
-    const isToday = isSame(date, new Date());
+    Object.keys(rules).forEach(key => {
+      let result = rules[key](date, month);
 
-    if(isToday) {
-      modifiers.push('today');
-    }
-
-    const isOutside = isOutsideMonth(date, month);
-
-    if(isOutside) {
-      modifiers.push('outside');
-    }
-
-    const isDisabled = disabledDays ? isSame(date, disabledDays) : null;
-    const isBefore = minDay ? isBeforeDay(date, minDay) : null;
-    const isAfter = maxDay ? isAfterDay(date, maxDay) : null;
-
-    if(isDisabled || isBefore || isAfter) {
-      modifiers.push('disabled');
-      onDayClick = null;
-    }
-
-    if(selectedDays) {
-
-      const isSelected = isSame(date, selectedDays);
-
-      if(isSelected || isSelected === 0) {
-        modifiers.push('selected');
+      // if result is an array, deconstruct it
+      if(result && result.constructor === Array) {
+        [result, isDisabled] = result;
       }
 
-      if(isSelected === 0) {
-        modifiers.push('selected-first');
-      }
+      if(result) {
+        // camelCase to hyphen friendly class name
+        const modifier = key.replace(/[a-z][A-Z]/g, (str, offset) =>
+          `${str[0]}-${str[1].toLowerCase()}`
+        );
+        modifiers.push(modifier);
 
-      if(isSelected === selectedDays.length - 1) {
-        modifiers.push('selected-last');
+        // make sure events get disabled as well
+        if(isDisabled) {
+          onDayClick =
+          onDayMouseDown =
+          onDayMouseMove =
+          onDayMouseUp = (e) => e.preventDefault();
+        }
       }
-    }
+    });
 
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
 
@@ -79,12 +83,15 @@ class Day extends Component {
         role="presentation"
         aria-label={date}
         className={className}
+        tabIndex={isDisabled ? null : 0}
         onClick={canTouchTap ? null : onDayClick}
         onTouchTap={canTouchTap ? onDayClick : null}
-        tabIndex={isDisabled || isBefore || isAfter ? null : 0}
         onKeyDown={this._handleKeyDown.bind(this, date)}
+        onMouseDown={onDayMouseDown}
+        onMouseMove={onDayMouseMove}
+        onMouseUp={onDayMouseUp}
       >
-        {this._renderDay(date)}
+        {this._renderDay(date, rules)}
       </td>
     );
   }
@@ -143,8 +150,12 @@ class Calendar extends Component {
     prevHTML: '',
     nextHTML: '',
     canTouchTap: false,
+    rules: {},
     //locale: 'en',
     onDateSelect: () => null,
+    onMouseDown: () => null,
+    onMouseMove: () => null,
+    onMouseUp: () => null,
     renderDay: day => day.getDate()
   }
 
@@ -222,13 +233,13 @@ class Calendar extends Component {
 
   _renderWeekdays() {
 
-    let weekdays = WEEKDAYS.slice(0);
-    let sortedWeekdays = weekdays.concat(weekdays.splice(0, this.props.weekStartsOn));
+    const { trimWeekdays, weekStartsOn } = this.props;
+    const weekdays = WEEKDAYS.slice(0);
+    const sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn));
 
-    var getDays = () => {
+    const getDays = () => {
       return sortedWeekdays.map((weekday, index) => {
-        let trim = this.props.trimWeekdays;
-        let weekdayTrimmed = trim !== null ? weekday.substring(0, parseInt(trim)) : weekday;
+        const weekdayTrimmed = trimWeekdays ? weekday.substring(0, parseInt(trimWeekdays)) : weekday;
         return (
           <th
             key={index}
@@ -272,12 +283,12 @@ class Calendar extends Component {
     );
   }
 
-  generateID() {
+  generateId() {
 
-    let timestamp = Date.now(),
-        uniqueNumber = 0;
+    let timestamp = Date.now();
+    let uniqueNumber = 0;
 
-    (function () {
+    (() => {
       // If created at same millisecond as previous
       if(timestamp <= uniqueNumber) {
         timestamp = ++uniqueNumber;
@@ -293,7 +304,7 @@ class Calendar extends Component {
 
     const { className, minDay, maxDay, canTouchTap } = this.props;
     const { month } = this.state;
-    const ID = this.generateID();
+    const id = this.generateId();
 
     let classes = [];
     let modifiers = this.props.modifiers ? this.props.modifiers.split(',') : null;
@@ -330,7 +341,7 @@ class Calendar extends Component {
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, -1) : null}
             inner={this.props.prevHTML}
             disable={prevDisabled}
-            controls={ID + '_table'}
+            controls={id + '_table'}
           />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
@@ -341,10 +352,10 @@ class Calendar extends Component {
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, 1) : null}
             inner={this.props.nextHTML}
             disable={nextDisabled}
-            controls={ID + '_table'}
+            controls={id + '_table'}
           />
         </header>
-        <table id={ID + '_table'} className="cal__table">
+        <table id={id + '_table'} className="cal__table">
           {this._renderWeekdays()}
           {this._renderWeeksInMonth()}
         </table>
