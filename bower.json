@@ -1,12 +1,12 @@
 {
   "name": "react-dately",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "homepage": "https://github.com/souporserious/react-dately",
   "authors": [
     "Travis Arnold <ftntravis@gmail.com>"
   ],
   "description": "Handle dates, times, and calendars with React.",
-  "main": ["./dist/react-dately.js", "./dist/react-dately.min.js"],
+  "main": ["./dist/react-dately.js"],
   "keywords": [
     "react",
     "component",
