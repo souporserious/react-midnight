@@ -157,6 +157,7 @@ class Calendar extends Component {
   state = {
     month: this.props.date
   }
+  _id = this._generateId()
 
   componentWillReceiveProps(nextProps) {
     if(this.props.month !== nextProps.month) {
@@ -171,6 +172,24 @@ class Calendar extends Component {
   navigateMonth(direction) {
     let month = this.state.month;
     this.setState({ month: navigateMonth(month, direction) });
+  }
+
+  // used for ARIA support
+  _generateId() {
+
+    let timestamp = Date.now();
+    let uniqueNumber = 0;
+
+    (() => {
+      // If created at same millisecond as previous
+      if(timestamp <= uniqueNumber) {
+        timestamp = ++uniqueNumber;
+      } else {
+        uniqueNumber = timestamp;
+      }
+    })();
+    
+    return 'D' + timestamp;
   }
 
   _renderWeekdays() {
@@ -225,28 +244,9 @@ class Calendar extends Component {
     );
   }
 
-  generateId() {
-
-    let timestamp = Date.now();
-    let uniqueNumber = 0;
-
-    (() => {
-      // If created at same millisecond as previous
-      if(timestamp <= uniqueNumber) {
-        timestamp = ++uniqueNumber;
-      } else {
-        uniqueNumber = timestamp;
-      }
-    })();
-    
-    return 'D' + timestamp;
-  }
-
   render() {
-
     const { className, minDay, maxDay, canTouchTap } = this.props;
     const { month } = this.state;
-    const id = this.generateId();
 
     let classes = [];
     let modifiers = this.props.modifiers ? this.props.modifiers.split(',') : null;
@@ -283,7 +283,7 @@ class Calendar extends Component {
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, -1) : null}
             inner={this.props.prevHTML}
             disable={prevDisabled}
-            controls={id + '_table'}
+            controls={this._id + '_table'}
           />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
@@ -294,10 +294,10 @@ class Calendar extends Component {
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, 1) : null}
             inner={this.props.nextHTML}
             disable={nextDisabled}
-            controls={id + '_table'}
+            controls={this._id + '_table'}
           />
         </header>
-        <table id={id + '_table'} className="cal__table">
+        <table id={this._id + '_table'} className="cal__table">
           {this._renderWeekdays()}
           {this._renderWeeksInMonth()}
         </table>
