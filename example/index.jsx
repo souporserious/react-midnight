@@ -97,8 +97,7 @@ class App extends Component {
   state = {
     startDate: null,
     endDate: null,
-    date: new Date(),
-    selected: []
+    inRange: []
   }
   _mouseDown = false
 
@@ -119,8 +118,6 @@ class App extends Component {
       <div className="app">
         <Calendar
           ref="calendar"
-          date={this.state.date}
-          selectedDays={this.state.selected}
           trimWeekdays={3}
           minDay={new Date()}
           renderDay={this._renderDay}
@@ -159,7 +156,8 @@ class App extends Component {
           }}
           rules={{
             startDate: (date) => isSame(date, this.state.startDate),
-            endDate: (date) => isSame(date, this.state.endDate)
+            endDate: (date) => isSame(date, this.state.endDate),
+            inRange: (date) => isSame(date, this.state.inRange),
           }}
         />
 

@@ -15,8 +15,6 @@ class Day extends Component {
   rules = {
     today: (date) => isSame(date, new Date()),
     outside: (date, month) => isOutsideMonth(date, month),
-    inRange: (date) => this.props.selectedDays && isSame(date, this.props.selectedDays),
-    disabled: (date) => this.props.disabledDays && [isSame(date, this.props.disabledDays), true],
     before: (date) => this.props.minDay && [isBeforeDay(date, this.props.minDay), true],
     after: (date) => this.props.maxDay && [isAfterDay(date, this.props.maxDay), true]
   }
@@ -36,7 +34,7 @@ class Day extends Component {
   }
 
   render() {
-    const { month, date, disabledDays, minDay, maxDay, selectedDays, outsideDays, onClick, canTouchTap, onMouseDown, onMouseMove, onMouseUp } = this.props;
+    const { month, date, minDay, maxDay, outsideDays, onClick, canTouchTap, onMouseDown, onMouseMove, onMouseUp } = this.props;
     const rules = extend(this.rules, this.props.rules);
     const isOutside = isOutsideMonth(date, month);
     let className = 'cal__day';
@@ -124,8 +122,6 @@ class Calendar extends Component {
     date: PropTypes.instanceOf(Date),
     minDay: PropTypes.instanceOf(Date),
     maxDay: PropTypes.instanceOf(Date),
-    disabledDays: PropTypes.array,
-    selectedDays: PropTypes.array,
     trimWeekdays: PropTypes.number,
     weekStartsOn: PropTypes.number,
     forceSixRows: PropTypes.bool,
@@ -142,8 +138,6 @@ class Calendar extends Component {
     date: new Date(),
     minDay: null,
     maxDay: null,
-    disabledDays: null,
-    selectedDays: null,
     trimWeekdays: null,
     weekStartsOn: 0,
     forceSixRows: true,
@@ -164,22 +158,7 @@ class Calendar extends Component {
     month: this.props.date
   }
 
-  componentWillMount() {
-    if(this.props.selectedDays) {
-      this._normalizeDates(this.props.selectedDays);
-    }
-    if(this.props.disabledDays) {
-      this._normalizeDates(this.props.disabledDays);
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
-    if(nextProps.selectedDays) {
-      this._normalizeDates(nextProps.selectedDays);
-    }
-    if(nextProps.disabledDays) {
-      this._normalizeDates(nextProps.disabledDays);
-    }
     if(this.props.month !== nextProps.month) {
       this.setState({month: nextProps.date});
     }
@@ -192,44 +171,6 @@ class Calendar extends Component {
   navigateMonth(direction) {
     let month = this.state.month;
     this.setState({ month: navigateMonth(month, direction) });
-  }
-
-  _normalizeDates(mixed) {
-
-    let month = new Date();
-
-    for(let i = mixed.length; i--;) {
-
-      let mix = mixed[i];
-
-        // if it's a Date object already then push it
-        // and contiue
-        if(mix instanceof Date) {
-          mixed[i] = mix;
-          continue;
-        }
-
-        // test if digit and in between current month
-        // or test to block day of week out somehow
-        // reference pickadate and how they do it
-        // just block out day for now
-        if(/^\d+$/.test(mix)) {
-          mixed[i] = new Date(month.getFullYear(), month.getMonth(), mix);
-          continue;
-        }
-
-        if(Array.isArray(mix)) {
-          mixed[i] = new Date(mix[0], mix[1], mix[2]);
-          continue;
-        }
-      }
-
-    // finally sort the dates so they're in order
-    mixed.sort((a, b) => {
-      a = a.getTime();
-      b = b.getTime();
-      return a < b ? -1 : a > b ? 1 : 0;
-    });
   }
 
   _renderWeekdays() {
