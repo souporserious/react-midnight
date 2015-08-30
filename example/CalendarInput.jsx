@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Calendar } from '../src/react-dately';
 
-class CalendarInput extends React.Component {
+class CalendarInput extends Component {
 
   constructor(props) {
     super(props);
@@ -18,8 +18,14 @@ class CalendarInput extends React.Component {
   }
 
   _documentClick(e) {
-    var componentNode = React.findDOMNode(this);
-    this.setState({isOpen: componentNode.contains(e.target)});
+    const inputNode = React.findDOMNode(this.refs['input']);
+    const calendarNode = React.findDOMNode(this.refs['calendar']);
+
+    if(inputNode.contains(e.target)) {
+      this.setState({isOpen: !this.state.isOpen});
+    } else if(!calendarNode.contains(e.target)) {
+      this.setState({isOpen: false});
+    }
   }
 
   _handleCalendarClick(date) {
@@ -29,20 +35,22 @@ class CalendarInput extends React.Component {
 
   render() {
 
-    var { date, wrapperClassName, inputClassName, placeholder, calendarProps, hiddenValue, formatDate } = this.props;
-    
+    const { date, wrapperClassName, inputClassName, placeholder, calendarProps, hiddenValue, formatDate,  } = this.props;
+    const value = placeholder ? (placeholder || null) : formatDate(date);
+
     return(
-      <div className="cool">
+      <div className={wrapperClassName}>
         <input
+          ref="input"
           type="text"
           className={inputClassName}
           aria-haspopup={true}
           aria-readonly={false}
           aria-expanded={this.state.isOpen}
-          placeholder={placeholder}
-          value={formatDate(date)}
+          value={value}
           readOnly
         />
+        <div ref="calendar">
         {
           this.state.isOpen &&
           <Calendar
@@ -53,6 +61,7 @@ class CalendarInput extends React.Component {
             {...calendarProps}
           />
         }
+        </div>
       </div>
     );
   }
@@ -75,13 +84,13 @@ CalendarInput.propTypes = {
 
 CalendarInput.defaultProps = {
   date: new Date(),
-  wrapperClassName: null,
+  wrapperClassName: 'cal__input',
   inputClassName: null,
   placeholder: null,
   minDay: new Date(),
   calendarProps: {
     modifiers: 'cal--small',
-    trimWeekdays: 2
+    trimWeekdays: 1
   },
   formatDate: date => date,
   onDateSelect: date => date

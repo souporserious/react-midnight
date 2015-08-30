@@ -1,31 +1,69 @@
-$cell_size: 45px;
+$primary: #6e9541;
+$secondary: #555657;
 
 .cal {
-  width: $cell_size * 7;
+  max-width: 400px;
 }
 
 .cal--small {
-  max-width: 230px;
-
+  width: 34 * 7 + px;
+  border-radius: 0;
   position: absolute;
+  top: 100%;
+  left: 0;
   z-index: 100;
-  background-color: #fff;
-
-  .cal__table {
-    th {
-      font-size: 12px;
+  background-color: white;
+  box-shadow: 0 4px 8px #c0c3c5;
+  .cal__header {
+    padding: 0;
+    background-color: $primary;
+    color: white;
+  }
+  .cal__nav {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+  }
+  .cal__nav--prev {
+    &:before {
+      border-width: 5px 9px 5px 0;
+      border-color: transparent #c4e49d transparent transparent;
     }
-    td {
-      padding: 8px 0;
-      font-size: 14px;
+  }
+  .cal__nav--next {
+    &:before {
+      border-width: 5px 0 5px 9px;
+      border-color: transparent transparent transparent #c4e49d;
     }
+  }
+  .cal__month-year {
+    font-size: 14px;
+  }
+  .cal__month {
+    margin-right: 6px;
+  }
+  .cal__weekdays {
+    background-color: $primary;
+    color: #c4e49d;
+  }
+  .cal__weekday {
+    width: 34px;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+  .cal__day {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    font-size: 12px;
+    outline: 0;
   }
 }
 
 .cal__header {
   display: flex;
+  padding: 6px 0;
   justify-content: space-between;
-
   .cal--small & {
     font-size: 12px;
   }
@@ -34,6 +72,7 @@ $cell_size: 45px;
 .cal__month-year {
   display: flex;
   align-items: center;
+  font-size: 18px;
 }
 
 .cal__month, .cal__year {
@@ -43,22 +82,18 @@ $cell_size: 45px;
 
 .cal__month {
   margin-right: 8px;
+  font-weight: 600;
 }
 
-.cal__year {
-}
+.cal__year {}
 
 .cal__nav {
-  width: $cell_size;
-  height: $cell_size;
-  padding: 0;
+  padding: 12px 24px;
   border: 0;
-  //outline: 0;
   background: transparent;
   user-select: none;
   cursor: pointer;
   position: relative;
-
   &:before {
     content: "";
     width: 0;
@@ -72,103 +107,98 @@ $cell_size: 45px;
 }
 
 .cal__nav--disabled {
+  outline: 0;
   cursor: not-allowed;
+  opacity: 0.4;
 }
 
 .cal__nav--prev {
   &:before {
     border-width: 6px 10px 6px 0;
-    border-color: transparent #555657 transparent transparent;
-  }
-
-  &.cal__nav--disabled {
-    &:before {
-      border-color: transparent #D4D6D8 transparent transparent;
-    }
+    border-color: transparent $secondary transparent transparent;
   }
 }
 
 .cal__nav--next {
-   &:before {
+  &:before {
     border-width: 4px 0 6px 10px;
-    border-color: transparent transparent transparent #555657;
+    border-color: transparent transparent transparent $secondary;
   }
+}
 
-  &.cal__nav--disabled {
-    &:before {
-      border-color: transparent transparent transparent #D4D6D8;
-    }
-  }
+.cal__weekday {
+  width: 14.28571%;
+  padding: 8px 0;
+  font-weight: 600;
+  background: transparent;
+  cursor: default;
 }
 
 .cal__table {
-  table-layout: fixed;
   width: 100%;
   text-align: center;
+  border-collapse: separate;
   border-spacing: 0;
-  user-select: none;
-}
-
-.cal__weekdays {
-  height: $cell_size;
-  font-size: 12px;
-}
-
-.cal__weekdays, .cal__week {
-  
+  table-layout: fixed;
+  font-size: inherit;
 }
 
 .cal__day {
-  width: $cell_size;
-  height: $cell_size;
+  padding: 16px 0;
+  color: black;
   position: relative;
-  color: #000;
   cursor: pointer;
+  vertical-align: middle;
+  &:hover {
+    background-color: #f1f1f1;
+  }
 }
 
 .cal__day--today {
-  color: #fff;
-
   &:before {
-    content: '';
-    width: 100%;
-    height: 100%;
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 12px 12px 0;
+    border-color: transparent $primary transparent transparent;
     position: absolute;
-    z-index: -1;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #b4da55;
-    border-radius: 50%;
-  }
-}
-
-.cal__day--selected {
-  @extend .cal__day--today;
-
-  &:before {
-    border-radius: 0;
-    background: #8055DA;
-  }
-}
-
-.cal__day--selected-first {
-  &:before {
-    border-radius: 100% 0 0 100%;
-  }
-}
-
-.cal__day--selected-last {
-  &:before {
-    border-radius: 0 100% 100% 0;
+    top: 0;
+    right: 0;
   }
 }
 
 .cal__day--outside, .cal__day--disabled {
-  color: #ccc;
+  color: #cccccc;
 }
 
-.cal__day--disabled {
-  background: #EFF0F1;
+.cal__day--disabled, .cal__day--before, .cal__day--after {
+  background: #eff0f1;
   cursor: default !important;
+}
+
+.cal__day--in-range {
+  &, &:hover {
+    background-color: #f57272;
+    color: white;
+  }
+}
+
+.cal__input {
+  display: inline-block;
+  background: {
+    image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14.8" height="14.8" viewBox="0 0 14.8 14.8"><path fill="none" stroke="#8D8F90" stroke-width="1.5" stroke-linejoin="round" stroke-miterlimit="10" d="M.8 2.3H14V14H1z"/><path d="M3.5.8v3m7.8-3v3" fill="none" stroke="#8D8F90" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10"/><path fill="none" stroke="#8D8F90" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M.8 6.2H14"/></svg>');
+    repeat: no-repeat;
+    size: 14px auto;
+    position: calc(100% - 10px) 50%;
+  };
+  position: relative;
+  &, input {
+    cursor: pointer;
+    user-select: none;
+  }
+  input {
+    padding: 8px 32px 8px 10px;
+    background: transparent;
+  }
 }

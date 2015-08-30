@@ -2,9 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { Calendar, Time, utils } from '../src/react-dately';
 import CalendarInput from './CalendarInput';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
 import '../src/calendar.scss';
 import './main.scss';
+
+const { isSame, isAfterDay } = utils;
 
 injectTapEventPlugin();
 
@@ -94,18 +95,21 @@ class FromTo extends Component {
 class App extends Component {
   
   state = {
-    date: new Date()
+    startDate: new Date(),
+    endDate: new Date(),
+    date: new Date(),
+    selected: []
   }
+  _mouseDown = false
 
   _handleCalendarClick(date) {
-    this.setState({date: date}, () => {
-      this.refs.calendar.setMonth(date);
+    this.setState({date}, () => {
+      this.refs['calendar'].setMonth(date);
     });
   }
 
   _renderDay(day) {
-
-    day = utils.isSame(day, new Date()) ? 'today' : day.getDate();
+    day = isSame(day, new Date()) ? 'today' : day.getDate();
 
     return(
       <div>
@@ -122,10 +126,49 @@ class App extends Component {
           ref="calendar"
           date={this.state.date}
           onDateSelect={::this._handleCalendarClick}
-          selectedDays={[7, 8, 9, 10, 11, 12]}
+          selectedDays={this.state.selected}
           trimWeekdays={3}
           minDay={new Date()}
           renderDay={this._renderDay}
+          onMouseDown={(startDate) => {
+            this.setState({startDate});
+            this._mouseDown = true
+          }}
+          onMouseMove={(date, e) => {
+
+            let { selected } = this.state;
+            let index = selected.indexOf(date);
+
+            // TODO:
+            // need to check if next date is either previous or next to a current selected one
+            // if not then we need to start over so clear the array and get set the new value
+            // 
+            // JK!
+            // need to check start mouse down date and current moused over date when the user
+            // releases the mouse that shall be the end date they've chosen
+            // just read all the dates in between the first and start duhh
+
+            if(this._mouseDown) {
+              e.preventDefault();
+
+              // check whether to remove or add date
+              if(index > -1) {
+                selected.splice(index, 1);
+              } else {
+                selected.push(date);
+              }
+
+              this.setState({selected});
+            }
+          }}
+          onMouseUp={(endDate) => {
+            // need to check here if mouse went out of calendar just use last day in selection
+            // can check if endDate is less or greater than startDate and flip values depending on what's up
+            // also need to make sure a disabled day can't be set. shouldn't be since we aren't adding e handlers 
+
+            this.setState({endDate});
+            this._mouseDown = false
+          }}
         />
 
         <CalendarInput />
