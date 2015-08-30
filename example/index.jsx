@@ -59,7 +59,6 @@ class FromTo extends Component {
   }
 
   render() {
-
     const { startDate, startTime, endDate, endTime } = this.state;
 
     return(
@@ -110,6 +109,34 @@ class App extends Component {
       </div>
     );
   }
+
+  _selectRange(date, e) {
+    let { startDate } = this.state;
+
+    if(e.type === 'mousedown') {
+      this.setState({startDate: date, endDate: null, inRange: null});
+      this._mouseDown = true;
+    }
+    else if(e.type === 'mousemove' && this._mouseDown) {
+      e.preventDefault();
+
+      this.setState({
+        inRange: getDaysBetween(startDate, date)
+      });
+    }
+    else if(e.type === 'mouseup') {
+      this._mouseDown = false;
+
+      // swap values if start date is after end date
+      if(isAfterDay(startDate, date)) {
+        [startDate, date] = [date, startDate];
+      }
+
+      this.setState({startDate, endDate: date}, () => {
+        this.refs['calendar'].setMonth(date);
+      });
+    }
+  }
   
   render() {
     const { startDate, endDate } = this.state;
@@ -121,39 +148,9 @@ class App extends Component {
           trimWeekdays={3}
           minDay={new Date()}
           renderDay={this._renderDay}
-          onMouseDown={(startDate) => {
-            this.setState({startDate, endDate: null, selected: null});
-            this._mouseDown = true;
-          }}
-          onMouseMove={(date, e) => {
-            if(!this._mouseDown) return;
-            
-            let { startDate, selected } = this.state;
-            
-            e.preventDefault();
-
-            this.setState({
-              selected: getDaysBetween(startDate, date)
-            });
-          }}
-          onMouseUp={(endDate) => {
-            // could look at listening outside of calendar
-            // would get tricky though
-            // see here: http://jsfiddle.net/jWkCT/
-            let { startDate } = this.state;
-
-            // we've stopped dragging
-            this._mouseDown = false;
-
-            // swap values if start date is after end date
-            if(isAfterDay(startDate, endDate)) {
-              [startDate, endDate] = [endDate, startDate];
-            }
-
-            this.setState({startDate, endDate}, () => {
-              this.refs['calendar'].setMonth(endDate);
-            });
-          }}
+          onMouseDown={this._selectRange.bind(this)}
+          onMouseMove={this._selectRange.bind(this)}
+          onMouseUp={this._selectRange.bind(this)}
           rules={{
             startDate: (date) => isSame(date, this.state.startDate),
             endDate: (date) => isSame(date, this.state.endDate),

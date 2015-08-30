@@ -99,8 +99,7 @@ class Day extends Component {
 class Week extends Component {
 
   render() {
-
-    let days = this.props.days.map(day =>
+    const days = this.props.days.map(day =>
       <Day
         {...this.props}
         key={day.getTime()}
@@ -131,6 +130,9 @@ class Calendar extends Component {
     prevDisabled: PropTypes.bool,
     nextDisabled: PropTypes.bool,
     onDateSelect: PropTypes.func,
+    onMouseDown: PropTypes.func,
+    onMouseMove: PropTypes.func,
+    onMouseUp: PropTypes.func,
     renderDay: PropTypes.func
   }
 
@@ -170,13 +172,12 @@ class Calendar extends Component {
   }
 
   navigateMonth(direction) {
-    let month = this.state.month;
-    this.setState({ month: navigateMonth(month, direction) });
+    const { month } = this.state;
+    this.setState({month: navigateMonth(month, direction)});
   }
 
   // used for ARIA support
   _generateId() {
-
     let timestamp = Date.now();
     let uniqueNumber = 0;
 
@@ -193,7 +194,6 @@ class Calendar extends Component {
   }
 
   _renderWeekdays() {
-
     const { trimWeekdays, weekStartsOn } = this.props;
     const weekdays = WEEKDAYS.slice(0);
     const sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn));
