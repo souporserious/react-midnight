@@ -40,9 +40,9 @@ class Day extends Component {
     let className = 'cal__day';
     let modifiers = [];
     let onDayClick = this._handleDateSelect.bind(this, date);
-    let onDayMouseDown = onMouseDown.bind(this, date);
-    let onDayMouseMove = onMouseMove.bind(this, date);
-    let onDayMouseUp = onMouseUp.bind(this, date);
+    let onDayMouseDown = onMouseDown.bind(null, date);
+    let onDayMouseMove = onMouseMove.bind(null, date);
+    let onDayMouseUp = onMouseUp.bind(null, date);
     let isDisabled;
 
     Object.keys(rules).forEach(key => {
