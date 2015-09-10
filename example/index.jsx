@@ -114,7 +114,7 @@ class App extends Component {
 
     if(type === 'mousedown') {
       this._mouseDown = true;
-      this.setState({startDate: currDate});
+      this.setState({startDate: currDate, endDate: null});
     }
     else if(type === 'mousemove' && this._mouseDown) {
       this.setState({startDate, endDate: currDate});
@@ -128,7 +128,7 @@ class App extends Component {
       }
 
       this.setState({startDate, endDate: currDate}, () => {
-        //this.refs['calendar'].setMonth(date);
+        this.refs['calendar'].setMonth(startDate);
       });
     }
   }
@@ -136,11 +136,13 @@ class App extends Component {
   render() {
     const { startDate, endDate } = this.state
     const inRange = startDate && endDate && getDaysBetween(startDate, endDate)
+    const currMonth = startDate || new Date()
 
     return(
       <div className="app">
         <Calendar
           ref="calendar"
+          date={currMonth}
           trimWeekdays={3}
           minDay={new Date()}
           renderDay={this._renderDay}
@@ -153,9 +155,7 @@ class App extends Component {
             inRange: (date) => isSame(date, inRange),
           }}
         />
-
         <CalendarInput />
-
         <FromTo />
       </div>
     );
