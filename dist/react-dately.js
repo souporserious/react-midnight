@@ -60,23 +60,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequire(obj) { return obj && obj.__esModule ? obj['default'] : obj; }
 
 	var _Calendar = __webpack_require__(1);
 
-	var _Calendar2 = _interopRequireDefault(_Calendar);
+	exports.Calendar = _interopRequire(_Calendar);
 
 	var _Time = __webpack_require__(7);
 
-	var _Time2 = _interopRequireDefault(_Time);
+	exports.Time = _interopRequire(_Time);
 
 	var _utils = __webpack_require__(6);
 
-	var _utils2 = _interopRequireDefault(_utils);
-
-	exports.Calendar = _Calendar2['default'];
-	exports.Time = _Time2['default'];
-	exports.utils = _utils2['default'];
+	exports.utils = _interopRequire(_utils);
 
 /***/ },
 /* 1 */
@@ -186,9 +182,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var className = 'cal__day';
 	      var modifiers = [];
 	      var onDayClick = this._handleDateSelect.bind(this, date);
-	      var onDayMouseDown = onMouseDown.bind(this, date);
-	      var onDayMouseMove = onMouseMove.bind(this, date);
-	      var onDayMouseUp = onMouseUp.bind(this, date);
+	      var onDayMouseDown = onMouseDown.bind(null, date);
+	      var onDayMouseMove = onMouseMove.bind(null, date);
+	      var onDayMouseUp = onMouseUp.bind(null, date);
 	      var isDisabled = undefined;
 
 	      Object.keys(rules).forEach(function (key) {
@@ -298,14 +294,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(Calendar, [{
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      if (this.props.month !== nextProps.month) {
+	      if (!(0, _utils.isSame)(this.props.date, nextProps.date, 'month')) {
 	        this.setState({ month: nextProps.date });
 	      }
-	    }
-	  }, {
-	    key: 'setMonth',
-	    value: function setMonth(date) {
-	      this.setState({ month: date });
 	    }
 	  }, {
 	    key: 'navigateMonth',
@@ -940,6 +931,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  formatYear: function formatYear(d) {
 	    return d.getFullYear();
+	  },
+
+	  toDate: function toDate(minutes, date) {
+	    var newDate = undefined;
+
+	    // default to today's date
+	    date = date || new Date();
+
+	    // set to beginning of day
+	    date.setHours(0, 0, 0, 0);
+
+	    // merge dates
+	    newDate = new Date(date.getTime() + minutes * 60000);
+
+	    // return selected date
+	    return newDate;
 	  }
 	};
 
@@ -1078,24 +1085,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _react.Children.only(this.props.children(times));
 	    }
 	  }], [{
-	    key: 'toDate',
-	    value: function toDate(minutes, date) {
-
-	      var newDate = undefined;
-
-	      // default to today's date
-	      date = date || new Date();
-
-	      // set to beginning of day
-	      date.setHours(0, 0, 0, 0);
-
-	      // merge dates
-	      newDate = new Date(date.getTime() + minutes * 60000);
-
-	      // return selected date
-	      return newDate;
-	    }
-	  }, {
 	    key: 'propTypes',
 	    value: {
 	      minTime: _react.PropTypes.number,

@@ -1,6 +1,6 @@
 {
   "name": "react-dately",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Handle dates, times, and calendars with React.",
   "main": "lib/react-dately.js",
   "scripts": {

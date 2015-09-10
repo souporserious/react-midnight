@@ -1,4 +1,4 @@
-## React Dately 0.5.0
+## React Dately 0.5.1
 
 Handle dates, times, and calendars with React.
 
