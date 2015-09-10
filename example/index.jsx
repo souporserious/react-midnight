@@ -95,7 +95,8 @@ class App extends Component {
   
   state = {
     startDate: null,
-    endDate: null
+    endDate: null,
+    currMonth: new Date()
   }
   _mouseDown = false
 
@@ -127,16 +128,13 @@ class App extends Component {
         [startDate, currDate] = [currDate, startDate];
       }
 
-      this.setState({startDate, endDate: currDate}, () => {
-        this.refs['calendar'].setMonth(startDate);
-      });
+      this.setState({startDate, endDate: currDate, currMonth: startDate});
     }
   }
   
   render() {
-    const { startDate, endDate } = this.state
+    const { startDate, endDate, currMonth } = this.state
     const inRange = startDate && endDate && getDaysBetween(startDate, endDate)
-    const currMonth = startDate || new Date()
 
     return(
       <div className="app">

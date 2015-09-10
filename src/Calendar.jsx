@@ -161,8 +161,10 @@ class Calendar extends Component {
   }
   _id = this._generateId()
 
-  setMonth(date) {
-    this.setState({month: date});
+  componentWillReceiveProps(nextProps) {
+    if(!isSame(this.props.date, nextProps.date, 'month')) {
+      this.setState({month: nextProps.date});
+    }
   }
 
   navigateMonth(direction) {
