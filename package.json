@@ -5,7 +5,7 @@
   "main": "lib/react-dately.js",
   "scripts": {
     "build": "npm run build:lib && NODE_ENV=production webpack --config webpack.prod.config.js",
-    "build:lib": "babel src --out-dir lib --stage 0",
+    "build:lib": "babel src --out-dir lib",
     "dev": "webpack-dev-server --devtool eval --hot --progress --colors",
     "prebuild": "rm -rf dist && mkdir dist",
     "prepublish": "npm run build",
