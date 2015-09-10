@@ -170,6 +170,22 @@ const utils = {
 
   formatYear(d) {
     return d.getFullYear();
+  },
+
+  toDate(minutes, date) {
+    let newDate;
+
+    // default to today's date
+    date = date || new Date();
+
+    // set to beginning of day
+    date.setHours(0, 0, 0, 0);
+
+    // merge dates
+    newDate = new Date(date.getTime() + (minutes * 60000));
+
+    // return selected date
+    return newDate;
   }
 }
 
