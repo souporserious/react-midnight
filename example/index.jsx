@@ -95,8 +95,7 @@ class App extends Component {
   
   state = {
     startDate: null,
-    endDate: null,
-    inRange: []
+    endDate: null
   }
   _mouseDown = false
 
@@ -110,36 +109,33 @@ class App extends Component {
     );
   }
 
-  _selectRange(date, e) {
+  _selectRange(currDate, {type}) {
     let { startDate } = this.state;
 
-    if(e.type === 'mousedown') {
-      this.setState({startDate: date, endDate: null, inRange: null});
+    if(type === 'mousedown') {
       this._mouseDown = true;
+      this.setState({startDate: currDate});
     }
-    else if(e.type === 'mousemove' && this._mouseDown) {
-      e.preventDefault();
-
-      this.setState({
-        inRange: getDaysBetween(startDate, date)
-      });
+    else if(type === 'mousemove' && this._mouseDown) {
+      this.setState({startDate, endDate: currDate});
     }
-    else if(e.type === 'mouseup') {
+    else if(type === 'mouseup') {
       this._mouseDown = false;
 
-      // swap values if start date is after end date
-      if(isAfterDay(startDate, date)) {
-        [startDate, date] = [date, startDate];
+      // swap values if start date is after current date
+      if(isAfterDay(startDate, currDate)) {
+        [startDate, currDate] = [currDate, startDate];
       }
 
-      this.setState({startDate, endDate: date}, () => {
-        this.refs['calendar'].setMonth(date);
+      this.setState({startDate, endDate: currDate}, () => {
+        //this.refs['calendar'].setMonth(date);
       });
     }
   }
   
   render() {
-    const { startDate, endDate } = this.state;
+    const { startDate, endDate } = this.state
+    const inRange = startDate && endDate && getDaysBetween(startDate, endDate)
 
     return(
       <div className="app">
@@ -152,9 +148,9 @@ class App extends Component {
           onMouseMove={this._selectRange.bind(this)}
           onMouseUp={this._selectRange.bind(this)}
           rules={{
-            startDate: (date) => isSame(date, this.state.startDate),
-            endDate: (date) => isSame(date, this.state.endDate),
-            inRange: (date) => isSame(date, this.state.inRange),
+            startDate: (date) => isSame(date, startDate),
+            endDate: (date) => isSame(date, endDate),
+            inRange: (date) => isSame(date, inRange),
           }}
         />
 
