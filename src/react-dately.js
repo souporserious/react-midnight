@@ -1,5 +1,3 @@
-import Calendar from './Calendar';
-import Time from './Time';
-import utils from './utils'
-
-export { Calendar, Time, utils };
+export { default as Calendar } from './Calendar'
+export { default as Time } from './Time'
+export { default as utils } from './utils'
