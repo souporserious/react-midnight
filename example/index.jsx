@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Calendar, Time, utils } from '../src/react-dately';
 import CalendarInput from './CalendarInput';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import '../src/calendar.scss';
+import './calendar.scss';
 import './main.scss';
 
 const { isSame, isBeforeDay, isAfterDay, getDaysBetween } = utils;
