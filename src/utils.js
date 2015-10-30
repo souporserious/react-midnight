@@ -37,7 +37,7 @@ const utils = {
         weeks.push(week);
         week = [];
       }
-      
+
       week.push(day);
 
       if(days.indexOf(day) === days.length - 1) {
@@ -81,7 +81,7 @@ const utils = {
           weeks.push(lastWeek);
           lastWeek = [];
         }
-        
+
         lastWeek.push(day);
 
         daysInMonth++;
@@ -98,7 +98,7 @@ const utils = {
   navigateMonth(d, direction) {
     let currMonth = utils.clone(d);
     let newMonth = currMonth.setMonth(d.getMonth() + direction);
-    return new Date(newMonth); 
+    return new Date(newMonth);
   },
 
   isSame(d1, d2, type = 'day') {
@@ -144,21 +144,21 @@ const utils = {
 
   getDaysBetween(startDate, endDate) {
     // swap values if start date is after end date
-    if(utils.isAfterDay(startDate, endDate)) {
+    if (utils.isAfterDay(startDate, endDate)) {
       [startDate, endDate] = [endDate, startDate];
     }
 
-    let days = [startDate];
-    let current = startDate;
-
     // if days are the same bail
-    if(utils.isSame(startDate, endDate)) {
-      return days;
+    if (utils.isSame(startDate, endDate)) {
+      return [startDate];
     }
 
-    while(current < endDate) {
-      current = new Date(current.getTime() + (24 * 60 * 60 * 1000));
+    let days = [];
+    let current = startDate;
+
+    while(current <= endDate) {
       days.push(current);
+      current = new Date(current.getTime() + (24 * 60 * 60 * 1000));
     }
 
     return days;
