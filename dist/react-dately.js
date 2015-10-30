@@ -909,17 +909,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      endDate = _ref[1];
 	    }
 
-	    var days = [startDate];
-	    var current = startDate;
-
 	    // if days are the same bail
 	    if (utils.isSame(startDate, endDate)) {
-	      return days;
+	      return [startDate];
 	    }
 
-	    while (current < endDate) {
-	      current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+	    var days = [];
+	    var current = startDate;
+
+	    while (current <= endDate) {
 	      days.push(current);
+	      current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
 	    }
 
 	    return days;
