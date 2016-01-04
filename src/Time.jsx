@@ -1,12 +1,11 @@
-import React, { Component, PropTypes, Children } from 'react';
+import React, { Component, PropTypes, Children } from 'react'
 
-const HOURS_IN_DAY = 24;
-const HOURS_TO_NOON = HOURS_IN_DAY / 2;
-const MINUTES_IN_HOUR = 60;
-const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
+const HOURS_IN_DAY = 24
+const HOURS_TO_NOON = HOURS_IN_DAY / 2
+const MINUTES_IN_HOUR = 60
+const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR
 
 class Times extends Component {
-
   static propTypes = {
     minTime: PropTypes.number,
     maxTime: PropTypes.number,
@@ -48,55 +47,54 @@ class Times extends Component {
   }
 
   _pad(n) {
-    return (n > 9) ? n : '0' + n;
+    return (n > 9) ? n : '0' + n
   }
 
   // would be cool to allow formatting like this:
   // https://github.com/amsul/pickadate.js/blob/master/lib/picker.time.js#L593-L648
   // would get rid of the need for a shit load of props
   _format(minuteInterval) {
+    const {humanize, humanizeStrings, minTime, maxTime, interval, twelveHourClock, pad, separator} = this.props
 
-    const {humanize, humanizeStrings, minTime, maxTime, interval, twelveHourClock, pad, separator} = this.props;
-
-    let hour = Math.floor(minuteInterval / MINUTES_IN_HOUR);
-    let minute = (minuteInterval / MINUTES_IN_HOUR);
+    let hour = Math.floor(minuteInterval / MINUTES_IN_HOUR)
+    let minute = (minuteInterval / MINUTES_IN_HOUR)
     
     // strip the decimal to find the minute value 
-    minute = ((minute - Math.floor(minute)) * MINUTES_IN_HOUR).toFixed(0);
+    minute = ((minute - Math.floor(minute)) * MINUTES_IN_HOUR).toFixed(0)
 
     // make sure we are dealing with numbers
-    hour = parseInt(hour);
-    minute = parseInt(minute);
+    hour = parseInt(hour)
+    minute = parseInt(minute)
 
-    let AMPM = (hour < HOURS_TO_NOON) ? 'AM' : 'PM';
+    let AMPM = (hour < HOURS_TO_NOON) ? 'AM' : 'PM'
 
-    if(humanize) {
-      if(humanizeStrings.begin &&
-         hour === minTime && minute === 0) {
-        return humanizeStrings.begin;
+    if (humanize) {
+      if (humanizeStrings.begin &&
+          hour === minTime && minute === 0) {
+        return humanizeStrings.begin
       }
 
-      if(humanizeStrings.middle &&
-         hour === HOURS_TO_NOON && minute === 0) {
-        return humanizeStrings.middle;
+      if (humanizeStrings.middle &&
+          hour === HOURS_TO_NOON && minute === 0) {
+        return humanizeStrings.middle
       }
 
-      if(humanizeStrings.end &&
-         hour === (maxTime - 1) &&
-         minute === MINUTES_IN_HOUR - interval) {
-        return humanizeStrings.end;
+      if (humanizeStrings.end &&
+          hour === (maxTime - 1) &&
+          minute === MINUTES_IN_HOUR - interval) {
+        return humanizeStrings.end
       }
     }
 
     // convert to 12 hour clock
-    if(twelveHourClock) {
-      hour = (hour % HOURS_TO_NOON) || HOURS_TO_NOON;
+    if (twelveHourClock) {
+      hour = (hour % HOURS_TO_NOON) || HOURS_TO_NOON
     }
 
     // pad with a 0
-    if(pad) {
-      hour = this._pad(hour);
-      minute = this._pad(minute);
+    if (pad) {
+      hour = this._pad(hour)
+      minute = this._pad(minute)
     }
 
     return twelveHourClock ?
@@ -105,32 +103,30 @@ class Times extends Component {
   }
 
   _renderTime(formatted, minutes) {
-    return this.props.renderTime(formatted, minutes);
+    return this.props.renderTime(formatted, minutes)
   }
 
   _getTimes() {
+    const {interval, minTime, maxTime} = this.props
+    const timeLength = (maxTime * MINUTES_IN_HOUR)
+    let minutes = minTime * MINUTES_IN_HOUR
+    let times = []
 
-    const {interval, minTime, maxTime} = this.props;
-    const timeLength = (maxTime * MINUTES_IN_HOUR);
-    let minutes = minTime * MINUTES_IN_HOUR;
-    let times = [];
-
-    for(; minutes < timeLength; minutes += interval) {
-      let formatted = this._format(minutes);
-      times.push(this._renderTime(formatted, minutes));
+    for (; minutes < timeLength; minutes += interval) {
+      let formatted = this._format(minutes)
+      times.push(this._renderTime(formatted, minutes))
     }
 
-    return times;
+    return times
   }
 
   render() {
-
-    let times = this._getTimes();
+    let times = this._getTimes()
 
     return Children.only(
       this.props.children(times)
-    );
+    )
   }
 }
 
-export default Times;
+export default Times

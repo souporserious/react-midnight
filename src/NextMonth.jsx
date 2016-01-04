@@ -1,7 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'
 
 class NextMonth extends Component {
-
   static propTypes = {
     inner: PropTypes.node,
     disable: PropTypes.bool
@@ -13,21 +12,20 @@ class NextMonth extends Component {
   }
 
   handleClick() {
-    let {onClick} = this.props;
-    if(this.props.disable) return;
+    let { onClick } = this.props
+    if (this.props.disable) return;
     onClick && onClick.call(this);
   }
 
   render() {
+    const { disable, controls } = this.props
+    let classes = 'cal__nav cal__nav--next'
 
-    const { disable, controls } = this.props;
-    let classes = 'cal__nav cal__nav--next';
-
-    if(disable) {
-      classes += ' cal__nav--disabled';
+    if (disable) {
+      classes += ' cal__nav--disabled'
     }
 
-    return(
+    return (
       <button
         className={classes}
         title="Next month"
@@ -42,4 +40,4 @@ class NextMonth extends Component {
   }
 }
 
-export default NextMonth;
+export default NextMonth

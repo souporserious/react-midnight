@@ -1,14 +1,13 @@
-import React, { Component, PropTypes } from 'react';
-import PrevMonth from './PrevMonth';
-import NextMonth from './NextMonth';
-import extend from './extend';
-import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from './utils';
+import React, { Component, PropTypes } from 'react'
+import PrevMonth from './PrevMonth'
+import NextMonth from './NextMonth'
+import extend from './extend'
+import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from './utils'
 
-const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const ENTER_KEY = 13;
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const ENTER_KEY = 13
 
 class Day extends Component {
-
   // Rules are how the particular day should behave,
   // it will add a modifier class to allow styling
   // one day we could provide a hook for inline styles
@@ -20,64 +19,66 @@ class Day extends Component {
   }
 
   _handleDateSelect(day) {
-    this.props.onDateSelect(day);
+    this.props.onDateSelect(day)
   }
 
   _handleKeyDown(day, e) {
-    if(e.keyCode === ENTER_KEY) {
-      this.props.onDateSelect(day);
+    if (e.keyCode === ENTER_KEY) {
+      this.props.onDateSelect(day)
     }
   }
 
   _renderDay(day, rules) {
-    return this.props.renderDay(day, rules);
+    return this.props.renderDay(day, rules)
   }
 
   render() {
-    const { month, date, minDay, maxDay, outsideDays, onClick, canTouchTap, onMouseDown, onMouseMove, onMouseUp } = this.props;
-    const rules = extend(this.rules, this.props.rules);
-    const isOutside = isOutsideMonth(date, month);
-    let className = 'cal__day';
-    let modifiers = [];
-    let onDayClick = this._handleDateSelect.bind(this, date);
-    let onDayMouseDown = onMouseDown.bind(null, date);
-    let onDayMouseMove = onMouseMove.bind(null, date);
-    let onDayMouseUp = onMouseUp.bind(null, date);
-    let isDisabled;
+    const { month, date, minDay, maxDay, outsideDays, onClick, canTouchTap, onMouseDown, onMouseMove, onMouseUp } = this.props
+    const rules = extend(this.rules, this.props.rules)
+    const isOutside = isOutsideMonth(date, month)
+    let className = 'cal__day'
+    let modifiers = []
+    let onDayClick = this._handleDateSelect.bind(this, date)
+    let onDayMouseDown = onMouseDown.bind(null, date)
+    let onDayMouseMove = onMouseMove.bind(null, date)
+    let onDayMouseUp = onMouseUp.bind(null, date)
+    let isDisabled
 
     Object.keys(rules).forEach(key => {
-      let result = rules[key](date, month);
+      let result = rules[key](date, month)
       isDisabled = false
 
       // if result is an array, deconstruct it
-      if(result && result.constructor === Array) {
+      if (result && result.constructor === Array) {
         [result, isDisabled] = result;
       }
 
-      if(result) {
+      if (result) {
         // camelCase to hyphen friendly class name
         const modifier = key.replace(/[a-z][A-Z]/g, (str, offset) =>
           `${str[0]}-${str[1].toLowerCase()}`
-        );
+        )
         modifiers.push(modifier);
 
         // make sure events get disabled as well
-        if(isDisabled) {
+        if (isDisabled) {
           onDayClick =
           onDayMouseDown =
           onDayMouseMove =
           onDayMouseUp = (e) => e.preventDefault();
         }
       }
-    });
+    })
 
-    className += modifiers.map(modifier => ` ${className}--${modifier}`).join('');
+    // build the final class name with all respective modifiers
+    className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
 
-    if(isOutside && !outsideDays) {
-      return <td aria-hidden="true" className={className} />;
+    // return a blank day if outside
+    if (isOutside && !outsideDays) {
+      return <td aria-hidden="true" className={className} />
     }
 
-    return(
+    return (
       <td
         role="presentation"
         aria-label={date}
@@ -92,12 +93,11 @@ class Day extends Component {
       >
         {this._renderDay(date, rules)}
       </td>
-    );
+    )
   }
 }
 
 class Week extends Component {
-
   render() {
     const days = this.props.days.map(day =>
       <Day
@@ -105,18 +105,17 @@ class Week extends Component {
         key={day.getTime()}
         date={day}
       />
-    );
+    )
 
     return(
       <tr className="cal__week">
         {days}
       </tr>
-    );
+    )
   }
 }
 
 class Calendar extends Component {
-
   static propTypes = {
     date: PropTypes.instanceOf(Date),
     minDay: PropTypes.instanceOf(Date),
@@ -162,14 +161,14 @@ class Calendar extends Component {
   _id = this._generateId()
 
   componentWillReceiveProps(nextProps) {
-    if(!isSame(this.props.date, nextProps.date, 'month')) {
-      this.setState({month: nextProps.date});
+    if (!isSame(this.props.date, nextProps.date, 'month')) {
+      this.setState({month: nextProps.date})
     }
   }
 
   navigateMonth(direction) {
-    const { month } = this.state;
-    this.setState({month: navigateMonth(month, direction)});
+    const { month } = this.state
+    this.setState({month: navigateMonth(month, direction)})
   }
 
   // used for ARIA support
@@ -179,14 +178,14 @@ class Calendar extends Component {
 
     (() => {
       // If created at same millisecond as previous
-      if(timestamp <= uniqueNumber) {
-        timestamp = ++uniqueNumber;
+      if (timestamp <= uniqueNumber) {
+        timestamp = ++uniqueNumber
       } else {
-        uniqueNumber = timestamp;
+        uniqueNumber = timestamp
       }
     })();
     
-    return 'D' + timestamp;
+    return 'D' + timestamp
   }
 
   _renderWeekdays() {
@@ -196,7 +195,7 @@ class Calendar extends Component {
 
     const getDays = () => {
       return sortedWeekdays.map((weekday, index) => {
-        const weekdayTrimmed = trimWeekdays ? weekday.substring(0, parseInt(trimWeekdays)) : weekday;
+        const weekdayTrimmed = trimWeekdays ? weekday.substring(0, parseInt(trimWeekdays)) : weekday
         return (
           <th
             key={index}
@@ -206,9 +205,9 @@ class Calendar extends Component {
           >
             {weekdayTrimmed}
           </th>
-        );
-      });
-    };
+        )
+      })
+    }
     
     return(
       <thead>
@@ -220,9 +219,8 @@ class Calendar extends Component {
   }
 
   _renderWeeksInMonth() {
-
-    const { month } = this.state;
-    const { weekStartsOn, forceSixRows } = this.props;
+    const { month } = this.state
+    const { weekStartsOn, forceSixRows } = this.props
 
     let weeks = getWeeks(month, weekStartsOn, forceSixRows).map((week, index) =>
       <Week
@@ -231,44 +229,44 @@ class Calendar extends Component {
         days={week}
         month={month}
       />
-    );
+    )
 
     return(
       <tbody>
         {weeks}
       </tbody>
-    );
+    )
   }
 
   render() {
-    const { className, minDay, maxDay, canTouchTap } = this.props;
-    const { month } = this.state;
+    const { className, minDay, maxDay, canTouchTap } = this.props
+    const { month } = this.state
 
-    let classes = [];
-    let modifiers = this.props.modifiers ? this.props.modifiers.split(',') : null;
-    let classNames = 'cal';
+    let classes = []
+    let modifiers = this.props.modifiers ? this.props.modifiers.split(',') : null
+    let classNames = 'cal'
 
-    if(className) {
-      classes.push(className);
+    if (className) {
+      classes.push(className)
     }
-    if(modifiers) {
-      classes.push(modifiers);
+    if (modifiers) {
+      classes.push(modifiers)
     }
 
-    classNames += classes.map(className => ` ${className}`).join('');
+    classNames += classes.map(className => ` ${className}`).join('')
 
-    let monthLabel = formatMonth(month);
-    let yearLabel = formatYear(month);
+    let monthLabel = formatMonth(month)
+    let yearLabel = formatYear(month)
 
     // disable prev/next buttons when min/max days set
-    let prevDisabled, nextDisabled = false;
+    let prevDisabled, nextDisabled = false
 
-    if(minDay && isSame(month, minDay, 'month')) {
-      prevDisabled = true;
+    if (minDay && isSame(month, minDay, 'month')) {
+      prevDisabled = true
     }
 
-    if(maxDay && isSame(month, maxDay, 'month')) {
-      nextDisabled = true;
+    if (maxDay && isSame(month, maxDay, 'month')) {
+      nextDisabled = true
     }
 
     return(
@@ -298,8 +296,8 @@ class Calendar extends Component {
           {this._renderWeeksInMonth()}
         </table>
       </div>
-    );
+    )
   }
 }
 
-export default Calendar;
+export default Calendar
