@@ -29,8 +29,8 @@
     "url": "https://github.com/souporserious/react-dately/issues"
   },
   "homepage": "https://github.com/souporserious/react-dately",
-  "peerDependencies": {
-    "react": ">=0.13.2 || ^0.14.0-beta1"
+  "dependencies": {
+    "react": ">=0.13.2 || ^0.14"
   },
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",
