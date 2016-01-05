@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import PrevMonth from './PrevMonth'
 import NextMonth from './NextMonth'
-import extend from './extend'
 import generateId from './generate-id'
 import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from './utils'
 
@@ -35,7 +34,7 @@ class Day extends Component {
 
   render() {
     const { month, date, minDay, maxDay, outsideDays, onClick, canTouchTap, onMouseDown, onMouseMove, onMouseUp } = this.props
-    const rules = extend(this.rules, this.props.rules)
+    const rules = {...this.rules, ...this.props.rules}
     const isOutside = isOutsideMonth(date, month)
     let className = 'cal__day'
     let modifiers = []
