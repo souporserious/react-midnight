@@ -12,7 +12,6 @@
   renderDay={(day) => day}
 >
 {(currDate, weekdays, weeks) => {
-
   let monthLabel = formatMonth(currDate);
   let yearLabel = formatYear(currDate);
 
@@ -27,12 +26,16 @@
         <NextMonth />
       </header>
       <table className="cal__table">
-        {weekdays.map(weekday => {
-
-        })}
-        {weeks.map(week => {
-
-        })}
+        {weekdays.map(weekday =>
+          <div>{weekday}</div>
+        )}
+        {weeks.map(week =>
+          <div>
+            {week.map(day =>
+              <div>{day}</div>
+            )}
+          </div>
+        )}
       </table>
     </div>
   );
