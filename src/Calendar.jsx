@@ -13,9 +13,12 @@ class Day extends Component {
   // one day we could provide a hook for inline styles
   rules = {
     today: (date) => isSame(date, new Date()),
-    outside: (date, month) => isOutsideMonth(date, month),
-    before: (date) => this.props.minDay && [isBeforeDay(date, this.props.minDay), true],
-    after: (date) => this.props.maxDay && [isAfterDay(date, this.props.maxDay), true]
+    outside: (date, month) => isOutsideMonth(date, month)
+  }
+
+  disabledRules = {
+    before: (date) => this.props.minDay && isBeforeDay(date, this.props.minDay),
+    after: (date) => this.props.maxDay && isAfterDay(date, this.props.maxDay)
   }
 
   _handleDateSelect(day) {
@@ -35,6 +38,7 @@ class Day extends Component {
   render() {
     const { month, date, minDay, maxDay, outsideDays, onClick, canTouchTap, onMouseDown, onMouseMove, onMouseUp } = this.props
     const rules = {...this.rules, ...this.props.rules}
+    const disabledRules = {...this.disabledRules, ...this.props.disabledRules}
     const isOutside = isOutsideMonth(date, month)
     let className = 'cal__day'
     let modifiers = []
@@ -42,35 +46,42 @@ class Day extends Component {
     let onDayMouseDown = onMouseDown.bind(null, date)
     let onDayMouseMove = onMouseMove.bind(null, date)
     let onDayMouseUp = onMouseUp.bind(null, date)
-    let isDisabled
+    let isDisabled = false
 
+    // add respective rules to day
     Object.keys(rules).forEach(key => {
-      let result = rules[key](date, month)
-      isDisabled = false
-
-      // if result is an array, deconstruct it
-      if (result && result.constructor === Array) {
-        [result, isDisabled] = result;
-      }
+      const result = rules[key](date, month)
 
       if (result) {
         // camelCase to hyphen friendly class name
-        const modifier = key.replace(/[a-z][A-Z]/g, (str, offset) =>
+        const modifier = key.replace(/[a-z][A-Z]/g, str =>
           `${str[0]}-${str[1].toLowerCase()}`
         )
-        modifiers.push(modifier);
-
-        // make sure events get disabled as well
-        if (isDisabled) {
-          onDayClick =
-          onDayMouseDown =
-          onDayMouseMove =
-          onDayMouseUp = (e) => e.preventDefault();
-        }
+        modifiers.push(modifier)
       }
     })
 
-    // build the final class name with all respective modifiers
+    Object.keys(disabledRules).forEach(key => {
+      const result = disabledRules[key](date, month)
+
+      if (result) {
+        // camelCase to hyphen friendly class name
+        const modifier = key.replace(/[a-z][A-Z]/g, str =>
+          `${str[0]}-${str[1].toLowerCase()}`
+        )
+        modifiers.push(modifier)
+
+        // make sure events get disabled as well
+        onDayClick =
+        onDayMouseDown =
+        onDayMouseMove =
+        onDayMouseUp = (e) => e.preventDefault()
+
+        isDisabled = true
+      }
+    })
+
+    // build the final class name string with all respective modifiers
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
 
     // return a blank day if outside
@@ -128,6 +139,8 @@ class Calendar extends Component {
     nextHTML: PropTypes.node,
     prevDisabled: PropTypes.bool,
     nextDisabled: PropTypes.bool,
+    rules: PropTypes.object,
+    disabledRules: PropTypes.object,
     onDateSelect: PropTypes.func,
     onMouseDown: PropTypes.func,
     onMouseMove: PropTypes.func,
@@ -147,6 +160,7 @@ class Calendar extends Component {
     nextHTML: '',
     canTouchTap: false,
     rules: {},
+    disabledRules: {},
     //locale: 'en',
     onDateSelect: () => null,
     onMouseDown: () => null,
