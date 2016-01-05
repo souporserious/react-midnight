@@ -18,10 +18,16 @@
   },
   "keywords": [
     "react",
+    "react-component",
     "component",
+    "calendar",
     "date",
+    "date-picker",
+    "datepicker",
     "time",
-    "calendar"
+    "time-picker",
+    "timepicker",
+    "picker"
   ],
   "author": "Travis Arnold <travis@souporserious.com> (http://souporserious.com)",
   "license": "MIT",
@@ -30,7 +36,8 @@
   },
   "homepage": "https://github.com/souporserious/react-dately",
   "dependencies": {
-    "react": ">=0.13.2 || ^0.14"
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",
@@ -41,7 +48,6 @@
     "http-server": "^0.8.0",
     "node-libs-browser": "^0.5.2",
     "node-sass": "^3.2.0",
-    "react": "^0.13.3 || ^0.14.0-beta1",
     "react-tap-event-plugin": "^0.1.7",
     "sass-loader": "^1.0.2",
     "style-loader": "^0.12.3",

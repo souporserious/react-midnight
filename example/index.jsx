@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM from 'react-dom'
 import { Calendar, Time, utils } from '../src/react-dately'
 import CalendarInput from './CalendarInput'
 import injectTapEventPlugin from 'react-tap-event-plugin'
@@ -157,4 +158,4 @@ class App extends Component {
   }
 }
 
-React.render(<App />, document.getElementById('app'))
+ReactDOM.render(<App />, document.getElementById('app'))
