@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import PrevMonth from './PrevMonth'
 import NextMonth from './NextMonth'
 import extend from './extend'
+import generateId from './generate-id'
 import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from './utils'
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -158,7 +159,7 @@ class Calendar extends Component {
   state = {
     month: this.props.date
   }
-  _id = this._generateId()
+  _id = generateId()
 
   componentWillReceiveProps(nextProps) {
     if (!isSame(this.props.date, nextProps.date, 'month')) {
@@ -169,23 +170,6 @@ class Calendar extends Component {
   navigateMonth(direction) {
     const { month } = this.state
     this.setState({month: navigateMonth(month, direction)})
-  }
-
-  // used for ARIA support
-  _generateId() {
-    let timestamp = Date.now();
-    let uniqueNumber = 0;
-
-    (() => {
-      // If created at same millisecond as previous
-      if (timestamp <= uniqueNumber) {
-        timestamp = ++uniqueNumber
-      } else {
-        uniqueNumber = timestamp
-      }
-    })();
-    
-    return 'D' + timestamp
   }
 
   _renderWeekdays() {
