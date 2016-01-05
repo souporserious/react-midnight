@@ -1,22 +1,21 @@
-import React, { Component, PropTypes } from 'react';
-import { Calendar, Time, utils } from '../src/react-dately';
-import CalendarInput from './CalendarInput';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import './calendar.scss';
-import './main.scss';
+import React, { Component, PropTypes } from 'react'
+import { Calendar, Time, utils } from '../src/react-dately'
+import CalendarInput from './CalendarInput'
+import injectTapEventPlugin from 'react-tap-event-plugin'
+import './calendar.scss'
+import './main.scss'
 
-const { isSame, isBeforeDay, isAfterDay, getDaysBetween } = utils;
+const { isSame, isBeforeDay, isAfterDay, getDaysBetween } = utils
 
-injectTapEventPlugin();
+injectTapEventPlugin()
 
 class TimeSelect extends Component {
-
   _handleOnChange(e) {
-    this.props.onTimeChange(e);
+    this.props.onTimeChange(e)
   }
 
   render() {
-    return(
+    return (
       <Time
         minTime={this.props.minTime}
         maxTime={this.props.maxTime}
@@ -33,12 +32,11 @@ class TimeSelect extends Component {
           </select>
         }
       </Time>
-    );
+    )
   }
 }
 
 class FromTo extends Component {
-
   state = {
     startDate: new Date(),
     startTime: 6 * 60,
@@ -47,21 +45,21 @@ class FromTo extends Component {
   }
 
   _handleDateSelect(key, value) {
-    let date = {};
-    date[key] = value;
-    this.setState(date);
+    let date = {}
+    date[key] = value
+    this.setState(date)
   }
 
   _handleTimeChange(key, e) {
-    let date = {};
-    date[key] = e.target.value;
-    this.setState(date);
+    let date = {}
+    date[key] = e.target.value
+    this.setState(date)
   }
 
   render() {
-    const { startDate, startTime, endDate, endTime } = this.state;
+    const { startDate, startTime, endDate, endTime } = this.state
 
-    return(
+    return (
       <div>
         <h2>From:</h2>
         <CalendarInput
@@ -87,12 +85,11 @@ class FromTo extends Component {
           onTimeChange={this._handleTimeChange.bind(this, 'endTime')}
         />
       </div>
-    );
+    )
   }
 }
 
 class App extends Component {
-  
   state = {
     startDate: null,
     endDate: null,
@@ -103,32 +100,32 @@ class App extends Component {
   _renderDay(day) {
     day = isSame(day, new Date()) ? 'today' : day.getDate();
 
-    return(
+    return (
       <div>
         {day}
       </div>
-    );
+    )
   }
 
-  _selectRange(currDate, {type}) {
-    let { startDate } = this.state;
+  _selectRange(currDate, { type }) {
+    let { startDate } = this.state
 
-    if(type === 'mousedown') {
-      this._mouseDown = true;
-      this.setState({startDate: currDate, endDate: null});
+    if (type === 'mousedown') {
+      this._mouseDown = true
+      this.setState({startDate: currDate, endDate: null})
     }
-    else if(type === 'mousemove' && this._mouseDown) {
-      this.setState({startDate, endDate: currDate});
+    else if (type === 'mousemove' && this._mouseDown) {
+      this.setState({startDate, endDate: currDate})
     }
-    else if(type === 'mouseup') {
-      this._mouseDown = false;
+    else if (type === 'mouseup') {
+      this._mouseDown = false
 
       // swap values if start date is after current date
       if(isAfterDay(startDate, currDate)) {
-        [startDate, currDate] = [currDate, startDate];
+        [startDate, currDate] = [currDate, startDate]
       }
 
-      this.setState({startDate, endDate: currDate, currMonth: startDate});
+      this.setState({startDate, endDate: currDate, currMonth: startDate})
     }
   }
   
@@ -136,7 +133,7 @@ class App extends Component {
     const { startDate, endDate, currMonth } = this.state
     const inRange = startDate && endDate && getDaysBetween(startDate, endDate)
 
-    return(
+    return (
       <div className="app">
         <Calendar
           ref="calendar"
@@ -156,8 +153,8 @@ class App extends Component {
         <CalendarInput />
         <FromTo />
       </div>
-    );
+    )
   }
 }
 
-React.render(<App />, document.body);
+React.render(<App />, document.getElementById('app'))
