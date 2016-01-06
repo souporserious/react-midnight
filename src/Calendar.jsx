@@ -6,6 +6,7 @@ import { getWeeks, navigateMonth, isSame, isBeforeDay, isAfterDay, isOutsideMont
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const ENTER_KEY = 13
+const noopNull = () => null
 
 class Day extends Component {
   // Rules are how the particular day should behave,
@@ -139,6 +140,7 @@ class Calendar extends Component {
     nextHTML: PropTypes.node,
     prevDisabled: PropTypes.bool,
     nextDisabled: PropTypes.bool,
+    canTouchTap: PropTypes.bool,
     rules: PropTypes.object,
     disabledRules: PropTypes.object,
     onDateSelect: PropTypes.func,
@@ -158,14 +160,16 @@ class Calendar extends Component {
     outsideDays: true,
     prevHTML: '',
     nextHTML: '',
+    prevDisabled: false,
+    nextDisabled: false,
     canTouchTap: false,
     rules: {},
     disabledRules: {},
     //locale: 'en',
-    onDateSelect: () => null,
-    onMouseDown: () => null,
-    onMouseMove: () => null,
-    onMouseUp: () => null,
+    onDateSelect: noopNull,
+    onMouseDown: noopNull,
+    onMouseMove: noopNull,
+    onMouseUp: noopNull,
     renderDay: day => day.getDate()
   }
 
@@ -186,9 +190,9 @@ class Calendar extends Component {
   }
 
   _renderWeekdays() {
-    const { trimWeekdays, weekStartsOn } = this.props;
-    const weekdays = WEEKDAYS.slice(0);
-    const sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn));
+    const { trimWeekdays, weekStartsOn } = this.props
+    const weekdays = WEEKDAYS.slice(0)
+    const sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn))
 
     const getDays = () => {
       return sortedWeekdays.map((weekday, index) => {
@@ -228,7 +232,7 @@ class Calendar extends Component {
       />
     )
 
-    return(
+    return (
       <tbody>
         {weeks}
       </tbody>
@@ -267,14 +271,14 @@ class Calendar extends Component {
     }
 
     return(
-      <div className={classNames}>
+      <div id={this._id} className={classNames}>
         <header className="cal__header">
           <PrevMonth
             onClick={canTouchTap ? null : this.navigateMonth.bind(this, -1)}
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, -1) : null}
             inner={this.props.prevHTML}
             disable={prevDisabled}
-            controls={this._id + '_table'}
+            controls={this._id + '__table'}
           />
           <div className="cal__month-year">
             <div className="cal__month">{monthLabel}</div>
@@ -285,15 +289,19 @@ class Calendar extends Component {
             onTouchTap={canTouchTap ? this.navigateMonth.bind(this, 1) : null}
             inner={this.props.nextHTML}
             disable={nextDisabled}
-            controls={this._id + '_table'}
+            controls={this._id + '__table'}
           />
         </header>
-        <table id={this._id + '_table'} className="cal__table">
+        <table id={this._id + '__table'} className="cal__table">
           {this._renderWeekdays()}
           {this._renderWeeksInMonth()}
         </table>
       </div>
     )
+
+    // Children.only(this.props.children(
+    //   this._renderWeekdays(), this._renderWeeksInMonth()
+    // ))
   }
 }
 
