@@ -11,7 +11,7 @@ var config = {
     publicPath: 'dist/',
     filename: 'react-dately.js',
     sourceMapFilename: 'react-dately.sourcemap.js',
-    library: 'Dately',
+    library: 'ReactDately',
     libraryTarget: 'umd'
   },
   module: {
@@ -36,7 +36,7 @@ if(TARGET === 'minify') {
       warnings: false
     },
     mangle: {
-      except: ['React', 'Dately']
+      except: ['React', 'ReactDately']
     }
   }));
 }
