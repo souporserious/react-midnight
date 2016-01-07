@@ -1,4 +1,5 @@
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS_IN_WEEK = 7
 
 const utils = {
   clone(d) {
@@ -10,7 +11,7 @@ const utils = {
   },
 
   getDaysInMonth(d) {
-    let resultDate = utils.getFirstDayOfMonth(d)
+    const resultDate = utils.getFirstDayOfMonth(d)
 
     resultDate.setMonth(resultDate.getMonth() + 1)
     resultDate.setDate(resultDate.getDate() - 1)
@@ -18,16 +19,23 @@ const utils = {
     return resultDate.getDate()
   },
 
-  getWeeks(d, firstDayOfWeek = 0, forceSixRows = false) {
+  getDays(d) {
     let daysInMonth = utils.getDaysInMonth(d)
     let days = []
-    let week = []
-    let weeks = []
 
     // get all days in a month
     for (let i = 1; i <= daysInMonth; i++) {
       days.push(new Date(d.getFullYear(), d.getMonth(), i))
     }
+
+    return days
+  },
+
+  getWeeks(d, firstDayOfWeek = 0, forceSixRows = false) {
+    let days = utils.getDays(d)
+    let daysInMonth = days.length
+    let week = []
+    let weeks = []
 
     // build weeks array
     days.forEach(day => {
@@ -46,8 +54,8 @@ const utils = {
     // unshift days to start the first week
     const firstWeek = weeks[0]
 
-    for (let i = 7 - firstWeek.length; i > 0; i--) {
-      let outsideDate = utils.clone(firstWeek[0])
+    for (let i = DAYS_IN_WEEK - firstWeek.length; i > 0; i--) {
+      const outsideDate = utils.clone(firstWeek[0])
       outsideDate.setDate(firstWeek[0].getDate() - 1)
       firstWeek.unshift(outsideDate)
       daysInMonth++
@@ -56,8 +64,8 @@ const utils = {
     // push days until the end of the last week
     const lastWeek = weeks[weeks.length - 1]
 
-    for (let i = lastWeek.length; i < 7; i++) {
-      let outsideDate = utils.clone(lastWeek[lastWeek.length - 1])
+    for (let i = lastWeek.length; i < DAYS_IN_WEEK; i++) {
+      const outsideDate = utils.clone(lastWeek[lastWeek.length - 1])
       outsideDate.setDate(lastWeek[lastWeek.length - 1].getDate() + 1)
       lastWeek.push(outsideDate)
       daysInMonth++
@@ -164,6 +172,10 @@ const utils = {
     return days
   },
 
+  getMonths() {
+    return MONTHS
+  },
+
   formatMonth(d) {
     return `${MONTHS[d.getMonth()]}`
   },
@@ -172,20 +184,18 @@ const utils = {
     return d.getFullYear()
   },
 
-  toDate(minutes, date) {
-    let newDate
-
+  addMinutesToDay(date, minutes) {
     // default to today's date
     date = date || new Date()
 
     // set to beginning of day
     date.setHours(0, 0, 0, 0)
 
-    // merge dates
-    newDate = new Date(date.getTime() + (minutes * 60000))
+    return new Date(date.getTime() + (minutes * 60000))
+  },
 
-    // return selected date
-    return newDate
+  getMinutesFromDay(date) {
+
   }
 }
 

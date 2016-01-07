@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { Calendar } from '../src/react-dately'
+import MyCalendar from './MyCalendar'
 
 const propTypes = {
   date: React.PropTypes.instanceOf(Date),
@@ -24,7 +24,7 @@ const defaultProps = {
   placeholder: null,
   minDay: new Date(),
   calendarProps: {
-    modifiers: 'cal--small',
+    modifiers: ['small'],
     trimWeekdays: 1
   },
   formatDate: date => date,
@@ -81,7 +81,7 @@ class CalendarInput extends Component {
         <div ref="calendar">
         {
           this.state.isOpen &&
-          <Calendar
+          <MyCalendar
             date={date}
             onDateSelect={this._handleCalendarClick.bind(this)}
             minDay={this.props.minDay}

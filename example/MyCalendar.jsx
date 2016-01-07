@@ -1,20 +1,58 @@
 import React, { Component, PropTypes } from 'react'
-import Dately from './Dately'
-import PrevMonth from './PrevMonth'
-import NextMonth from './NextMonth'
-import utils from './utils'
+import ReactDOM from 'react-dom'
+import { Dately, utils } from '../src/react-dately'
+import PrevMonth from '../src/PrevMonth'
+import NextMonth from '../src/NextMonth'
 
 const { isSame, isBeforeDay, isAfterDay, getDaysBetween, getMonths } = utils
 
-class Calendar extends Component {
-  static propTypes = {
-    modifiers: PropTypes.array,
-    renderDay: PropTypes.func
+const months = getMonths()
+const currentYear = (new Date()).getFullYear()
+const years = []
+
+for (let i = currentYear; i < currentYear + 10; i++) {
+  years.push(i)
+}
+
+const propTypes = {
+  modifiers: PropTypes.array,
+  renderDay: PropTypes.func,
+}
+
+const defaultProps = {
+  modifiers: [],
+  renderDay: date => date.getDate()
+}
+
+class MyCalendar extends Component {
+  _renderMonth(currDate) {
+    return (
+      <select
+        value={currDate.getMonth()}
+        onChange={({target}) => this.refs.calendar.setMonth(
+          new Date(currDate.getFullYear(), target.value)
+        )}
+      >
+        {months.map((month, index) =>
+          <option key={index} value={index}>{month}</option>
+        )}
+      </select>
+    )
   }
 
-  static defaultProps = {
-    modifiers: [],
-    renderDay: date => date.getDate()
+  _renderYear(currDate) {
+    return (
+      <select
+        value={currDate.getFullYear()}
+        onChange={({target}) => this.refs.calendar.setMonth(
+          new Date(target.value, currDate.getMonth())
+        )}
+      >
+        {years.map((year, index) =>
+          <option key={index} value={year}>{year}</option>
+        )}
+      </select>
+    )
   }
 
   _renderDay = (date, { modifiers, ...props }, rules) => {
@@ -42,7 +80,7 @@ class Calendar extends Component {
         {...this.props}
         renderDay={this._renderDay}
       >
-        {({id, monthLabel, yearLabel, month, weekdays, weeks}) =>
+        {({id, month, weekdays, weeks}) =>
           <div id={id} className={className}>
             <header className="cal__header">
               <PrevMonth
@@ -53,10 +91,10 @@ class Calendar extends Component {
               />
               <div className="cal__month-year">
                 <div className="cal__month">
-                  {monthLabel}
+                  {this._renderMonth(month)}
                 </div>
                 <div className="cal__year">
-                  {yearLabel}
+                  {this._renderYear(month)}
                 </div>
               </div>
               <NextMonth
@@ -96,4 +134,7 @@ class Calendar extends Component {
   }
 }
 
-export default Calendar
+MyCalendar.propTypes = propTypes
+MyCalendar.defaultProps = defaultProps
+
+export default MyCalendar

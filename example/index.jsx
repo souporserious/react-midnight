@@ -99,7 +99,7 @@ class App extends Component {
   _mouseDown = false
 
   _renderDay(day) {
-    day = isSame(day, new Date()) ? 'today' : day.getDate();
+    day = isSame(day, new Date()) ? 'today' : day.getDate()
 
     return (
       <div>

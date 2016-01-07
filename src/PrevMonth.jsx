@@ -2,23 +2,23 @@ import React, { Component, PropTypes } from 'react'
 
 class PrevMonth extends Component {
   static propTypes = {
-    inner: PropTypes.node,
+    innerHTML: PropTypes.node,
     disable: PropTypes.bool
   }
 
   static defaultProps = {
-    inner: 'Prev',
+    innerHTML: 'Prev',
     disable: false
   }
 
-  handleClick() {
+  handleClick = () => {
     let { onClick } = this.props
     if (this.props.disable) return;
     onClick && onClick.call(this);
   }
 
   render() {
-    const { disable, controls } = this.props
+    const { disable, controls, innerHTML } = this.props
     let classes = 'cal__nav cal__nav--prev'
 
     if (disable) {
@@ -32,9 +32,9 @@ class PrevMonth extends Component {
         type="button"
         aria-disabled={disable}
         aria-controls={controls}
-        onClick={::this.handleClick}
+        onClick={this.handleClick}
       >
-        {this.props.inner}
+        {innerHTML}
       </button>
     )
   }
