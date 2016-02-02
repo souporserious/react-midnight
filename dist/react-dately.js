@@ -731,7 +731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  navigateMonth: function navigateMonth(d, direction) {
 	    var currMonth = utils.clone(d);
-	    var newMonth = currMonth.setMonth(d.getMonth() + direction);
+	    var newMonth = currMonth.setMonth(d.getMonth() + direction, 1);
 	    return new Date(newMonth);
 	  },
 

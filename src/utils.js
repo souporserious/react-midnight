@@ -101,7 +101,7 @@ const utils = {
 
   navigateMonth(d, direction) {
     let currMonth = utils.clone(d)
-    let newMonth = currMonth.setMonth(d.getMonth() + direction)
+    let newMonth = currMonth.setMonth(d.getMonth() + direction, 1)
     return new Date(newMonth)
   },
 
