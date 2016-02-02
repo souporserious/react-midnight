@@ -1,4 +1,7 @@
 ## CHANGELOG
+### 0.6.1
+Fixed `NavigateMonth` utility where month would be skipped.
+
 ### 0.6.0
 API has been abstracted into a `Dately` component to allow custom calendars to be built.
 
