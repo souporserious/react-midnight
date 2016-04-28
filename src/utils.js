@@ -100,9 +100,15 @@ const utils = {
   },
 
   navigateMonth(d, direction) {
-    let currMonth = utils.clone(d)
-    let newMonth = currMonth.setMonth(d.getMonth() + direction, 1)
+    const currMonth = utils.clone(d)
+    const newMonth = currMonth.setMonth(d.getMonth() + direction, 1)
     return new Date(newMonth)
+  },
+
+  navigateWeek(d, direction) {
+    const currWeek = utils.clone(d)
+    const newWeek = currWeek.setDate(d.getDate() + (7 * direction))
+    return new Date(newWeek)
   },
 
   isSame(d1, d2, type = 'day') {

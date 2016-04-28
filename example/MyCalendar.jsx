@@ -57,10 +57,10 @@ class MyCalendar extends Component {
 
   _renderDay = (date, { modifiers, ...props }, rules) => {
     let className = 'cal__day'
-    
+
     // build the final class name string with all respective modifiers
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
-    
+
     return (
       <td {...props} className={className}>
         {this.props.renderDay(date, rules)}
@@ -71,7 +71,7 @@ class MyCalendar extends Component {
   render() {
     const { minDay, maxDay, modifiers } = this.props
     let className = 'cal'
-    
+
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
 
     return (
