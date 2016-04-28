@@ -56,26 +56,11 @@ const Weeks = withCalendarProps(({ calendar: { weeks } }) => (
 
 class Calendar extends Component {
   static propTypes = {
-    modifiers: PropTypes.array,
-    renderDay: PropTypes.func
+    modifiers: PropTypes.array
   }
 
   static defaultProps = {
-    modifiers: [],
-    renderDay: date => date.getDate()
-  }
-
-  _renderDay = (date, { modifiers, ...props }, rules) => {
-    let className = 'cal__day'
-
-    // build the final class name string with all respective modifiers
-    className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
-
-    return (
-      <td {...props} className={className}>
-        {this.props.renderDay(date, rules)}
-      </td>
-    )
+    modifiers: []
   }
 
   render() {
