@@ -3,35 +3,36 @@ import React, { Component, PropTypes } from 'react'
 class NextMonth extends Component {
   static propTypes = {
     innerHTML: PropTypes.node,
-    disable: PropTypes.bool
+    disabled: PropTypes.bool
   }
 
   static defaultProps = {
-    innerHTML: 'Next',
-    disable: false
+    innerHTML: '',
+    disabled: false
   }
 
   handleClick = () => {
-    let { onClick } = this.props
-    if (this.props.disable) return;
-    onClick && onClick.call(this);
+    const { disabled, onClick } = this.props
+    if (!disabled && onClick) {
+      onClick.call(this)
+    }
   }
 
   render() {
-    const { disable, controls, innerHTML } = this.props
+    const { disabled, controls, innerHTML } = this.props
     let classes = 'cal__nav cal__nav--next'
 
-    if (disable) {
+    if (disabled) {
       classes += ' cal__nav--disabled'
     }
 
     return (
       <button
-        className={classes}
-        title="Next month"
         type="button"
-        aria-disabled={disable}
+        disabled={disabled}
         aria-controls={controls}
+        title="Next month"
+        className={classes}
         onClick={this.handleClick}
       >
         {innerHTML}
