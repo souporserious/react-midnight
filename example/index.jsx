@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import { Calendar, Time, utils } from '../src/react-dately'
+import MyCalendar from './MyCalendar'
 import CalendarInput from './CalendarInput'
 import './calendar.scss'
 import './main.scss'
@@ -123,15 +124,18 @@ class App extends Component {
 
     return (
       <div className="app">
-        <Calendar
+        <MyCalendar
           ref="calendar"
           date={currMonth}
           trimWeekdays={3}
           minDay={new Date()}
           renderDay={this._renderDay}
-          onMouseDown={this._selectRange.bind(this)}
-          onMouseMove={this._selectRange.bind(this)}
-          onMouseUp={this._selectRange.bind(this)}
+          onDayEvents={{
+            onClick: (currDate) => console.log(currDate),
+            onMouseDown: this._selectRange.bind(this),
+            onMouseMove: this._selectRange.bind(this),
+            onMouseUp: this._selectRange.bind(this),
+          }}
           rules={{
             startDate: (date) => isSame(date, startDate),
             endDate: (date) => isSame(date, endDate),

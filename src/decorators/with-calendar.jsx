@@ -18,6 +18,9 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
       maxDay: null,
       onDateSelect: () => null,
       renderDay: date => date.getDate(),
+
+      onDayEvents: {},
+
       ...defaultProps
     }
 
@@ -49,7 +52,9 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
         renderDay,
         setDate: this._setDate,
         navigateWeek: this._navigateWeek,
-        navigateMonth: this._navigateMonth
+        navigateMonth: this._navigateMonth,
+
+        onDayEvents: this.props.onDayEvents
       }
     }
 

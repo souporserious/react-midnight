@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import withCalendarProps from '../decorators/with-calendar-props'
 import Day from './Day'
 
-const Weeks = ({ calendar: { weeks } }) => (
+const Weeks = ({ calendar: { weeks }, Day }) => (
   <tbody>
     {weeks.map((week, index) =>
       <tr key={index} className="cal__week">
@@ -13,5 +13,7 @@ const Weeks = ({ calendar: { weeks } }) => (
     )}
   </tbody>
 )
+
+Weeks.defaultProps = { Day }
 
 export default withCalendarProps(Weeks)

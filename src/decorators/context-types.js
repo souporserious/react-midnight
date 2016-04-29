@@ -13,5 +13,7 @@ export default {
   renderDay: PropTypes.func,
   setDate: PropTypes.func,
   navigateWeek: PropTypes.func,
-  navigateMonth: PropTypes.func
+  navigateMonth: PropTypes.func,
+
+  onDayEvents: PropTypes.object
 }
