@@ -202,6 +202,22 @@ const utils = {
 
   getMinutesFromDay(date) {
 
+  },
+
+  getModifiers(rules, day, month) {
+    const modifiers = []
+
+    Object.keys(rules).forEach(key => {
+      if (rules[key](day, month)) {
+        // camelCase to hyphen friendly class name
+        const modifier = key.replace(/[a-z][A-Z]/g, str =>
+          `${str[0]}-${str[1].toLowerCase()}`
+        )
+        modifiers.push(modifier)
+      }
+    })
+
+    return modifiers
   }
 }
 

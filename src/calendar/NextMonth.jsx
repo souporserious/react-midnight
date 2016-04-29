@@ -1,25 +1,25 @@
 import React, { Component, PropTypes } from 'react'
+import withCalendarProps from '../decorators/with-calendar-props'
 
 class NextMonth extends Component {
   static propTypes = {
-    innerHTML: PropTypes.node,
     disabled: PropTypes.bool
   }
 
   static defaultProps = {
-    innerHTML: '',
     disabled: false
   }
 
   handleClick = () => {
-    const { disabled, onClick } = this.props
-    if (!disabled && onClick) {
-      onClick.call(this)
+    const { disabled, calendar, onClick } = this.props
+    if (!disabled) {
+      calendar.navigateMonth(1)
+      onClick && onClick.call(this)
     }
   }
 
   render() {
-    const { disabled, controls, innerHTML } = this.props
+    const { disabled, calendar } = this.props
     let classes = 'cal__nav cal__nav--next'
 
     if (disabled) {
@@ -30,15 +30,13 @@ class NextMonth extends Component {
       <button
         type="button"
         disabled={disabled}
-        aria-controls={controls}
+        aria-controls={calendar.id + '__table'}
         title="Next month"
         className={classes}
         onClick={this.handleClick}
-      >
-        {innerHTML}
-      </button>
+      />
     )
   }
 }
 
-export default NextMonth
+export default withCalendarProps(NextMonth)

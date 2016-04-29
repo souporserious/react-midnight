@@ -2,19 +2,11 @@ import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import { Calendar, Time, utils } from '../src/react-dately'
 // import CalendarInput from './CalendarInput'
-// import injectTapEventPlugin from 'react-tap-event-plugin'
 import './calendar.scss'
 import './main.scss'
 
-
-import { withCalendar, withCalendarProps } from '../src/Solar'
-
-
-
 const { isSame, isBeforeDay, isAfterDay, getDaysBetween } = utils
-//
-// injectTapEventPlugin()
-//
+
 // class TimeSelect extends Component {
 //   _handleOnChange(e) {
 //     this.props.onTimeChange(e)
@@ -176,50 +168,11 @@ class App extends Component {
         <Calendar
           date={currentDate}
           onDateSelect={day => this.setState({ currentDate: day })}
+          //renderDay={day => <div style={{background: 'red'}}>{day.getDate()}</div>}
         />
       </div>
     )
   }
 }
-
-// // Context
-// contextTypes = {
-//   currentDay: PropTypes.instanceOf(Date),
-//   weekdays: PropTypes.array,
-//   currentWeekday: PropTypes.array,
-//   weeks: PropTypes.array,
-//   currentWeek: PropTypes.array,
-//   navigateWeek: PropTypes.func,
-//   navigateMonth: PropTypes.func
-// }
-//
-//
-// <Calendar date={} onDaySelect={}>
-//   {weekdays.map(weekday => weekday)}
-//   {weeks.map(week => week.map(day => day))}
-// </Calendar>
-//
-//
-// <Calendar date={} onDaySelect={}>
-//   {weekdays.map(weekday =>
-//     <Weekday>{weekday}</Weekday>
-//   )}
-//   {weeks.map(week =>
-//     <Week>
-//       {week.map(day =>
-//         <Day>
-//           {day}
-//         </Day>
-//       )}
-//     </Week>
-//   }
-// </Calendar>
-//
-// // Weekly Calendar
-// <Calendar date={} onDaySelect={}>
-//   {currentWeek.map((week, weekOfYear) =>
-//     week.map(day => day)
-//   )}
-// </Calendar>
 
 ReactDOM.render(<App />, document.getElementById('app'))
