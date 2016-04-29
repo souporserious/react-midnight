@@ -28,7 +28,7 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
 
     componentWillReceiveProps(nextProps) {
       if (!isSame(this.props.date, nextProps.date)) {
-        this.setState({ date: nextProps.date })
+        this._setDate(nextProps.date)
       }
     }
 
@@ -46,8 +46,9 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
         disabledRules: this._disabledRules,
         onDateSelect,
         renderDay,
-        navigateWeek: this._handleNavigateWeek,
-        navigateMonth: this._handleNavigateMonth
+        setDate: this._setDate,
+        navigateWeek: this._navigateWeek,
+        navigateMonth: this._navigateMonth
       }
     }
 
@@ -79,16 +80,16 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
       ))
     }
 
-    _handleNavigateWeek = (direction) => {
-      this.setState({
-        date: navigateWeek(this.state.date, direction)
-      })
+    _setDate = (date) => {
+      this.setState({ date })
     }
 
-    _handleNavigateMonth = (direction) => {
-      this.setState({
-        date: navigateMonth(this.state.date, direction)
-      })
+    _navigateWeek = (direction) => {
+      this._setDate(navigateWeek(this.state.date, direction))
+    }
+
+    _navigateMonth = (direction) => {
+      this._setDate(navigateMonth(this.state.date, direction))
     }
 
     render() {

@@ -22,7 +22,7 @@ class PrevMonth extends Component {
     const { disabled, calendar } = this.props
     let classes = 'cal__nav cal__nav--prev'
 
-    if (disabled) {
+    if (disabled) {//minDay && isSame(month, minDay, 'month')
       classes += ' cal__nav--disabled'
     }
 

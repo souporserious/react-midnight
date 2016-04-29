@@ -11,6 +11,7 @@ export default {
   disabledRules: PropTypes.object,
   onDateSelect: PropTypes.func,
   renderDay: PropTypes.func,
+  setDate: PropTypes.func,
   navigateWeek: PropTypes.func,
   navigateMonth: PropTypes.func
 }
