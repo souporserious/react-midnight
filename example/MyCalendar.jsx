@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import { withCalendar, withCalendarProps, addons, utils } from '../src/react-dately'
+import { withCalendar, withCalendarProps, withDayProps, addons, utils } from '../src/react-dately'
 
 const { PrevMonth, NextMonth, Weekdays, Weeks } = addons
 const { isSame, isBeforeDay, isAfterDay, getDaysBetween, getMonths } = utils
@@ -20,34 +20,6 @@ const propTypes = {
 const defaultProps = {
   modifiers: []
 }
-
-function bindDay(onDayEvents = {}, day) {
-  const bindedOnDayEvents = {}
-
-  Object.keys(onDayEvents).forEach(key => {
-    bindedOnDayEvents[key] = onDayEvents[key].bind(null, day)
-  })
-
-  return bindedOnDayEvents
-}
-
-class Day extends Component {
-  render() {
-    const { calendar, day } = this.props
-    const { date, rules, disabledRules, renderDay } = calendar
-    const onDayEvents = bindDay(this.props.calendar.onDayEvents, day)
-
-    return (
-      <td
-        {...onDayEvents}
-        style={{color: 'red'}}
-      >
-        {day.getDate()}
-      </td>
-    )
-  }
-}
-Day = withCalendarProps(Day)
 
 class MyCalendar extends Component {
   _renderMonth(currDate) {
@@ -102,7 +74,7 @@ class MyCalendar extends Component {
         </header>
         <table className="cal__table">
           <Weekdays/>
-          <Weeks Day={Day}/>
+          <Weeks/>
         </table>
       </div>
     )

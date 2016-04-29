@@ -124,17 +124,17 @@ class App extends Component {
 
     return (
       <div className="app">
+        <pre>{JSON.stringify(this.state, null, 2)}</pre>
         <MyCalendar
           ref="calendar"
           date={currMonth}
           trimWeekdays={3}
           minDay={new Date()}
           renderDay={this._renderDay}
-          onDayEvents={{
-            onClick: (currDate) => console.log(currDate),
+          dayEvents={{
             onMouseDown: this._selectRange.bind(this),
             onMouseMove: this._selectRange.bind(this),
-            onMouseUp: this._selectRange.bind(this),
+            onMouseUp: this._selectRange.bind(this)
           }}
           rules={{
             startDate: (date) => isSame(date, startDate),

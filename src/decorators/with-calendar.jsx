@@ -37,7 +37,7 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
     }
 
     getChildContext() {
-      const { id, weekStartsOn, forceSixRows, minDay, maxDay, onDateSelect, renderDay } = this.props
+      const { id, weekStartsOn, forceSixRows, minDay, maxDay, dayEvents, renderDay } = this.props
       const { date } = this.state
       return {
         id,
@@ -48,13 +48,11 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
         year: formatYear(date),
         rules: this._rules,
         disabledRules: this._disabledRules,
-        onDateSelect,
+        dayEvents,
         renderDay,
         setDate: this._setDate,
         navigateWeek: this._navigateWeek,
-        navigateMonth: this._navigateMonth,
-
-        onDayEvents: this.props.onDayEvents
+        navigateMonth: this._navigateMonth
       }
     }
 

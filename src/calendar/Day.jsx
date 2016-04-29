@@ -1,33 +1,20 @@
 import React, { Component, PropTypes } from 'react'
-import withCalendarProps from '../decorators/with-calendar-props'
-import { isSame, getModifiers } from '../utils'
+import withDayProps from '../decorators/with-day-props'
+import { getModifiers } from '../utils'
 
 class Day extends Component {
   static propTypes = {
-    day: PropTypes.instanceOf(Date).isRequired,
-    className: PropTypes.string
-  }
-
-  static defaultProps = {
-    className: 'cal__day'
+    day: PropTypes.instanceOf(Date).isRequired
   }
 
   render() {
-    const { calendar, component, day, dately, ...otherProps } = this.props
-    const { date, onDateSelect, rules, disabledRules, renderDay } = calendar
-    const modifiers = getModifiers(rules, day, date)
-    const disabledModifiers = getModifiers(disabledRules, day, date)
-    const isDisabled = disabledModifiers.length
-    let className = this.props.className
-
-    // build the final class name string with all respective modifiers
-    className += modifiers.concat(disabledModifiers).map(modifier => ` ${className}--${modifier}`).join('')
+    const { day, className, dayEvents, renderDay } = this.props
 
     return (
       <td
         key={day}
         className={className}
-        onClick={() => !isDisabled && onDateSelect(day)}
+        {...dayEvents}
       >
         {renderDay(day)}
       </td>
@@ -35,4 +22,4 @@ class Day extends Component {
   }
 }
 
-export default withCalendarProps(Day)
+export default withDayProps(Day)

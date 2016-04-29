@@ -83,9 +83,11 @@ class CalendarInput extends Component {
           this.state.isOpen &&
           <MyCalendar
             date={date}
-            onDateSelect={this._handleCalendarClick.bind(this)}
             minDay={this.props.minDay}
             maxDay={this.props.maxDay}
+            dayEvents={{
+              onClick: this._handleCalendarClick.bind(this)
+            }}
             {...calendarProps}
           />
         }
