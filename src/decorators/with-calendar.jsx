@@ -7,6 +7,7 @@ const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 
 export default function withCalendar(ComposedCalendar, defaultProps = {}) {
   return class extends Component {
+    static displayName = 'calendarDecorator'
     static defaultProps = {
       id: generateId(),
       date: new Date(),
