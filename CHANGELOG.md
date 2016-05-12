@@ -1,4 +1,9 @@
 ## CHANGELOG
+### 0.7.0
+Renamed to `react-midnight`
+
+API revamp, now uses Higher Order Components to decorate Components with calendar props
+
 ### 0.6.1
 Fixed `NavigateMonth` utility where month would be skipped.
 

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import 'expose?Perf!react-addons-perf'
-import { Calendar, Time, utils } from '../src/react-dately'
+import { Calendar, Time, utils } from '../src/react-midnight'
 import MyCalendar from './MyCalendar'
 import CalendarInput from './CalendarInput'
 import './calendar.scss'

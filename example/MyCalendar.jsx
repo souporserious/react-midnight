@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import { withCalendar, withCalendarProps, withDayProps, addons, utils } from '../src/react-dately'
+import { withCalendar, withCalendarProps, withDayProps, addons, utils } from '../src/react-midnight'
 
 const { PrevMonth, NextMonth, Weekdays, Weeks } = addons
 const { isSame, isBeforeDay, isAfterDay, getDaysBetween, getMonths } = utils
