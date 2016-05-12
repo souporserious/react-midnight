@@ -5,10 +5,7 @@ import NextMonth from './NextMonth'
 
 const Header = ({ calendar: { id, month, year, navigateMonth } }) => (
   <header className="cal__header">
-    <PrevMonth
-      onClick={() => navigateMonth(-1)}
-      controls={id + '__table'}
-    />
+    <PrevMonth/>
     <div className="cal__month-year">
       <div className="cal__month">
         {month}

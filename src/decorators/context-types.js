@@ -7,6 +7,8 @@ export default {
   weekdays: PropTypes.array,
   month: PropTypes.string,
   year: PropTypes.number,
+  minDay: PropTypes.instanceOf(Date),
+  maxDay: PropTypes.instanceOf(Date),
   rules: PropTypes.objectOf(PropTypes.func),
   disabledRules: PropTypes.objectOf(PropTypes.func),
   dayEvents: PropTypes.objectOf(PropTypes.func),

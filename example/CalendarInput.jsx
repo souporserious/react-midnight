@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import { findDOMNode } from 'react-dom'
 import MyCalendar from './MyCalendar'
 
 const propTypes = {
@@ -25,7 +25,7 @@ const defaultProps = {
   minDay: new Date(),
   calendarProps: {
     modifiers: ['small'],
-    trimWeekdays: 1
+    trimWeekdays: 2
   },
   formatDate: date => date,
   onDateSelect: date => date
@@ -36,6 +36,7 @@ class CalendarInput extends Component {
     super(props)
     this.state = { isOpen: false }
     this._documentClickHandler = (e) => this._documentClick(e)
+    this._handleCalendarClick = this._handleCalendarClick.bind(this)
   }
 
   componentDidMount() {
@@ -47,8 +48,8 @@ class CalendarInput extends Component {
   }
 
   _documentClick(e) {
-    const inputNode = ReactDOM.findDOMNode(this.refs['input'])
-    const calendarNode = ReactDOM.findDOMNode(this.refs['calendar'])
+    const inputNode = findDOMNode(this.refs['input'])
+    const calendarNode = findDOMNode(this.refs['calendar'])
 
     if (inputNode.contains(e.target)) {
       this.setState({isOpen: !this.state.isOpen})
@@ -64,6 +65,7 @@ class CalendarInput extends Component {
 
   render() {
     const { date, wrapperClassName, inputClassName, placeholder, calendarProps, hiddenValue, formatDate,  } = this.props
+    const { isOpen } = this.state
     const value = placeholder ? (placeholder || null) : formatDate(date)
 
     return (
@@ -74,23 +76,20 @@ class CalendarInput extends Component {
           className={inputClassName}
           aria-haspopup={true}
           aria-readonly={false}
-          aria-expanded={this.state.isOpen}
+          aria-expanded={isOpen}
           value={value}
           readOnly
         />
-        <div ref="calendar">
-        {
-          this.state.isOpen &&
-          <MyCalendar
-            date={date}
-            minDay={this.props.minDay}
-            maxDay={this.props.maxDay}
-            dayEvents={{
-              onClick: this._handleCalendarClick.bind(this)
-            }}
-            {...calendarProps}
-          />
-        }
+        <div ref="calendar" className="calendar-wrapper">
+          { isOpen &&
+            <MyCalendar
+              date={date}
+              minDay={this.props.minDay}
+              maxDay={this.props.maxDay}
+              dayEvents={{ onClick: this._handleCalendarClick }}
+              {...calendarProps}
+            />
+          }
         </div>
       </div>
     )

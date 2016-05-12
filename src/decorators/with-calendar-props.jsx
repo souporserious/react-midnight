@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import contextTypes from './context-types'
 
 export default function withCalendarProps(ComposedComponent) {
@@ -8,7 +8,10 @@ export default function withCalendarProps(ComposedComponent) {
 
     render() {
       return (
-        <ComposedComponent {...this.props} calendar={{...this.context}}/>
+        <ComposedComponent
+          {...this.props}
+          calendar={{...this.context}}
+        />
       )
     }
   }

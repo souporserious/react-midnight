@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import withCalendarProps from '../decorators/with-calendar-props'
+import { isSame } from '../utils'
 
 class NextMonth extends Component {
   static propTypes = {
@@ -19,18 +20,19 @@ class NextMonth extends Component {
   }
 
   render() {
-    const { disabled, calendar } = this.props
+    const { disabled, calendar: { id, date, maxDay } } = this.props
+    const isDisabled = disabled || (maxDay && isSame(date, maxDay, 'month'))
     let classes = 'cal__nav cal__nav--next'
 
-    if (disabled) {//maxDay && isSame(month, maxDay, 'month')
+    if (isDisabled) {
       classes += ' cal__nav--disabled'
     }
 
     return (
       <button
         type="button"
-        disabled={disabled}
-        aria-controls={calendar.id + '__table'}
+        disabled={isDisabled}
+        aria-controls={id + '__table'}
         title="Next month"
         className={classes}
         onClick={this.handleClick}

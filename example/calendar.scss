@@ -1,4 +1,4 @@
-$primary: #6e9541;
+$primary: #fff;
 $secondary: #555657;
 
 .cal {
@@ -7,6 +7,7 @@ $secondary: #555657;
 
 .cal--small {
   width: 34 * 7 + px;
+  padding: 6px;
   border-radius: 0;
   position: absolute;
   top: 100%;
@@ -16,6 +17,7 @@ $secondary: #555657;
   box-shadow: 0 4px 8px #c0c3c5;
   .cal__header {
     padding: 0;
+    margin: 6px 0;
     background-color: $primary;
     color: white;
   }
@@ -27,13 +29,13 @@ $secondary: #555657;
   .cal__nav--prev {
     &:before {
       border-width: 5px 9px 5px 0;
-      border-color: transparent #c4e49d transparent transparent;
+      border-color: transparent #A9A9A9 transparent transparent;
     }
   }
   .cal__nav--next {
     &:before {
       border-width: 5px 0 5px 9px;
-      border-color: transparent transparent transparent #c4e49d;
+      border-color: transparent transparent transparent #A9A9A9;
     }
   }
   .cal__month-year {
@@ -44,12 +46,13 @@ $secondary: #555657;
   }
   .cal__weekdays {
     background-color: $primary;
-    color: #c4e49d;
+    color: #A9A9A9;
   }
   .cal__weekday {
     width: 34px;
     padding: 4px 0;
     font-size: 12px;
+    font-weight: 100;
   }
   .cal__day {
     width: 34px;
@@ -131,7 +134,7 @@ $secondary: #555657;
   width: 14.28571%;
   padding: 8px 0;
   font-weight: 600;
-  background: transparent;
+  background-color: transparent;
   cursor: default;
 }
 

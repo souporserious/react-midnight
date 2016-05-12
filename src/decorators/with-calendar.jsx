@@ -16,11 +16,8 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
       forceSixRows: true,
       minDay: new Date(),
       maxDay: null,
-      onDateSelect: () => null,
+      dayEvents: {},
       renderDay: date => date.getDate(),
-
-      onDayEvents: {},
-
       ...defaultProps
     }
 
@@ -39,6 +36,7 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
     getChildContext() {
       const { id, weekStartsOn, forceSixRows, minDay, maxDay, dayEvents, renderDay } = this.props
       const { date } = this.state
+      
       return {
         id,
         date,
@@ -46,6 +44,8 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
         weekdays: this._weekdays,
         month: formatMonth(date),
         year: formatYear(date),
+        minDay,
+        maxDay,
         rules: this._rules,
         disabledRules: this._disabledRules,
         dayEvents,
