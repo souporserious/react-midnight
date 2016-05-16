@@ -4,14 +4,14 @@ var TARGET = process.env.TARGET || null;
 
 var config = {
   entry: {
-    index: './src/react-dately.js',
+    index: './src/react-midnight.js',
   },
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: 'dist/',
-    filename: 'react-dately.js',
-    sourceMapFilename: 'react-dately.sourcemap.js',
-    library: 'ReactDately',
+    filename: 'react-midnight.js',
+    sourceMapFilename: 'react-midnight.sourcemap.js',
+    library: 'ReactMidnight',
     libraryTarget: 'umd'
   },
   module: {
@@ -24,19 +24,20 @@ var config = {
     extensions: ['', '.js', '.jsx']
   },
   externals: {
-    'react': 'React'
+    'react': 'React',
+    'react-dom': 'ReactDOM'
   },
 };
 
-if(TARGET === 'minify') {
-  config.output.filename = 'react-dately.min.js';
-  config.output.sourceMapFilename = 'react-dately.min.js';
+if (TARGET === 'minify') {
+  config.output.filename = 'react-midnight.min.js';
+  config.output.sourceMapFilename = 'react-midnight.min.js';
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
       warnings: false
     },
     mangle: {
-      except: ['React', 'ReactDately']
+      except: ['React', 'ReactDOM', 'ReactMidnight']
     }
   }));
 }
