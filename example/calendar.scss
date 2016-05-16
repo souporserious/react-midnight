@@ -130,6 +130,10 @@ $secondary: #555657;
   }
 }
 
+.cal__weekdays {
+  display: flex;
+}
+
 .cal__weekday {
   width: 14.28571%;
   padding: 8px 0;
@@ -148,7 +152,13 @@ $secondary: #555657;
   user-select: none;
 }
 
+.cal__week {
+  display: flex;
+  width: 100%;
+}
+
 .cal__day {
+  flex: 1;
   padding: 16px 0;
   color: black;
   position: relative;
@@ -211,4 +221,12 @@ $secondary: #555657;
     padding: 8px 32px 8px 10px;
     background: transparent;
   }
+}
+
+.slider__track {
+  display: flex;
+}
+
+.slide {
+  flex: 1;
 }

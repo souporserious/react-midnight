@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
+import Slider from 'react-motion-slider'
 import { withCalendar, withCalendarProps, withDayProps, addons, utils } from '../src/react-midnight'
 
-const { PrevMonth, NextMonth, Weekdays, Weeks } = addons
+const { Header, PrevMonth, NextMonth, Weekdays, Month } = addons
 const { isSame, isBeforeDay, isAfterDay, getDaysBetween, getMonths } = utils
 
 const months = getMonths()
@@ -53,7 +54,7 @@ class MyCalendar extends Component {
   }
 
   render() {
-    const { calendar: { id, date }, modifiers } = this.props
+    const { calendar: { id, date, months }, modifiers } = this.props
     let className = 'cal'
 
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
@@ -72,10 +73,12 @@ class MyCalendar extends Component {
           </div>
           <NextMonth/>
         </header>
-        <table className="cal__table">
+        <div className="cal__table">
           <Weekdays/>
-          <Weeks/>
-        </table>
+          {months.map((weeks, i) =>
+            <Month key={i} weeks={weeks}/>
+          )}
+        </div>
       </div>
     )
   }

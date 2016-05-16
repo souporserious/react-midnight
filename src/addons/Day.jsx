@@ -11,13 +11,13 @@ class Day extends Component {
     const { day, className, dayEvents, renderDay } = this.props
 
     return (
-      <td
+      <div
         key={day}
         className={className}
         {...dayEvents}
       >
         {renderDay(day)}
-      </td>
+      </div>
     )
   }
 }

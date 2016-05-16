@@ -10,7 +10,7 @@ const utils = {
     return new Date(d.getFullYear(), d.getMonth(), 1)
   },
 
-  getDaysInMonth(d) {
+  getLastDayOfMonth(d) {
     const resultDate = utils.getFirstDayOfMonth(d)
 
     resultDate.setMonth(resultDate.getMonth() + 1)
@@ -19,12 +19,12 @@ const utils = {
     return resultDate.getDate()
   },
 
-  getDays(d) {
-    let daysInMonth = utils.getDaysInMonth(d)
-    let days = []
+  getDaysInMonth(d) {
+    const numberOfDaysInMonth = utils.getLastDayOfMonth(d)
+    const days = []
 
     // get all days in a month
-    for (let i = 1; i <= daysInMonth; i++) {
+    for (let i = 1; i <= numberOfDaysInMonth; i++) {
       days.push(new Date(d.getFullYear(), d.getMonth(), i))
     }
 
@@ -32,7 +32,7 @@ const utils = {
   },
 
   getWeeks(d, firstDayOfWeek = 0, forceSixRows = false) {
-    let days = utils.getDays(d)
+    let days = utils.getDaysInMonth(d)
     let daysInMonth = days.length
     let week = []
     let weeks = []

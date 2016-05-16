@@ -11,6 +11,7 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
     static defaultProps = {
       id: generateId(),
       date: new Date(),
+      numberOfMonths: 1,
       trimWeekdays: null,
       weekStartsOn: 0,
       forceSixRows: true,
@@ -34,16 +35,16 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
     }
 
     getChildContext() {
-      const { id, weekStartsOn, forceSixRows, minDay, maxDay, dayEvents, renderDay } = this.props
+      const { id, minDay, maxDay, dayEvents, renderDay } = this.props
       const { date } = this.state
-      
+
       return {
         id,
         date,
-        weeks: getWeeks(date, weekStartsOn, forceSixRows),
+        months: this._months,
         weekdays: this._weekdays,
-        month: formatMonth(date),
-        year: formatYear(date),
+        monthLabel: formatMonth(date),
+        yearLabel: formatYear(date),
         minDay,
         maxDay,
         rules: this._rules,
@@ -54,6 +55,29 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
         navigateWeek: this._navigateWeek,
         navigateMonth: this._navigateMonth
       }
+    }
+
+    get _months() {
+      const { numberOfMonths, weekStartsOn, forceSixRows } = this.props
+      const { date } = this.state
+      const months = []
+
+      for (let i = 0; i < numberOfMonths; i++) {
+        const month = navigateMonth(date, i)
+        months.push(getWeeks(month, weekStartsOn, forceSixRows))
+      }
+
+      return months
+    }
+
+    get _weekdays() {
+      const { trimWeekdays, weekStartsOn } = this.props
+      const weekdays = [...WEEKDAYS]
+      const sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn))
+
+      return sortedWeekdays.map((weekday, index) => (
+        trimWeekdays ? weekday.substring(0, parseInt(trimWeekdays)) : weekday
+      ))
     }
 
     get _rules() {
@@ -72,16 +96,6 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
         after: (currDate) => maxDay && isAfterDay(currDate, maxDay),
         ...disabledRules
       }
-    }
-
-    get _weekdays() {
-      const { trimWeekdays, weekStartsOn } = this.props
-      const weekdays = [...WEEKDAYS]
-      const sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn))
-
-      return sortedWeekdays.map((weekday, index) => (
-        trimWeekdays ? weekday.substring(0, parseInt(trimWeekdays)) : weekday
-      ))
     }
 
     _setDate = (date) => {

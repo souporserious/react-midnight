@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import 'expose?Perf!react-addons-perf'
-import { Calendar, Time, utils } from '../src/react-midnight'
+import { withCalendar, withCalendarProps, Time, utils } from '../src/react-midnight'
 import MyCalendar from './MyCalendar'
 import CalendarInput from './CalendarInput'
 import './calendar.scss'
@@ -81,6 +81,16 @@ class FromTo extends Component {
   }
 }
 
+@withCalendar
+@withCalendarProps
+class YearCalendar extends Component {
+  render() {
+    return (
+      <pre>{JSON.stringify(this.props.calendar, null, 2)}</pre>
+    )
+  }
+}
+
 class App extends Component {
   state = {
     startDate: null,
@@ -125,7 +135,8 @@ class App extends Component {
 
     return (
       <div className="app">
-        <pre>{JSON.stringify(this.state, null, 2)}</pre>
+        {/*<pre>{JSON.stringify(this.state, null, 2)}</pre>*/}
+        
         <MyCalendar
           ref="calendar"
           date={currMonth}
@@ -143,7 +154,7 @@ class App extends Component {
             inRange: (date) => isSame(date, inRange),
           }}
         />
-        <FromTo />
+
       </div>
     )
   }

@@ -3,7 +3,7 @@ import withCalendar from '../decorators/with-calendar'
 import withCalendarProps from '../decorators/with-calendar-props'
 import Header from './Header'
 import Weekdays from './Weekdays'
-import Weeks from './Weeks'
+import Month from './Month'
 
 class Calendar extends Component {
   static propTypes = {
@@ -15,7 +15,7 @@ class Calendar extends Component {
   }
 
   render() {
-    const { calendar: { id }, minDay, maxDay, modifiers } = this.props
+    const { calendar: { id, months }, minDay, maxDay, modifiers } = this.props
     let className = 'cal'
 
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
@@ -23,10 +23,12 @@ class Calendar extends Component {
     return (
       <div id={id} className={className}>
         <Header/>
-        <table className="cal__table">
+        <div className="cal__table">
           <Weekdays/>
-          <Weeks/>
-        </table>
+          {months.map((weeks, i) =>
+            <Month key={i} weeks={weeks}/>
+          )}
+        </div>
       </div>
     )
   }

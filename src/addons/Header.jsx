@@ -3,15 +3,15 @@ import withCalendarProps from '../decorators/with-calendar-props'
 import PrevMonth from './PrevMonth'
 import NextMonth from './NextMonth'
 
-const Header = ({ calendar: { id, month, year, navigateMonth } }) => (
+const Header = ({ calendar: { id, monthLabel, yearLabel, navigateMonth } }) => (
   <header className="cal__header">
     <PrevMonth/>
     <div className="cal__month-year">
       <div className="cal__month">
-        {month}
+        {monthLabel}
       </div>
       <div className="cal__year">
-        {year}
+        {yearLabel}
       </div>
     </div>
     <NextMonth/>
