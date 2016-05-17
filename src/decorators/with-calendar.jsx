@@ -36,14 +36,14 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
     getChildContext() {
       const { id, weekStartsOn, forceSixRows, minDay, maxDay, dayEvents, renderDay } = this.props
       const { date } = this.state
-      
+
       return {
         id,
         date,
         weeks: getWeeks(date, weekStartsOn, forceSixRows),
         weekdays: this._weekdays,
-        month: formatMonth(date),
-        year: formatYear(date),
+        monthLabel: formatMonth(date),
+        yearLabel: formatYear(date),
         minDay,
         maxDay,
         rules: this._rules,
