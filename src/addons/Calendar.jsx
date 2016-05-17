@@ -3,30 +3,32 @@ import withCalendar from '../decorators/with-calendar'
 import withCalendarProps from '../decorators/with-calendar-props'
 import Header from './Header'
 import Weekdays from './Weekdays'
-import Weeks from './Weeks'
+import Month from './Month'
 
 class Calendar extends Component {
   static propTypes = {
+    className: PropTypes.string,
     modifiers: PropTypes.array
   }
 
   static defaultProps = {
+    className: 'cal',
     modifiers: []
   }
 
   render() {
-    const { calendar: { id }, minDay, maxDay, modifiers } = this.props
-    let className = 'cal'
+    const { calendar: { id }, className, minDay, maxDay, modifiers } = this.props
+    let wrapperClassName = className
 
-    className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
+    wrapperClassName += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
 
     return (
-      <div id={id} className={className}>
+      <div id={id} className={wrapperClassName}>
         <Header/>
-        <table className="cal__table">
+        <div className={`${className}--body`}>
           <Weekdays/>
           <Weeks/>
-        </table>
+        </div>
       </div>
     )
   }

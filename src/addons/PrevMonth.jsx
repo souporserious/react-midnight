@@ -22,10 +22,10 @@ class PrevMonth extends Component {
   render() {
     const { disabled, calendar: { id, date, minDay } } = this.props
     const isDisabled = disabled || (minDay && isSame(date, minDay, 'month'))
-    let classes = 'cal__nav cal__nav--prev'
+    let classes = 'cal-nav cal-nav--prev'
 
     if (isDisabled) {
-      classes += ' cal__nav--disabled'
+      classes += ' cal-nav--disabled'
     }
 
     return (

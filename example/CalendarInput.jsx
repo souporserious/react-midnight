@@ -1,15 +1,10 @@
 import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
-import MyCalendar from './MyCalendar'
+import TetherComponent from 'react-tether'
+import Calendar from './Calendar'
 
 const propTypes = {
   date: React.PropTypes.instanceOf(Date),
-  wrapperClassName: React.PropTypes.oneOfType(
-    [React.PropTypes.string, React.PropTypes.object]
-  ),
-  inputClassName: React.PropTypes.oneOfType(
-    [React.PropTypes.string, React.PropTypes.object]
-  ),
   placeholder: React.PropTypes.string,
   calendarProps: React.PropTypes.object,
   hiddenValue: React.PropTypes.bool,
@@ -19,8 +14,6 @@ const propTypes = {
 
 const defaultProps = {
   date: new Date(),
-  wrapperClassName: 'cal__input',
-  inputClassName: null,
   placeholder: null,
   minDay: new Date(),
   calendarProps: {
@@ -48,12 +41,9 @@ class CalendarInput extends Component {
   }
 
   _documentClick(e) {
-    const inputNode = findDOMNode(this.refs['input'])
-    const calendarNode = findDOMNode(this.refs['calendar'])
-
-    if (inputNode.contains(e.target)) {
+    if (this._input.contains(e.target)) {
       this.setState({isOpen: !this.state.isOpen})
-    } else if (!calendarNode.contains(e.target)) {
+    } else if (this._calendar && !this._calendar.contains(e.target)) {
       this.setState({isOpen: false})
     }
   }
@@ -64,34 +54,46 @@ class CalendarInput extends Component {
   }
 
   render() {
-    const { date, wrapperClassName, inputClassName, placeholder, calendarProps, hiddenValue, formatDate,  } = this.props
+    const { date, inputClassName, placeholder, calendarProps, hiddenValue, formatDate,  } = this.props
     const { isOpen } = this.state
     const value = placeholder ? (placeholder || null) : formatDate(date)
 
     return (
-      <div className={wrapperClassName}>
+      <TetherComponent
+        attachment="top right"
+        targetAttachment="bottom right"
+        constraints={[
+          {
+            to: 'window',
+            attachment: 'together'
+          }
+        ]}
+      >
         <input
-          ref="input"
+          ref={c => this._input = findDOMNode(c)}
           type="text"
-          className={inputClassName}
+          className="cal-input"
           aria-haspopup={true}
           aria-readonly={false}
           aria-expanded={isOpen}
           value={value}
           readOnly
         />
-        <div ref="calendar" className="calendar-wrapper">
-          { isOpen &&
-            <MyCalendar
+        { isOpen &&
+          <div
+            ref={c => this._calendar = findDOMNode(c)}
+            className="cal-input-calendar"
+          >
+            <Calendar
               date={date}
               minDay={this.props.minDay}
               maxDay={this.props.maxDay}
               dayEvents={{ onClick: this._handleCalendarClick }}
               {...calendarProps}
             />
-          }
-        </div>
-      </div>
+          </div>
+        }
+      </TetherComponent>
     )
   }
 }

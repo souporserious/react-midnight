@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import { withCalendar, withCalendarProps, withDayProps, addons, utils } from '../src/react-midnight'
 
-const { PrevMonth, NextMonth, Weekdays, Weeks } = addons
+const { PrevMonth, NextMonth, Weekdays, Month } = addons
 const { isSame, isBeforeDay, isAfterDay, getDaysBetween, getMonths } = utils
 
 const months = getMonths()
@@ -14,14 +14,24 @@ for (let i = currentYear; i < currentYear + 10; i++) {
 }
 
 const propTypes = {
-  modifiers: PropTypes.array
+  modifiers: PropTypes.array,
+  selectMenuHeader: PropTypes.bool,
+  onChange: PropTypes.func
 }
 
 const defaultProps = {
-  modifiers: []
+  modifiers: [],
+  selectMenuHeader: false,
+  onChange: () => null
 }
 
-class MyCalendar extends Component {
+class Calendar extends Component {
+  componentWillReceiveProps({ calendar }) {
+    if (this.props.calendar.date !== calendar.date) {
+      this.props.onChange(calendar.date)
+    }
+  }
+
   _renderMonth(currDate) {
     return (
       <select
@@ -53,35 +63,35 @@ class MyCalendar extends Component {
   }
 
   render() {
-    const { calendar: { id, date }, modifiers } = this.props
+    const { calendar: { id, date, monthLabel, yearLabel }, modifiers, selectMenuHeader } = this.props
     let className = 'cal'
 
     className += modifiers.map(modifier => ` ${className}--${modifier}`).join('')
 
     return (
       <div id={id} className={className}>
-        <header className="cal__header">
+        <header className="cal-header">
           <PrevMonth/>
-          <div className="cal__month-year">
-            <div className="cal__month">
-              {this._renderMonth(date)}
+          <div className="cal-month-year">
+            <div className="cal-month-label">
+              {selectMenuHeader ? this._renderMonth(date) : monthLabel}
             </div>
-            <div className="cal__year">
-              {this._renderYear(date)}
+            <div className="cal-year-label">
+              {selectMenuHeader ? this._renderYear(date) : yearLabel}
             </div>
           </div>
           <NextMonth/>
         </header>
-        <table className="cal__table">
+        <div className="cal-body">
           <Weekdays/>
-          <Weeks/>
-        </table>
+          <Month/>
+        </div>
       </div>
     )
   }
 }
 
-MyCalendar.propTypes = propTypes
-MyCalendar.defaultProps = defaultProps
+Calendar.propTypes = propTypes
+Calendar.defaultProps = defaultProps
 
-export default withCalendar(withCalendarProps(MyCalendar))
+export default withCalendar(withCalendarProps(Calendar))

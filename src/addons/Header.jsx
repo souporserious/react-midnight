@@ -4,13 +4,13 @@ import PrevMonth from './PrevMonth'
 import NextMonth from './NextMonth'
 
 const Header = ({ calendar: { id, month, year, navigateMonth } }) => (
-  <header className="cal__header">
+  <header className="cal-header">
     <PrevMonth/>
-    <div className="cal__month-year">
-      <div className="cal__month">
+    <div className="cal-month-year">
+      <div className="cal-month-label">
         {month}
       </div>
-      <div className="cal__year">
+      <div className="cal-year-label">
         {year}
       </div>
     </div>

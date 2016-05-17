@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import 'expose?Perf!react-addons-perf'
-import { Calendar, Time, utils } from '../src/react-midnight'
-import MyCalendar from './MyCalendar'
+import { Time, utils } from '../src/react-midnight'
+import Calendar from './Calendar'
 import CalendarInput from './CalendarInput'
 import './calendar.scss'
 import './main.scss'
@@ -126,7 +126,7 @@ class App extends Component {
     return (
       <div className="app">
         <pre>{JSON.stringify(this.state, null, 2)}</pre>
-        <MyCalendar
+        <Calendar
           ref="calendar"
           date={currMonth}
           trimWeekdays={3}

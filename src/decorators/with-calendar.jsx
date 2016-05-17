@@ -80,7 +80,7 @@ export default function withCalendar(ComposedCalendar, defaultProps = {}) {
       const sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn))
 
       return sortedWeekdays.map((weekday, index) => (
-        trimWeekdays ? weekday.substring(0, parseInt(trimWeekdays)) : weekday
+        { full: weekday, trimmed: weekday.substring(0, parseInt(trimWeekdays)) }
       ))
     }
 

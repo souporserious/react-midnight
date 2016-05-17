@@ -22,10 +22,10 @@ class NextMonth extends Component {
   render() {
     const { disabled, calendar: { id, date, maxDay } } = this.props
     const isDisabled = disabled || (maxDay && isSame(date, maxDay, 'month'))
-    let classes = 'cal__nav cal__nav--next'
+    let classes = 'cal-nav cal-nav--next'
 
     if (isDisabled) {
-      classes += ' cal__nav--disabled'
+      classes += ' cal-nav--disabled'
     }
 
     return (

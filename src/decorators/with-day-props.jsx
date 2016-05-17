@@ -2,7 +2,7 @@ import React, { Component, createElement } from 'react'
 import contextTypes from './context-types'
 import { isSame, getModifiers } from '../utils'
 
-export default function withDayProps(DayComponent, className = 'cal__day') {
+export default function withDayProps(DayComponent, className = 'cal-day') {
   return class extends Component {
     static displayName = 'dayPropsDecorator'
     static contextTypes = contextTypes
