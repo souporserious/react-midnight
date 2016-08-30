@@ -2,7 +2,7 @@
   "name": "react-midnight",
   "version": "0.7.0",
   "description": "Handle dates, times, and calendars with React.",
-  "main": "lib/react-dately.js",
+  "main": "lib/react-midnight.js",
   "scripts": {
     "build": "npm run build:lib && NODE_ENV=production webpack --config webpack.prod.config.js",
     "build:lib": "babel src --out-dir lib",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/souporserious/react-dately"
+    "url": "https://github.com/souporserious/react-midnight"
   },
   "keywords": [
     "react",
@@ -32,9 +32,9 @@
   "author": "Travis Arnold <travis@souporserious.com> (http://souporserious.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/souporserious/react-dately/issues"
+    "url": "https://github.com/souporserious/react-midnight/issues"
   },
-  "homepage": "https://github.com/souporserious/react-dately",
+  "homepage": "https://github.com/souporserious/react-midnight",
   "peerDependencies": {
     "react": ">0.13.0",
     "react-dom": ">0.13.0"
