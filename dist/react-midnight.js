@@ -199,8 +199,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          date: date,
 	          weeks: (0, _utils.getWeeks)(date, weekStartsOn, forceSixRows),
 	          weekdays: this._weekdays,
-	          month: (0, _utils.formatMonth)(date),
-	          year: (0, _utils.formatYear)(date),
+	          monthLabel: (0, _utils.formatMonth)(date),
+	          yearLabel: (0, _utils.formatYear)(date),
 	          minDay: minDay,
 	          maxDay: maxDay,
 	          rules: this._rules,
@@ -259,7 +259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var sortedWeekdays = weekdays.concat(weekdays.splice(0, weekStartsOn));
 
 	        return sortedWeekdays.map(function (weekday, index) {
-	          return trimWeekdays ? weekday.substring(0, parseInt(trimWeekdays)) : weekday;
+	          return { full: weekday, trimmed: weekday.substring(0, parseInt(trimWeekdays)) };
 	        });
 	      }
 	    }], [{
@@ -317,8 +317,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  date: _react.PropTypes.instanceOf(Date),
 	  weeks: _react.PropTypes.array,
 	  weekdays: _react.PropTypes.array,
-	  month: _react.PropTypes.string,
-	  year: _react.PropTypes.number,
+	  monthLabel: _react.PropTypes.string,
+	  yearLabel: _react.PropTypes.number,
 	  minDay: _react.PropTypes.instanceOf(Date),
 	  maxDay: _react.PropTypes.instanceOf(Date),
 	  rules: _react.PropTypes.objectOf(_react.PropTypes.func),
@@ -700,7 +700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _utils = __webpack_require__(5);
 
 	function withDayProps(DayComponent) {
-	  var className = arguments.length <= 1 || arguments[1] === undefined ? 'cal__day' : arguments[1];
+	  var className = arguments.length <= 1 || arguments[1] === undefined ? 'cal-day' : arguments[1];
 
 	  return (function (_Component) {
 	    _inherits(_class, _Component);
@@ -835,11 +835,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.Weekdays = _Weekdays3['default'];
 
-	var _Weeks2 = __webpack_require__(13);
+	var _Month2 = __webpack_require__(13);
 
-	var _Weeks3 = _interopRequireDefault(_Weeks2);
+	var _Month3 = _interopRequireDefault(_Month2);
 
-	exports.Weeks = _Weeks3['default'];
+	exports.Month = _Month3['default'];
 
 	var _Day2 = __webpack_require__(14);
 
@@ -889,19 +889,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var navigateMonth = _ref$calendar.navigateMonth;
 	  return _react2['default'].createElement(
 	    'header',
-	    { className: 'cal__header' },
+	    { className: 'cal-header' },
 	    _react2['default'].createElement(_PrevMonth2['default'], null),
 	    _react2['default'].createElement(
 	      'div',
-	      { className: 'cal__month-year' },
+	      { className: 'cal-month-year' },
 	      _react2['default'].createElement(
 	        'div',
-	        { className: 'cal__month' },
+	        { className: 'cal-month-label' },
 	        month
 	      ),
 	      _react2['default'].createElement(
 	        'div',
-	        { className: 'cal__year' },
+	        { className: 'cal-year-label' },
 	        year
 	      )
 	    ),
@@ -976,10 +976,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var minDay = _props2$calendar.minDay;
 
 	      var isDisabled = disabled || minDay && (0, _utils.isSame)(date, minDay, 'month');
-	      var classes = 'cal__nav cal__nav--prev';
+	      var classes = 'cal-nav cal-nav--prev';
 
 	      if (isDisabled) {
-	        classes += ' cal__nav--disabled';
+	        classes += ' cal-nav--disabled';
 	      }
 
 	      return _react2['default'].createElement('button', {
@@ -1075,10 +1075,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var maxDay = _props2$calendar.maxDay;
 
 	      var isDisabled = disabled || maxDay && (0, _utils.isSame)(date, maxDay, 'month');
-	      var classes = 'cal__nav cal__nav--next';
+	      var classes = 'cal-nav cal-nav--next';
 
 	      if (isDisabled) {
-	        classes += ' cal__nav--disabled';
+	        classes += ' cal-nav--disabled';
 	      }
 
 	      return _react2['default'].createElement('button', {
@@ -1133,24 +1133,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Weekdays = function Weekdays(_ref) {
 	  var weekdays = _ref.calendar.weekdays;
 	  return _react2['default'].createElement(
-	    'thead',
-	    null,
-	    _react2['default'].createElement(
-	      'tr',
-	      { className: 'cal__weekdays' },
-	      weekdays.map(function (weekday, index) {
-	        return _react2['default'].createElement(
-	          'th',
-	          {
-	            key: index,
-	            scope: 'col',
-	            title: weekday,
-	            className: 'cal__weekday'
-	          },
-	          weekday
-	        );
-	      })
-	    )
+	    'div',
+	    { className: 'cal-weekdays' },
+	    weekdays.map(function (weekday, index) {
+	      return _react2['default'].createElement(
+	        'div',
+	        {
+	          key: index,
+	          title: weekday.full,
+	          className: 'cal-weekday'
+	        },
+	        weekday.trimmed
+	      );
+	    })
 	  );
 	};
 
@@ -1181,16 +1176,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Day2 = _interopRequireDefault(_Day);
 
-	var Weeks = function Weeks(_ref) {
+	var Month = function Month(_ref) {
 	  var weeks = _ref.calendar.weeks;
 	  var Day = _ref.Day;
 	  return _react2['default'].createElement(
-	    'tbody',
-	    null,
+	    'div',
+	    { className: 'cal-month' },
 	    weeks.map(function (week, index) {
 	      return _react2['default'].createElement(
-	        'tr',
-	        { key: index, className: 'cal__week' },
+	        'div',
+	        { key: index, className: 'cal-week' },
 	        week.map(function (day) {
 	          return _react2['default'].createElement(Day, { key: day, day: day });
 	        })
@@ -1199,9 +1194,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	};
 
-	Weeks.defaultProps = { Day: _Day2['default'] };
+	Month.defaultProps = { Day: _Day2['default'] };
 
-	exports['default'] = (0, _decoratorsWithCalendarProps2['default'])(Weeks);
+	exports['default'] = (0, _decoratorsWithCalendarProps2['default'])(Month);
 	module.exports = exports['default'];
 
 /***/ },
@@ -1255,7 +1250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var renderDay = _props.renderDay;
 
 	      return _react2['default'].createElement(
-	        'td',
+	        'div',
 	        _extends({
 	          key: day,
 	          className: className
@@ -1317,9 +1312,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Weekdays2 = _interopRequireDefault(_Weekdays);
 
-	var _Weeks = __webpack_require__(13);
+	var _Month = __webpack_require__(13);
 
-	var _Weeks2 = _interopRequireDefault(_Weeks);
+	var _Month2 = _interopRequireDefault(_Month);
 
 	var Calendar = (function (_Component) {
 	  _inherits(Calendar, _Component);
@@ -1335,37 +1330,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      var _props = this.props;
 	      var id = _props.calendar.id;
+	      var className = _props.className;
 	      var minDay = _props.minDay;
 	      var maxDay = _props.maxDay;
 	      var modifiers = _props.modifiers;
 
-	      var className = 'cal';
+	      var wrapperClassName = className;
 
-	      className += modifiers.map(function (modifier) {
+	      wrapperClassName += modifiers.map(function (modifier) {
 	        return ' ' + className + '--' + modifier;
 	      }).join('');
 
 	      return _react2['default'].createElement(
 	        'div',
-	        { id: id, className: className },
+	        { id: id, className: wrapperClassName },
 	        _react2['default'].createElement(_Header2['default'], null),
 	        _react2['default'].createElement(
-	          'table',
-	          { className: 'cal__table' },
+	          'div',
+	          { className: className + '--body' },
 	          _react2['default'].createElement(_Weekdays2['default'], null),
-	          _react2['default'].createElement(_Weeks2['default'], null)
+	          _react2['default'].createElement(Weeks, null)
 	        )
 	      );
 	    }
 	  }], [{
 	    key: 'propTypes',
 	    value: {
+	      className: _react.PropTypes.string,
 	      modifiers: _react.PropTypes.array
 	    },
 	    enumerable: true
 	  }, {
 	    key: 'defaultProps',
 	    value: {
+	      className: 'cal',
 	      modifiers: []
 	    },
 	    enumerable: true
