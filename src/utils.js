@@ -195,7 +195,9 @@ const utils = {
 
     while (current <= endDate) {
       days.push(current)
-      current = new Date(current.getTime() + (24 * 60 * 60 * 1000))
+      // Clone it to avoid side effects, then increment the date by 1
+      current = new Date(current.getTime())
+      current.setDate(current.getDate() + 1)
     }
 
     return days
