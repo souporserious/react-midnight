@@ -1,6 +1,6 @@
 {
   "name": "react-midnight",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Handle dates, times, and calendars with React.",
   "main": "lib/react-midnight.js",
   "scripts": {
