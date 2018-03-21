@@ -211,7 +211,7 @@ const utils = {
 
   // Get the month name for `d`'s month
   formatMonth(d) {
-    return `MONTHS[d.getMonth()]}`
+    return `${MONTHS[d.getMonth()]}`
   },
 
   // Get 4-digit year from `d`
