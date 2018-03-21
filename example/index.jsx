@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import 'expose?Perf!react-addons-perf'
 import { Time, utils } from '../src/react-midnight'

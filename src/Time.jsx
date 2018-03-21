@@ -1,4 +1,5 @@
-import React, { Component, PropTypes, Children } from 'react'
+import React, { Component, Children } from 'react'
+import PropTypes from 'prop-types'
 
 const HOURS_IN_DAY = 24
 const HOURS_TO_NOON = HOURS_IN_DAY / 2
