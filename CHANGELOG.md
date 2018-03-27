@@ -1,4 +1,7 @@
 ## CHANGELOG
+### 0.7.2
+Update to use prop-types [#19](https://github.com/souporserious/react-midnight/pull/19)
+
 ### 0.7.1
 Fix interpolation in return value [#17](https://github.com/souporserious/react-midnight/pull/17)
 
