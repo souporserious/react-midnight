@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import withDayProps from '../decorators/with-day-props'
 import { getModifiers } from '../utils'
 

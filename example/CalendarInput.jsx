@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { findDOMNode } from 'react-dom'
 import TetherComponent from 'react-tether'
 import Calendar from './Calendar'
 
 const propTypes = {
-  date: React.PropTypes.instanceOf(Date),
-  placeholder: React.PropTypes.string,
-  calendarProps: React.PropTypes.object,
-  hiddenValue: React.PropTypes.bool,
-  formatDate: React.PropTypes.func,
-  onDateSelect: React.PropTypes.func
+  date: PropTypes.instanceOf(Date),
+  placeholder: PropTypes.string,
+  calendarProps: PropTypes.object,
+  hiddenValue: PropTypes.bool,
+  formatDate: PropTypes.func,
+  onDateSelect: PropTypes.func
 }
 
 const defaultProps = {

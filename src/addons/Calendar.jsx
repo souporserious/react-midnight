@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import withCalendar from '../decorators/with-calendar'
 import withCalendarProps from '../decorators/with-calendar-props'
 import Header from './Header'

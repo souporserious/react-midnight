@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import contextTypes from './context-types'
 import generateId from '../generate-id'
 import { getWeeks, navigateMonth, navigateWeek, isSame, isBeforeDay, isAfterDay, isOutsideMonth, formatMonth, formatYear } from '../utils'
